@@ -25,22 +25,21 @@ jobs:
 
       # ── Schema & registry integrity ──────────────────────────────────────────
       - name: Sync product_type enum (check mode)
-        run: python sync_product_type_enum.py --check
+        run: python scripts/sync_product_type_enum.py --check
 
       - name: Check registry integrity
-        run: python check_registry_integrity.py
+        run: python scripts/check_registry_integrity.py
 
       # ── Report validation ─────────────────────────────────────────────────────
       - name: Validate registry references (cross-file IDs)
-        run: python validate_registry_refs.py
+        run: python scripts/validate_registry_refs.py
 
       - name: Validate all report packages (JSON Schema)
-        run: python validate_report.py --all
+        run: python scripts/validate_report.py --all
 
       - name: Validate content blocks (block-level rules)
-        run: python validate_content_blocks.py --all
+        run: python scripts/validate_content_blocks.py --all
 
       # ── Schema version governance ─────────────────────────────────────────────
       - name: Check schema version bumps (dry-run)
-        run: python bump_schema_versions.py --dry-run
-
+        run: python scripts/bump_schema_versions.py --dry-run
