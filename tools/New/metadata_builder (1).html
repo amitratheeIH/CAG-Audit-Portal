@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CAG Metadata Builder</title>
+<style>
+:root{
+  --bg:#0e1117;--sur:#161b27;--sur2:#1c2235;--sur3:#232b40;
+  --bdr:#2d3654;--acc:#5b7cf7;--grn:#22d3a5;--amb:#f7c94a;
+  --red:#f76060;--txt:#dde2f5;--txt2:#8e97bb;--txt3:#4f5878;
+  --r:6px;--mono:'Cascadia Code','Fira Code',monospace;
+  --sans:-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--txt);font-size:13px;overflow:hidden}
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:var(--sur);border-bottom:1px solid var(--bdr);flex-shrink:0;gap:10px}
+.logo{width:26px;height:26px;background:var(--acc);border-radius:5px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff}
+.hdr h1{font-size:14px;font-weight:500;white-space:nowrap}
+.hdr h1 em{font-style:normal;color:var(--txt2);font-weight:300;font-size:12px;margin-left:6px}
+.hdr-btns{display:flex;gap:6px;flex-shrink:0}
+.btn{padding:5px 12px;border-radius:var(--r);font-family:var(--sans);font-size:11px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all .15s;outline:none}
+.bg{background:transparent;border-color:var(--bdr);color:var(--txt2)}.bg:hover{border-color:var(--txt2);color:var(--txt)}
+.bdl{background:var(--grn);color:#0e1117;border-color:var(--grn);font-weight:600}.bdl:hover{background:#18c090}
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:1fr 410px;height:calc(100vh - 47px)}
+/* FORM */
+.form-side{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--bdr)}
+.tabs{display:flex;background:var(--sur);border-bottom:1px solid var(--bdr);padding:0 12px;flex-shrink:0;overflow-x:auto;gap:0}
+.tabs::-webkit-scrollbar{height:3px}.tabs::-webkit-scrollbar-thumb{background:var(--bdr)}
+.tab{padding:9px 12px;font-size:11px;font-weight:500;color:var(--txt3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;user-select:none}
+.tab:hover{color:var(--txt2)}.tab.on{color:var(--acc);border-bottom-color:var(--acc)}
+.tab .n{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;background:var(--sur2);border-radius:3px;font-size:9px;margin-left:4px;color:var(--txt3)}
+.tab.on .n{background:rgba(91,124,247,.15);color:var(--acc)}
+.scr{overflow-y:auto;flex:1;padding:16px}.scr::-webkit-scrollbar{width:4px}.scr::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+.pnl{display:none}.pnl.on{display:block}
+/* SECTION */
+.sec{margin-bottom:20px}
+.slbl{font-size:10px;font-weight:600;letter-spacing:.9px;text-transform:uppercase;color:var(--txt3);padding-bottom:6px;border-bottom:1px solid var(--bdr);margin-bottom:10px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.bdb{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;background:rgba(91,124,247,.12);color:var(--acc);border:1px solid rgba(91,124,247,.22)}
+.bdg{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;background:rgba(34,211,165,.1);color:var(--grn);border:1px solid rgba(34,211,165,.2)}
+.bda{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;background:rgba(247,201,74,.1);color:var(--amb);border:1px solid rgba(247,201,74,.2)}
+.bdr2{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;background:rgba(247,96,96,.1);color:var(--red);border:1px solid rgba(247,96,96,.2)}
+/* FIELD */
+.fld{margin-bottom:10px}
+.lbl{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:var(--txt2);margin-bottom:4px;flex-wrap:wrap}
+.req{color:var(--red);font-size:10px}
+.hint{font-size:10px;color:var(--txt3);margin-top:3px;line-height:1.4}
+input[type=text],input[type=number],input[type=date],input[type=url],select,textarea{
+  width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);
+  color:var(--txt);font-family:var(--sans);font-size:12px;padding:6px 9px;outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--acc)}
+input::placeholder,textarea::placeholder{color:var(--txt3)}
+select option{background:var(--sur2)}
+textarea{resize:vertical;min-height:52px;line-height:1.5}
+.mono{font-family:var(--mono);font-size:11px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px}
+/* MULTILINGUAL */
+.ml-row{display:grid;grid-template-columns:38px 1fr;gap:6px;margin-bottom:5px;align-items:start}
+.ml-lbl{padding:6px 3px;background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);font-family:var(--mono);font-size:10px;color:var(--txt3);text-align:center;letter-spacing:.4px}
+/* TAG INPUT */
+.tw{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);padding:5px 7px;display:flex;flex-wrap:wrap;gap:4px;min-height:32px;cursor:text;transition:border-color .15s}
+.tw:focus-within{border-color:var(--acc)}
+.tag{display:inline-flex;align-items:center;gap:3px;background:rgba(91,124,247,.15);border:1px solid rgba(91,124,247,.28);color:var(--acc);border-radius:4px;font-size:10px;font-family:var(--mono);padding:2px 6px}
+.tag-x{cursor:pointer;color:var(--txt3);font-size:12px;line-height:1;margin-left:2px}.tag-x:hover{color:var(--red)}
+.ti{border:none!important;outline:none!important;background:transparent!important;color:var(--txt)!important;font-family:var(--mono)!important;font-size:11px!important;width:110px!important;min-width:60px;padding:2px 3px!important}
+/* TOGGLE */
+.togrow{display:flex;align-items:center;justify-content:space-between;padding:7px 9px;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:6px}
+.toglbl{font-size:11px;color:var(--txt2)}
+.tog{position:relative;width:34px;height:19px;cursor:pointer;flex-shrink:0}
+.tog input{display:none}
+.tog-t{position:absolute;inset:0;background:var(--bdr);border-radius:10px;transition:background .2s}
+.tog input:checked+.tog-t{background:var(--acc)}
+.tog-k{position:absolute;top:2.5px;left:2.5px;width:14px;height:14px;background:#fff;border-radius:50%;transition:transform .2s;pointer-events:none}
+.tog input:checked~.tog-k{transform:translateX(15px)}
+/* CHECK PILLS */
+.cg{display:flex;flex-wrap:wrap;gap:5px}
+.cp{display:flex;align-items:center;gap:5px;padding:4px 9px;border:1px solid var(--bdr);border-radius:14px;font-size:11px;color:var(--txt3);cursor:pointer;transition:all .15s;user-select:none}
+.cp input{display:none}.cp .dot{width:8px;height:8px;border-radius:2px;border:1px solid var(--bdr);flex-shrink:0;transition:all .15s}
+.cp.on{border-color:var(--acc);color:var(--acc);background:rgba(91,124,247,.08)}.cp.on .dot{background:var(--acc);border-color:var(--acc)}
+/* RADIO PILLS */
+.rp{display:flex;align-items:center;gap:5px;padding:4px 9px;border:1px solid var(--bdr);border-radius:14px;font-size:11px;color:var(--txt3);cursor:pointer;transition:all .15s;user-select:none}
+.rp input{display:none}.rp.on{border-color:var(--acc);color:var(--acc);background:rgba(91,124,247,.08)}
+/* CONDITIONAL */
+.cond{border-left:2px solid var(--bdr);padding-left:12px;margin-top:8px;display:none}.cond.on{display:block}
+/* COLLAPSIBLE */
+.colh{display:flex;align-items:center;justify-content:space-between;padding:7px 9px;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);cursor:pointer;font-size:11px;font-weight:500;color:var(--txt2);user-select:none;margin-bottom:7px;transition:border-color .15s}
+.colh:hover{border-color:var(--txt3)}.colh .arr{font-size:9px;transition:transform .2s}.colh.open .arr{transform:rotate(90deg)}
+.colb{display:none;padding:0 0 6px}.colb.open{display:block}
+/* ARRAY CARDS */
+.acard{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:10px;margin-bottom:8px}
+.acard-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.acard-ttl{font-size:11px;font-weight:600;color:var(--txt2)}
+.brm{padding:3px 7px;border-radius:4px;background:transparent;border:1px solid var(--bdr);color:var(--txt3);cursor:pointer;font-size:11px;transition:all .15s}.brm:hover{border-color:var(--red);color:var(--red)}
+.badd{width:100%;padding:6px;border-radius:var(--r);background:transparent;border:1px dashed var(--bdr);color:var(--txt3);cursor:pointer;font-size:11px;font-family:var(--sans);transition:all .15s;margin-top:4px}.badd:hover{border-color:var(--acc);color:var(--acc)}
+/* PREVIEW */
+.prev{display:flex;flex-direction:column;overflow:hidden;background:#080b12}
+.prev-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:var(--sur);border-bottom:1px solid var(--bdr);flex-shrink:0}
+.prev-ttl{font-size:11px;color:var(--txt2);font-weight:500;display:flex;align-items:center;gap:7px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--grn);animation:p 2s infinite}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
+.prev-scr{overflow-y:auto;flex:1;padding:14px;font-family:var(--mono);font-size:11.5px;line-height:1.75}
+.prev-scr::-webkit-scrollbar{width:3px}.prev-scr::-webkit-scrollbar-thumb{background:var(--bdr)}
+.jk{color:#7ec8f7}.js{color:#a8e6a3}.jn{color:#f7c94a}.jb{color:#f795a0}.jz{color:var(--txt3)}.jbr{color:var(--txt2)}
+.sbar{display:flex;align-items:center;justify-content:space-between;padding:5px 14px;background:var(--sur);border-top:1px solid var(--bdr);font-size:10px;color:var(--txt3);flex-shrink:0}
+.sok{color:var(--grn)}.swrn{color:var(--amb)}
+
+  .tax-bar{display:flex;align-items:center;gap:6px;padding:5px 14px;background:rgba(31,204,158,.07);border-bottom:1px solid rgba(31,204,158,.2);font-size:10px;flex-wrap:wrap}
+  .tax-status{color:var(--txt3);flex:1}
+  .tax-status.loaded{color:var(--grn)}
+  .tax-status.none{color:var(--amb)}
+</style>
+</head>
+<body>
+<div class="tax-bar" id="tax-bar">
+  <span style="font-size:10px;font-weight:600;color:var(--txt3)">TAXONOMY</span>
+  <span class="tax-status none" id="tax-status">Not loaded</span>
+  <button class="btn bg" id="btn-load-tax" style="font-size:10px;padding:2px 8px" onclick="loadTaxonomyFolder()">&#128194; v1_taxonomy</button>
+  <button class="btn bg" id="btn-load-reg" style="font-size:10px;padding:2px 8px" onclick="loadRegistryFolder()">&#128194; v1_registry</button>
+  <button class="btn bg" style="font-size:10px;padding:2px 8px;display:none" onclick="reloadTaxonomy()" id="btn-reload-tax">&#8635; Reload both</button>
+  <button class="btn bg" style="font-size:10px;padding:2px 8px;color:var(--red);display:none" onclick="clearTaxonomy()" id="btn-clear-tax">&#10005; Clear</button>
+  <input type="file" id="tax-file-fallback" accept=".json" multiple style="display:none" onchange="handleTaxFiles(this.files)">
+  <span id="tax-fallback-btn" style="display:none"><button class="btn bg" style="font-size:10px;padding:2px 8px" onclick="document.getElementById('tax-file-fallback').click()">&#128194; Load files (Firefox)</button></span>
+</div>
+
+<div class="hdr">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="logo">CAG</div>
+    <h1>Metadata Builder <em>metadata.json — product + common + audit_report + inheritable</em></h1>
+  </div>
+  <div class="hdr-btns">
+    <input type="file" id="file-load" accept=".json" style="display:none" onchange="handleFileLoad(this)">
+    <button class="btn bg" onclick="document.getElementById('file-load').click()" title="Load an existing metadata.json to edit it">↑ Load JSON</button>
+    <button class="btn bg" onclick="clearAll()">Clear</button>
+    <button class="btn bg" onclick="copyJSON()">Copy JSON</button>
+    <button class="btn bdl" onclick="downloadJSON()">↓ Download metadata.json</button>
+  </div>
+</div>
+
+<div class="layout">
+<div class="form-side">
+  <div class="tabs">
+    <div class="tab on"  onclick="sw('t1',this)">Common <span class="n" id="n-t1">0</span></div>
+    <div class="tab"     onclick="sw('t2',this)">Content <span class="n" id="n-t2">0</span></div>
+    <div class="tab"     onclick="sw('t3',this)">Report <span class="n" id="n-t3">0</span></div>
+    <div class="tab"     onclick="sw('t4',this)">Tabling &amp; PAC <span class="n" id="n-t4">0</span></div>
+    <div class="tab"     onclick="sw('t5',this)">Audit class. <span class="n" id="n-t5">0</span></div>
+    <div class="tab"     onclick="sw('t6',this)">Entities &amp; Impact <span class="n" id="n-t6">0</span></div>
+  </div>
+  <div class="scr">
+
+  <!-- ════════════════ TAB 1: COMMON ════════════════ -->
+  <div class="pnl on" id="t1">
+    <div class="sec">
+      <div class="slbl">Identity <span class="bdr2">common_metadata.schema</span></div>
+      <div class="fld">
+        <div class="lbl">product_id <span class="req">*</span></div>
+        <input class="mono" type="text" id="F_product_id" placeholder="AR01-CAG-2025-STATE-MP" oninput="u()">
+        <div class="hint">Pattern: ^[A-Z0-9][A-Z0-9\-]+[A-Z0-9]$</div>
+      </div>
+      <div class="g3">
+        <div class="fld">
+          <div class="lbl">product_type <span class="req">*</span></div>
+          <select id="F_product_type" onchange="u()">
+            <option value="">— select —</option>
+            <option value="audit_report">audit_report</option>
+            <option value="accounts_report">accounts_report</option>
+            <option value="finance_report">finance_report</option>
+            <option value="study_report">study_report</option>
+            <option value="audit_impact_report">audit_impact_report</option>
+            <option value="compendium">compendium</option>
+            <option value="other">other</option>
+          </select>
+        </div>
+        <div class="fld">
+          <div class="lbl">year <span class="req">*</span></div>
+          <input type="number" id="F_year" placeholder="2025" min="1860" max="2100" oninput="u()">
+        </div>
+        <div class="fld">
+          <div class="lbl">version</div>
+          <input class="mono" type="text" id="F_version" placeholder="1.0" oninput="u()">
+        </div>
+      </div>
+      <div class="g3">
+        <div class="fld"><div class="lbl">published_date</div><input type="date" id="F_published_date" onchange="u()"></div>
+        <div class="fld"><div class="lbl">revision_date</div><input type="date" id="F_revision_date" onchange="u()"></div>
+        <div class="fld"><div class="lbl">archived_date</div><input type="date" id="F_archived_date" onchange="u()"></div>
+      </div>
+      <div class="g2">
+        <div class="fld"><div class="lbl">doi</div><input class="mono" type="text" id="F_doi" placeholder="10.xxxx/xxxxx" oninput="u()"></div>
+        <div class="fld"><div class="lbl">supersedes</div><input class="mono" type="text" id="F_supersedes" placeholder="AR05-CAG-2022-STATE-MP" oninput="u()"></div>
+      </div>
+      <div class="g2">
+        <div class="fld"><div class="lbl">superseded_by</div><input class="mono" type="text" id="F_superseded_by" placeholder="AR07-CAG-2024-STATE-MP" oninput="u()"></div>
+        <div class="fld"><div class="lbl">slug</div><input class="mono" type="text" id="F_slug" placeholder="cag-mp-stamp-duty-2023" oninput="u()"><div class="hint">^[a-z0-9\-]+$</div></div>
+      </div>
+      <div class="fld"><div class="lbl">canonical_url</div><input type="url" id="F_canonical_url" placeholder="https://..." oninput="u()"></div>
+      <div class="fld">
+        <div class="lbl">keywords <span class="bdb">array — press Enter</span></div>
+        <div class="tw" id="tw-keywords" onclick="document.getElementById('ti-keywords').focus()">
+          <input class="ti" id="ti-keywords" placeholder="add keyword…" onkeydown="addTag(event,'keywords')">
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">Language configuration <span class="hint" style="color:var(--grn);letter-spacing:0;text-transform:none;font-size:10px">— drives all multilingual fields</span></div>
+      <div class="g2">
+        <div class="fld">
+          <div class="lbl">default_language <span class="req">*</span></div>
+          <select id="F_default_language" onchange="u()">
+            <option value="en">en — English</option><option value="hi">hi — Hindi</option>
+            <option value="ta">ta — Tamil</option><option value="te">te — Telugu</option>
+            <option value="ur">ur — Urdu</option><option value="kn">kn — Kannada</option>
+            <option value="ml">ml — Malayalam</option><option value="mr">mr — Marathi</option>
+            <option value="gu">gu — Gujarati</option><option value="pa">pa — Punjabi</option>
+            <option value="bn">bn — Bengali</option><option value="or">or — Odia</option>
+          </select>
+        </div>
+        <div class="fld">
+          <div class="lbl">languages <span class="req">*</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px" id="lang-pills"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">Distributions <span class="bdb">distributions[]</span></div>
+      <div id="list-dist"></div>
+      <button class="badd" onclick="addDist()">+ Add distribution</button>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">Related reports <span class="bdb">related_reports[]</span></div>
+      <div id="list-rel"></div>
+      <button class="badd" onclick="addRel()">+ Add related report</button>
+    </div>
+  </div>
+
+  <!-- ════════════════ TAB 2: CONTENT (multilingual) ════════════════ -->
+  <div class="pnl" id="t2">
+    <div class="sec"><div class="slbl">title <span class="req">*</span> <span class="bdb">multilingual</span></div><div id="ml-title"></div></div>
+    <div class="sec"><div class="slbl">subtitle <span class="bdb">multilingual</span></div><div id="ml-subtitle"></div></div>
+    <div class="sec"><div class="slbl">summary <span class="bdb">multilingual — search snippet &amp; embedding</span></div><div id="ml-summary"></div></div>
+    <div class="sec"><div class="slbl">description <span class="bdb">multilingual — extended</span></div><div id="ml-description"></div></div>
+    <div class="sec"><div class="slbl">publisher <span class="bdb">multilingual</span></div><div id="ml-publisher"></div></div>
+    <div class="sec"><div class="slbl">citation <span class="bdb">multilingual</span></div><div id="ml-citation"></div></div>
+  </div>
+
+  <!-- ════════════════ TAB 3: REPORT LEVEL ════════════════ -->
+  <div class="pnl" id="t3">
+    <div class="sec">
+      <div class="slbl">Report number &amp; jurisdiction <span class="bdr2">audit_report_metadata.schema</span></div>
+      <div class="g3">
+        <div class="fld"><div class="lbl">report_number.number <span class="req">*</span></div><input type="number" id="F_rpt_num" placeholder="6" min="1" oninput="u()"></div>
+        <div class="fld"><div class="lbl">report_number.year <span class="req">*</span></div><input type="number" id="F_rpt_yr" placeholder="2023" min="1860" max="2100" oninput="u()"></div>
+        <div class="fld">
+          <div class="lbl">jurisdiction <span class="req">*</span></div>
+          <select id="F_jurisdiction" onchange="onJuris();u()">
+            <option value="">— select —</option>
+            <option value="UNION">UNION</option><option value="STATE">STATE</option>
+            <option value="UT">UT</option><option value="LG">LG</option>
+          </select>
+        </div>
+      </div>
+      <div class="cond" id="cond-state">
+        <div class="g2">
+          <div class="fld">
+            <div class="lbl">state_ut.id <span class="req">*</span></div>
+            <select id="F_state_ut_id" onchange="u()">
+              <option value="">— select —</option>
+              <option value="IN-AP">IN-AP — Andhra Pradesh</option><option value="IN-AR">IN-AR — Arunachal Pradesh</option>
+              <option value="IN-AS">IN-AS — Assam</option><option value="IN-BR">IN-BR — Bihar</option>
+              <option value="IN-CG">IN-CG — Chhattisgarh</option><option value="IN-GA">IN-GA — Goa</option>
+              <option value="IN-GJ">IN-GJ — Gujarat</option><option value="IN-HR">IN-HR — Haryana</option>
+              <option value="IN-HP">IN-HP — Himachal Pradesh</option><option value="IN-JH">IN-JH — Jharkhand</option>
+              <option value="IN-KA">IN-KA — Karnataka</option><option value="IN-KL">IN-KL — Kerala</option>
+              <option value="IN-MP">IN-MP — Madhya Pradesh</option><option value="IN-MH">IN-MH — Maharashtra</option>
+              <option value="IN-MN">IN-MN — Manipur</option><option value="IN-ML">IN-ML — Meghalaya</option>
+              <option value="IN-MZ">IN-MZ — Mizoram</option><option value="IN-NL">IN-NL — Nagaland</option>
+              <option value="IN-OD">IN-OD — Odisha</option><option value="IN-PB">IN-PB — Punjab</option>
+              <option value="IN-RJ">IN-RJ — Rajasthan</option><option value="IN-SK">IN-SK — Sikkim</option>
+              <option value="IN-TN">IN-TN — Tamil Nadu</option><option value="IN-TG">IN-TG — Telangana</option>
+              <option value="IN-TR">IN-TR — Tripura</option><option value="IN-UP">IN-UP — Uttar Pradesh</option>
+              <option value="IN-UK">IN-UK — Uttarakhand</option><option value="IN-WB">IN-WB — West Bengal</option>
+              <option value="IN-AN">IN-AN — Andaman &amp; Nicobar (UT)</option>
+              <option value="IN-CH">IN-CH — Chandigarh (UT)</option>
+              <option value="IN-DL">IN-DL — Delhi (UT w/ legislature)</option>
+              <option value="IN-JK">IN-JK — J&amp;K (UT w/ legislature)</option>
+              <option value="IN-LA">IN-LA — Ladakh (UT)</option>
+              <option value="IN-LD">IN-LD — Lakshadweep (UT)</option>
+              <option value="IN-PY">IN-PY — Puducherry (UT w/ legislature)</option>
+            </select>
+          </div>
+          <div class="fld"><div class="lbl">state_ut.name.en <span class="req">*</span></div><input type="text" id="F_sut_name_en" placeholder="Madhya Pradesh" oninput="u()"></div>
+        </div>
+        <div class="fld"><div class="lbl">state_ut.name.hi</div><input type="text" id="F_sut_name_hi" placeholder="मध्य प्रदेश" oninput="u()"></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">Status &amp; structure</div>
+      <div class="g2">
+        <div class="fld">
+          <div class="lbl">audit_report_status <span class="req">*</span></div>
+          <select id="F_status" onchange="u()">
+            <option value="">— select —</option>
+            <option value="draft">draft</option><option value="submitted_to_government">submitted_to_government</option>
+            <option value="not_to_be_tabled">not_to_be_tabled</option><option value="tabled">tabled</option>
+            <option value="published">published</option><option value="archived">archived</option>
+          </select>
+        </div>
+        <div class="fld"><div class="lbl">date_of_submission_to_government</div><input type="date" id="F_date_sub" onchange="u()"></div>
+      </div>
+      <div class="g2">
+        <div class="fld">
+          <div class="lbl">report_structure</div>
+          <select id="F_rpt_structure" onchange="u()">
+            <option value="">— select —</option>
+            <option value="standalone">standalone — unified audit</option>
+            <option value="collection">collection — omnibus</option>
+          </select>
+        </div>
+        <div class="fld"><div class="lbl">government_context.nodal_ministry</div><input class="mono" type="text" id="F_nodal_ministry" placeholder="GOI-MIN-FINANCE" oninput="u()"><div class="hint">Null for STATE/UT. entity_id from registry</div></div>
+      </div>
+      <div class="fld">
+        <div class="lbl">government_context.nodal_departments <span class="bdb">array — Enter</span></div>
+        <div class="tw" id="tw-nodal_dept" onclick="document.getElementById('ti-nodal_dept').focus()">
+          <input class="ti" id="ti-nodal_dept" placeholder="GOI-DEPT-REVENUE …" onkeydown="addTag(event,'nodal_dept')">
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">Signatory — signed_by</div>
+      <div class="fld">
+        <div class="lbl">name <span class="bdb">multilingual</span></div>
+        <div id="ml-signed_name"></div>
+      </div>
+      <div class="fld">
+        <div class="lbl">designation <span class="bdb">multilingual</span></div>
+        <div id="ml-signed_desig"></div>
+      </div>
+      <div class="g2">
+        <div class="fld">
+          <div class="lbl">date</div>
+          <input type="date" id="F_signed_date" onchange="u()">
+        </div>
+        <div class="fld">
+          <div class="lbl">place <span class="bdb">multilingual</span></div>
+          <div id="ml-signed_place"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">Countersignatory — countersigned_by</div>
+      <div class="fld">
+        <div class="lbl">name <span class="bdb">multilingual</span></div>
+        <div id="ml-cs_name"></div>
+      </div>
+      <div class="fld">
+        <div class="lbl">designation <span class="bdb">multilingual</span></div>
+        <div id="ml-cs_desig"></div>
+      </div>
+      <div class="g2">
+        <div class="fld">
+          <div class="lbl">date</div>
+          <input type="date" id="F_cs_date" onchange="u()">
+        </div>
+        <div class="fld">
+          <div class="lbl">place <span class="bdb">multilingual</span></div>
+          <div id="ml-cs_place"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">Amendment <span class="bdb">optional — only when amending another report</span></div>
+      <div class="g2">
+        <div class="fld">
+          <div class="lbl">amendment_type</div>
+          <select id="F_amendment_type" onchange="u()">
+            <option value="">— none —</option>
+            <option value="corrigendum">corrigendum</option><option value="erratum">erratum</option>
+            <option value="addendum">addendum</option><option value="clarification">clarification</option>
+          </select>
+        </div>
+        <div class="fld"><div class="lbl">amends_report (product_id)</div><input class="mono" type="text" id="F_amends_report" placeholder="AR05-CAG-2022-STATE-MP" oninput="u()"></div>
+      </div>
+      <div class="lbl" style="margin-bottom:4px">amendment_description <span class="bdb">multilingual</span></div>
+      <div id="ml-amendment_desc"></div>
+    </div>
+  </div>
+
+  <!-- ════════════════ TAB 4: TABLING & PAC ════════════════ -->
+  <div class="pnl" id="t4">
+    <div class="sec">
+      <div class="slbl">Tabling</div>
+      <div class="togrow">
+        <span class="toglbl">tabling.applicable — placed before Parliament / State Legislature?</span>
+        <label class="tog"><input type="checkbox" id="F_tabl_appl" onchange="onTabl();u()"><div class="tog-t"></div><div class="tog-k"></div></label>
+      </div>
+      <div class="cond" id="cond-not-tabl">
+        <div class="fld" style="margin-top:10px">
+          <div class="lbl">submitted_to <span class="bdb">entity_id[] — Enter</span></div>
+          <div class="tw" id="tw-submitted_to" onclick="document.getElementById('ti-submitted_to').focus()">
+            <input class="ti" id="ti-submitted_to" placeholder="GOI-MIN-FINANCE …" onkeydown="addTag(event,'submitted_to')">
+          </div>
+        </div>
+        <div class="lbl" style="margin-bottom:4px">reason_not_tabled <span class="bdb">multilingual</span></div>
+        <div id="ml-reason_not_tabled"></div>
+      </div>
+      <div class="cond" id="cond-tabl">
+        <div class="fld" style="margin-top:10px">
+          <div class="lbl">legislature</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <label class="rp" id="rp-parliament"><input type="radio" name="legislature" value="Parliament" onchange="u()"> Parliament</label>
+            <label class="rp" id="rp-state-leg"><input type="radio" name="legislature" value="State Legislature" onchange="u()"> State Legislature</label>
+          </div>
+        </div>
+        <div class="colh" onclick="colToggle('col-lh',this)">lower_house (Lok Sabha / Vidhan Sabha) <span class="arr">▶</span></div>
+        <div class="colb" id="col-lh">
+          <div id="ml-lh_name" style="margin-bottom:8px"></div>
+          <div class="g3">
+            <div class="fld"><div class="lbl">date_of_placing <span class="req">*</span></div><input type="date" id="F_lh_date" onchange="u()"></div>
+            <div class="fld"><div class="lbl">session_name</div><input type="text" id="F_lh_session" placeholder="Budget Session 2025" oninput="u()"></div>
+            <div class="fld"><div class="lbl">session_number</div><input type="text" id="F_lh_sesnum" placeholder="15" oninput="u()"></div>
+          </div>
+        </div>
+        <div class="colh" onclick="colToggle('col-uh',this)">upper_house (Rajya Sabha / Vidhan Parishad) — bicameral only <span class="arr">▶</span></div>
+        <div class="colb" id="col-uh">
+          <div id="ml-uh_name" style="margin-bottom:8px"></div>
+          <div class="g3">
+            <div class="fld"><div class="lbl">date_of_placing</div><input type="date" id="F_uh_date" onchange="u()"></div>
+            <div class="fld"><div class="lbl">session_name</div><input type="text" id="F_uh_session" oninput="u()"></div>
+            <div class="fld"><div class="lbl">session_number</div><input type="text" id="F_uh_sesnum" oninput="u()"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">PAC status — report level</div>
+      <div class="g2">
+        <div class="togrow"><span class="toglbl">selected_for_discussion</span><label class="tog"><input type="checkbox" id="F_pac_sel" onchange="u()"><div class="tog-t"></div><div class="tog-k"></div></label></div>
+        <div class="togrow"><span class="toglbl">discussed</span><label class="tog"><input type="checkbox" id="F_pac_disc" onchange="u()"><div class="tog-t"></div><div class="tog-k"></div></label></div>
+      </div>
+      <div class="g2" style="margin-top:8px">
+        <div class="fld"><div class="lbl">pac_report_reference</div><input type="text" id="F_pac_ref" placeholder="5th Report of PAC (2025-26)" oninput="u()"></div>
+        <div class="fld"><div class="lbl">discussion_date</div><input type="date" id="F_pac_date" onchange="u()"></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">ATN summary — report level</div>
+      <div class="g2">
+        <div class="togrow"><span class="toglbl">atn_received</span><label class="tog"><input type="checkbox" id="F_atn_rec" onchange="u()"><div class="tog-t"></div><div class="tog-k"></div></label></div>
+        <div class="fld"><div class="lbl">atn_date</div><input type="date" id="F_atn_date" onchange="u()"></div>
+      </div>
+      <div class="g2" style="margin-top:8px">
+        <div class="fld"><div class="lbl">pending_paragraphs</div><input type="number" id="F_atn_pend" placeholder="0" min="0" oninput="u()"></div>
+        <div class="fld"><div class="lbl">settled_paragraphs</div><input type="number" id="F_atn_sett" placeholder="0" min="0" oninput="u()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ TAB 5: AUDIT CLASSIFICATION ════════════════ -->
+  <div class="pnl" id="t5">
+    <div class="sec">
+      <div class="slbl">audit_type <span class="bdg">OVERRIDE</span> <span class="bdr2">inheritable_audit_metadata.schema</span></div>
+      <div id="cg-audit_type-dyn"></div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">report_sector <span class="bdg">OVERRIDE</span></div>
+      <div id="cg-report_sector-dyn"></div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">audit_period <span class="bdg">OVERRIDE</span></div>
+      <div class="g2">
+        <div class="fld"><div class="lbl">start_year</div><input type="number" id="F_ap_start" placeholder="2018" min="1860" max="2100" oninput="u()"></div>
+        <div class="fld"><div class="lbl">end_year</div><input type="number" id="F_ap_end" placeholder="2023" min="1860" max="2100" oninput="u()"></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">dpc_act_sections <span class="bdg">OVERRIDE</span></div>
+      <div class="cg" id="cg-dpc">
+        <label class="cp"><input type="checkbox" value="S13" onchange="chkArr('dpc_sections',this)"><div class="dot"></div>S13 — Expenditure</label>
+        <label class="cp"><input type="checkbox" value="S14" onchange="chkArr('dpc_sections',this)"><div class="dot"></div>S14 — Grant bodies</label>
+        <label class="cp"><input type="checkbox" value="S15" onchange="chkArr('dpc_sections',this)"><div class="dot"></div>S15 — Grants/loans</label>
+        <label class="cp"><input type="checkbox" value="S16" onchange="chkArr('dpc_sections',this)"><div class="dot"></div>S16 — Receipts</label>
+        <label class="cp"><input type="checkbox" value="S17" onchange="chkArr('dpc_sections',this)"><div class="dot"></div>S17 — Stores/stock</label>
+        <label class="cp"><input type="checkbox" value="S18" onchange="chkArr('dpc_sections',this)"><div class="dot"></div>S18 — Access rights</label>
+        <label class="cp"><input type="checkbox" value="S19" onchange="chkArr('dpc_sections',this)"><div class="dot"></div>S19 — Govt companies</label>
+        <label class="cp"><input type="checkbox" value="S19A" onchange="chkArr('dpc_sections',this)"><div class="dot"></div>S19A — Corporations</label>
+        <label class="cp"><input type="checkbox" value="S20" onchange="chkArr('dpc_sections',this)"><div class="dot"></div>S20 — Discretionary</label>
+        <label class="cp"><input type="checkbox" value="S21" onchange="chkArr('dpc_sections',this)"><div class="dot"></div>S21 — Entrusted receipts</label>
+        <label class="cp"><input type="checkbox" value="S22" onchange="chkArr('dpc_sections',this)"><div class="dot"></div>S22 — State request</label>
+        <label class="cp"><input type="checkbox" value="S23" onchange="chkArr('dpc_sections',this)"><div class="dot"></div>S23 — Dispense audit</label>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">topics <span class="bdb">ADDITIVE — report &amp; chapter level</span></div>
+      <div id="topics-dyn-wrap"></div>
+      <div class="hint" id="topics-hint">Load taxonomy for typeahead (257 topics)</div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">schemes <span class="bdb">ADDITIVE</span></div>
+      <div class="fld">
+        <div class="lbl">primary_schemes</div>
+        <div id="pschemes-dyn-wrap"></div>
+      </div>
+      <div class="fld">
+        <div class="lbl">other_schemes</div>
+        <div id="oschemes-dyn-wrap"></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">examination_coverage <span class="bdg">OVERRIDE</span></div>
+      <div class="g2">
+        <div class="fld">
+          <div class="lbl">coverage_type</div>
+          <select id="F_cov_type" onchange="onCov();u()">
+            <option value="">— select —</option>
+            <option value="single_state">single_state</option>
+            <option value="selected_states">selected_states</option>
+            <option value="national">national</option>
+            <option value="multi_state_comparative">multi_state_comparative</option>
+            <option value="headquarter_only">headquarter_only</option>
+          </select>
+        </div>
+        <div class="fld">
+          <div class="lbl">selection_basis</div>
+          <select id="F_sel_basis" onchange="u()">
+            <option value="">— select —</option>
+            <option value="test_check">test_check</option><option value="risk_based">risk_based</option>
+            <option value="all_units">all_units</option><option value="purposive">purposive</option>
+            <option value="random">random</option>
+          </select>
+        </div>
+      </div>
+      <div class="cond" id="cond-cov-states">
+        <div class="fld">
+          <div class="lbl">state_ut_ids <span class="bdb">Enter</span></div>
+          <div class="tw" id="tw-cov_states" onclick="document.getElementById('ti-cov_states').focus()">
+            <input class="ti" id="ti-cov_states" placeholder="IN-MP IN-GJ — Enter" onkeydown="addTag(event,'cov_states')">
+          </div>
+        </div>
+      </div>
+      <div class="g4">
+        <div class="fld"><div class="lbl">states_examined</div><input type="number" id="F_samp_st" placeholder="0" min="0" oninput="u()"></div>
+        <div class="fld"><div class="lbl">districts_examined</div><input type="number" id="F_samp_dist" placeholder="0" min="0" oninput="u()"></div>
+        <div class="fld"><div class="lbl">units_examined</div><input type="number" id="F_samp_units" placeholder="0" min="0" oninput="u()"></div>
+        <div class="fld"><div class="lbl">total_universe</div><input type="number" id="F_samp_univ" placeholder="0" min="0" oninput="u()"></div>
+      </div>
+      <div class="lbl" style="margin-top:4px;margin-bottom:4px">coverage_note <span class="bdb">multilingual</span></div>
+      <div id="ml-cov_note"></div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">regions <span class="bdb">ADDITIVE</span></div>
+      <div class="fld">
+        <div class="lbl">states_uts</div>
+        <div id="states-dyn-wrap"></div>
+        <div class="hint" id="states-hint">Load taxonomy for searchable list (37 states/UTs)</div>
+      </div>
+      <div class="g2">
+        <div class="fld">
+          <div class="lbl">ulbs</div>
+          <div class="tw" id="tw-ulbs" onclick="document.getElementById('ti-ulbs').focus()">
+            <input class="ti" id="ti-ulbs" placeholder="ULB IDs — Enter" onkeydown="addTag(event,'ulbs')">
+          </div>
+        </div>
+        <div class="fld">
+          <div class="lbl">pris</div>
+          <div class="tw" id="tw-pris" onclick="document.getElementById('ti-pris').focus()">
+            <input class="ti" id="ti-pris" placeholder="PRI IDs — Enter" onkeydown="addTag(event,'pris')">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">audit_findings_categories <span class="bdb">ADDITIVE</span></div>
+      <div id="findings-dyn-wrap"></div>
+      <div class="hint" id="findings-hint">Load taxonomy for typeahead (470 categories)</div>
+    </div>
+  </div>
+
+  <!-- ════════════════ TAB 6: ENTITIES & IMPACT ════════════════ -->
+  <div class="pnl" id="t6">
+    <div class="sec">
+      <div class="slbl">main_audited_entities <span class="bdb">ADDITIVE — report, chapter, section</span></div>
+      <div class="hint" style="margin-bottom:10px">Principal audited entities — ministry + department + autonomous_bodies + other_bodies (entity_ids from registry)</div>
+      <div id="list-main_ent"></div>
+      <button class="badd" onclick="addEnt('main_ent')">+ Add main audited entity</button>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">other_audited_entities <span class="bdg">OVERRIDE — entities examined incidentally</span></div>
+      <div id="list-other_ent"></div>
+      <button class="badd" onclick="addEnt('other_ent')">+ Add other audited entity</button>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">referenced_entities <span class="bdb">ADDITIVE — cited but not audited</span></div>
+      <div class="tw" id="tw-ref_ent" onclick="document.getElementById('ti-ref_ent').focus()">
+        <input class="ti" id="ti-ref_ent" placeholder="GOI-MIN-FINANCE — Enter" onkeydown="addTag(event,'ref_ent')">
+      </div>
+      <div class="hint">entity_ids from registry_entities.json</div>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">impact <span class="bdb">ADDITIVE</span></div>
+      <div id="list-impact"></div>
+      <button class="badd" onclick="addImpact()">+ Add impact record</button>
+    </div>
+
+    <div class="sec">
+      <div class="slbl">unit_structure <span class="bda">NOT INHERITED — set per unit when needed</span></div>
+      <select id="F_unit_structure" onchange="u()">
+        <option value="">— not set —</option>
+        <option value="standalone">standalone — independently searchable</option>
+        <option value="collective">collective — only meaningful in parent context</option>
+      </select>
+    </div>
+  </div>
+
+  </div><!-- /scr -->
+</div><!-- /form-side -->
+
+<!-- ════════════════ PREVIEW ════════════════ -->
+<div class="prev">
+  <div class="prev-hdr">
+    <div class="prev-ttl"><span class="dot"></span>metadata.json — live preview</div>
+    <button class="btn bg" id="copybtn" onclick="copyJSON()" style="font-size:10px;padding:4px 9px">Copy</button>
+  </div>
+  <div class="prev-scr" id="preview"></div>
+  <div class="sbar">
+    <span id="smsg" class="sok">Ready</span>
+    <span id="schars">0 chars</span>
+  </div>
+</div>
+</div><!-- /layout -->
+
+<script>
+// ══════════ STATE ══════════
+var LANGS = ['en'];  // selected languages
+
+var SEL_UNIT = null;  // stub — metadata builder has no unit selection
+var SEL_BLOCK = null; // stub — metadata builder has no block selection
+
+// tag arrays
+var TAGS = {
+  keywords:[], nodal_dept:[], submitted_to:[], topics:[], findings:[],
+  primary_schemes:[], other_schemes:[], states_uts:[], ulbs:[], pris:[],
+  cov_states:[], ref_ent:[], findings:[]
+};
+
+// checkbox arrays
+var ARRS = { audit_type:[], report_sector:[], dpc_sections:[] };
+
+// multilingual values  ML[field][lang] = string
+var ML = {};
+
+// dynamic arrays
+var ENT = { main_ent:[], other_ent:[] };
+var IMPACTS = [];
+var DISTS = [];
+var RELS = [];
+
+// ══════════ HELPERS ══════════
+function gv(id){ var e=document.getElementById(id); return e?(e.value||'').trim():''; }
+function gn(id){ var v=parseFloat(document.getElementById(id).value); return isNaN(v)?null:v; }
+function gc(id){ var e=document.getElementById(id); return e?e.checked:false; }
+function mlGet(field){ return ML[field]||{}; }
+function mlSet(field,lang,val){ if(!ML[field]) ML[field]={}; ML[field][lang]=val; }
+function mlObj(field){
+  var o=mlGet(field), r={};
+  LANGS.forEach(function(l){ if(o[l]&&o[l].trim()) r[l]=o[l]; });
+  return Object.keys(r).length?r:null;
+}
+
+// ══════════ LANGUAGE MANAGEMENT ══════════
+var ALL_LANGS=[['en','English'],['hi','Hindi'],['ta','Tamil'],['te','Telugu'],
+  ['ur','Urdu'],['kn','Kannada'],['ml','Malayalam'],['mr','Marathi'],
+  ['gu','Gujarati'],['pa','Punjabi'],['bn','Bengali'],['or','Odia']];
+
+function initLangPills(){
+  var wrap=document.getElementById('lang-pills');
+  wrap.innerHTML=ALL_LANGS.map(function(l){
+    var code=l[0],name=l[1],sel=LANGS.indexOf(code)>=0;
+    return '<label class="cp'+(sel?' on':'')+'" id="lp-'+code+'">'
+      +'<input type="checkbox" value="'+code+'" '+(sel?'checked':'')
+      +' onchange="toggleLang(\''+code+'\',this.checked)">'
+      +'<div class="dot"></div>'+code+' — '+name+'</label>';
+  }).join('');
+}
+
+function toggleLang(code,add){
+  if(add){ if(LANGS.indexOf(code)<0) LANGS.push(code); }
+  else LANGS=LANGS.filter(function(l){return l!==code;});
+  var p=document.getElementById('lp-'+code);
+  if(p) p.classList.toggle('on',add);
+  renderAllML();
+  renderImpacts();
+  u();
+}
+
+// ══════════ MULTILINGUAL RENDERING ══════════
+// config: {id, label, textarea, hint}
+var ML_DEFS = [
+  {id:'title',label:'title *',textarea:false},
+  {id:'subtitle',label:'subtitle',textarea:false},
+  {id:'summary',label:'summary',textarea:true},
+  {id:'description',label:'description',textarea:true},
+  {id:'publisher',label:'publisher',textarea:false},
+  {id:'citation',label:'citation',textarea:false},
+  {id:'reason_not_tabled',label:'reason_not_tabled',textarea:true},
+  {id:'amendment_desc',label:'amendment_description',textarea:false},
+  {id:'cov_note',label:'coverage_note',textarea:false},
+  {id:'signed_name',label:'signed_by.name',textarea:false},
+  {id:'signed_desig',label:'signed_by.designation',textarea:false},
+  {id:'signed_place',label:'signed_by.place',textarea:false},
+  {id:'cs_name',label:'countersigned_by.name',textarea:false},
+  {id:'cs_desig',label:'countersigned_by.designation',textarea:false},
+  {id:'cs_place',label:'countersigned_by.place',textarea:false},
+  {id:'lh_name',label:'lower_house.name',textarea:false},
+  {id:'uh_name',label:'upper_house.name',textarea:false}
+];
+
+function renderML(cfg){
+  var el=document.getElementById('ml-'+cfg.id);
+  if(!el) return;
+  var o=mlGet(cfg.id);
+  el.innerHTML=LANGS.map(function(lang){
+    var val=(o[lang]||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+    var inp=cfg.textarea
+      ? '<textarea oninput="mlSet(\''+cfg.id+'\',\''+lang+'\',this.value);u()" rows="2">'+val+'</textarea>'
+      : '<input type="text" value="'+val+'" oninput="mlSet(\''+cfg.id+'\',\''+lang+'\',this.value);u()">';
+    return '<div class="ml-row"><div class="ml-lbl">'+lang+'</div>'+inp+'</div>';
+  }).join('');
+}
+
+function renderAllML(){
+  ML_DEFS.forEach(renderML);
+}
+
+// ══════════ TAG INPUTS ══════════
+function addTag(e,key){
+  if(e.key!=='Enter') return;
+  var val=e.target.value.trim();
+  if(!val||TAGS[key].indexOf(val)>=0){e.target.value='';return;}
+  TAGS[key].push(val);
+  e.target.value='';
+  renderTag(key);
+  u();
+}
+function removeTag(key,idx){
+  TAGS[key].splice(idx,1);
+  renderTag(key);u();
+}
+function renderTag(key){
+  var wrapId='tw-'+key, inputId='ti-'+key;
+  var wrap=document.getElementById(wrapId);
+  if(!wrap) return;
+  var input=document.getElementById(inputId);
+  // remove existing tags only
+  var existing=wrap.querySelectorAll('.tag');
+  for(var i=0;i<existing.length;i++) existing[i].remove();
+  TAGS[key].forEach(function(val,idx){
+    var t=document.createElement('span');
+    t.className='tag';
+    t.innerHTML=val+'<span class="tag-x" onclick="removeTag(\''+key+'\','+idx+')">×</span>';
+    wrap.insertBefore(t,input);
+  });
+}
+
+// ══════════ CHECKBOX ARRAYS ══════════
+function chkArr(key,el){
+  el.closest('.cp').classList.toggle('on',el.checked);
+  if(el.checked){ if(ARRS[key].indexOf(el.value)<0) ARRS[key].push(el.value); }
+  else ARRS[key]=ARRS[key].filter(function(v){return v!==el.value;});
+  u();
+}
+
+// ══════════ CONDITIONALS ══════════
+function onJuris(){
+  var j=gv('F_jurisdiction');
+  document.getElementById('cond-state').classList.toggle('on',j==='STATE'||j==='UT'||j==='LG');
+}
+function onTabl(){
+  var a=gc('F_tabl_appl');
+  document.getElementById('cond-not-tabl').classList.toggle('on',!a);
+  document.getElementById('cond-tabl').classList.toggle('on',a);
+}
+function onCov(){
+  var ct=gv('F_cov_type');
+  document.getElementById('cond-cov-states').classList.toggle('on',ct==='selected_states'||ct==='multi_state_comparative');
+}
+function colToggle(id,hdr){
+  var b=document.getElementById(id);
+  b.classList.toggle('open');
+  hdr.classList.toggle('open',b.classList.contains('open'));
+}
+
+// ══════════ TAB SWITCHING ══════════
+function sw(id,el){
+  document.querySelectorAll('.pnl').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+  el.classList.add('on');
+}
+
+// ══════════ ENTITY ARRAYS ══════════
+function addEnt(key){
+  ENT[key].push({ministry:'',dept:'',auto:[],other:[]});
+  renderEnts(key);u();
+}
+function removeEnt(key,i){
+  ENT[key].splice(i,1);renderEnts(key);u();
+}
+function renderEnts(key){
+  var el=document.getElementById('list-'+key);
+  if(!el) return;
+  el.innerHTML=ENT[key].map(function(item,i){
+    return '<div class="acard">'
+      +'<div class="acard-hdr"><span class="acard-ttl">Entity '+(i+1)+'</span>'
+      +'<button class="brm" onclick="removeEnt(\''+key+'\','+i+')">Remove</button></div>'
+      +'<div class="g2">'
+      +'<div class="fld"><div class="lbl">ministry (entity_id)</div>'
+      +'<input class="mono" type="text" value="'+esc(item.ministry)+'" placeholder="GOI-MIN-FINANCE or null for State"'
+      +' oninput="ENT[\''+key+'\']['+i+'].ministry=this.value;u()"></div>'
+      +'<div class="fld"><div class="lbl">department (entity_id)</div>'
+      +'<input class="mono" type="text" value="'+esc(item.dept)+'" placeholder="GOI-DEPT-REVENUE"'
+      +' oninput="ENT[\''+key+'\']['+i+'].dept=this.value;u()"></div>'
+      +'</div><div class="g2">'
+      +'<div class="fld"><div class="lbl">autonomous_bodies <span class="bdb">space-separated</span></div>'
+      +'<input class="mono" type="text" value="'+esc(item.auto.join(' '))+'" placeholder="GOI-PSU-ONGC …"'
+      +' oninput="ENT[\''+key+'\']['+i+'].auto=this.value.trim().split(/\\s+/).filter(Boolean);u()"></div>'
+      +'<div class="fld"><div class="lbl">other_bodies</div>'
+      +'<input class="mono" type="text" value="'+esc(item.other.join(' '))+'" placeholder="ADVB-NITI-AAYOG …"'
+      +' oninput="ENT[\''+key+'\']['+i+'].other=this.value.trim().split(/\\s+/).filter(Boolean);u()"></div>'
+      +'</div></div>';
+  }).join('');
+}
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
+// ══════════ IMPACT ARRAYS ══════════
+function addImpact(){
+  var imp={type:'',amount:'',unit:'',currency:'',approx:false,period:''};
+  LANGS.forEach(function(l){imp['desc_'+l]='';});
+  IMPACTS.push(imp);
+  renderImpacts();u();
+}
+function removeImpact(i){IMPACTS.splice(i,1);renderImpacts();u();}
+function renderImpacts(){
+  var el=document.getElementById('list-impact');
+  if(!el) return;
+  var ITYPES=['financial','social','environmental','regulatory','health','infrastructure','governance','reputational','other'];
+  el.innerHTML=IMPACTS.map(function(item,i){
+    var descRows=LANGS.map(function(lang){
+      var v=(item['desc_'+lang]||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+      return '<div class="ml-row"><div class="ml-lbl">'+lang+'</div>'
+        +'<textarea rows="1" oninput="IMPACTS['+i+'][\'desc_\'+\''+lang+'\']=this.value;u()">'+v+'</textarea></div>';
+    }).join('');
+    var opts=ITYPES.map(function(t){return '<option value="'+t+'"'+(item.type===t?' selected':'')+'>'+t+'</option>';}).join('');
+    return '<div class="acard">'
+      +'<div class="acard-hdr"><span class="acard-ttl">Impact '+(i+1)+' '+(item.type?'— '+item.type:'')+'</span>'
+      +'<button class="brm" onclick="removeImpact('+i+')">Remove</button></div>'
+      +'<div class="g2">'
+      +'<div class="fld"><div class="lbl">impact_type *</div>'
+      +'<select onchange="IMPACTS['+i+'].type=this.value;u()"><option value="">—</option>'+opts+'</select></div>'
+      +'<div class="fld"><div class="lbl">period</div>'
+      +'<input type="text" value="'+esc(item.period)+'" placeholder="2020-23" oninput="IMPACTS['+i+'].period=this.value;u()"></div>'
+      +'</div>'
+      +'<div class="lbl" style="margin-bottom:4px">description * <span class="bdb">multilingual</span></div>'
+      +descRows
+      +'<div class="g3" style="margin-top:8px">'
+      +'<div class="fld"><div class="lbl">amount</div><input type="number" value="'+esc(item.amount)+'" oninput="IMPACTS['+i+'].amount=this.value;u()"></div>'
+      +'<div class="fld"><div class="lbl">unit</div><input type="text" value="'+esc(item.unit)+'" placeholder="₹ in crore" oninput="IMPACTS['+i+'].unit=this.value;u()"></div>'
+      +'<div class="fld"><div class="lbl">currency (ISO 4217)</div><input type="text" value="'+esc(item.currency)+'" placeholder="INR" maxlength="3" oninput="IMPACTS['+i+'].currency=this.value.toUpperCase();u()"></div>'
+      +'</div>'
+      +'<div class="togrow" style="margin-top:8px"><span class="toglbl">approximate</span>'
+      +'<label class="tog"><input type="checkbox"'+(item.approx?' checked':'')+' onchange="IMPACTS['+i+'].approx=this.checked;u()"><div class="tog-t"></div><div class="tog-k"></div></label></div>'
+      +'</div>';
+  }).join('');
+}
+
+// ══════════ DISTRIBUTIONS ══════════
+function addDist(){
+  DISTS.push({fmt:'',lang:'en',url:'',size:'',chk:'',algo:'sha256'});
+  renderDists();u();
+}
+function removeDist(i){DISTS.splice(i,1);renderDists();u();}
+function renderDists(){
+  var el=document.getElementById('list-dist'); if(!el) return;
+  var FMTS=['pdf','epub','html','docx','odt'];
+  el.innerHTML=DISTS.map(function(d,i){
+    var fopts=FMTS.map(function(f){return '<option value="'+f+'"'+(d.fmt===f?' selected':'')+'>'+f+'</option>';}).join('');
+    return '<div class="acard">'
+      +'<div class="acard-hdr"><span class="acard-ttl">Distribution '+(i+1)+(d.fmt?' — '+d.fmt+'/'+d.lang:'')+'</span>'
+      +'<button class="brm" onclick="removeDist('+i+')">Remove</button></div>'
+      +'<div class="g2">'
+      +'<div class="fld"><div class="lbl">format *</div><select onchange="DISTS['+i+'].fmt=this.value;u()"><option value="">—</option>'+fopts+'</select></div>'
+      +'<div class="fld"><div class="lbl">language *</div><input type="text" value="'+esc(d.lang)+'" placeholder="en" oninput="DISTS['+i+'].lang=this.value;u()"></div>'
+      +'</div>'
+      +'<div class="fld"><div class="lbl">url *</div><input type="url" value="'+esc(d.url)+'" placeholder="https://..." oninput="DISTS['+i+'].url=this.value;u()"></div>'
+      +'<div class="g3">'
+      +'<div class="fld"><div class="lbl">size_mb</div><input type="number" value="'+esc(d.size)+'" oninput="DISTS['+i+'].size=this.value;u()"></div>'
+      +'<div class="fld"><div class="lbl">checksum</div><input class="mono" type="text" value="'+esc(d.chk)+'" placeholder="64 hex chars" oninput="DISTS['+i+'].chk=this.value;u()"></div>'
+      +'<div class="fld"><div class="lbl">algorithm</div><select onchange="DISTS['+i+'].algo=this.value;u()">'
+      +'<option value="sha256"'+(d.algo==='sha256'?' selected':'')+'>sha256</option>'
+      +'<option value="sha512"'+(d.algo==='sha512'?' selected':'')+'>sha512</option>'
+      +'<option value="md5"'+(d.algo==='md5'?' selected':'')+'>md5</option>'
+      +'</select></div></div></div>';
+  }).join('');
+}
+
+// ══════════ RELATED REPORTS ══════════
+function addRel(){
+  RELS.push({pid:'',rel:'',label:''});
+  renderRels();u();
+}
+function removeRel(i){RELS.splice(i,1);renderRels();u();}
+function renderRels(){
+  var el=document.getElementById('list-rel'); if(!el) return;
+  var RTYPES=['same_entity','same_scheme','same_sector','prior_year','follow_up','companion'];
+  el.innerHTML=RELS.map(function(r,i){
+    var ropts=RTYPES.map(function(t){return '<option value="'+t+'"'+(r.rel===t?' selected':'')+'>'+t+'</option>';}).join('');
+    return '<div class="acard">'
+      +'<div class="acard-hdr"><span class="acard-ttl">Related report '+(i+1)+'</span>'
+      +'<button class="brm" onclick="removeRel('+i+')">Remove</button></div>'
+      +'<div class="g2">'
+      +'<div class="fld"><div class="lbl">product_id *</div><input class="mono" type="text" value="'+esc(r.pid)+'" oninput="RELS['+i+'].pid=this.value;u()"></div>'
+      +'<div class="fld"><div class="lbl">relationship_type *</div><select onchange="RELS['+i+'].rel=this.value;u()"><option value="">—</option>'+ropts+'</select></div>'
+      +'</div>'
+      +'<div class="fld"><div class="lbl">label (en)</div><input type="text" value="'+esc(r.label)+'" oninput="RELS['+i+'].label=this.value;u()"></div>'
+      +'</div>';
+  }).join('');
+}
+
+// ══════════ BUILD JSON ══════════
+function buildJSON(){
+  // COMMON
+  var com={};
+  if(gv('F_product_id')) com.product_id=gv('F_product_id');
+  if(gv('F_product_type')) com.product_type=gv('F_product_type');
+  if(gn('F_year')!==null) com.year=gn('F_year');
+  if(gv('F_version')) com.version=gv('F_version');
+  if(gv('F_published_date')) com.published_date=gv('F_published_date');
+  if(gv('F_revision_date')) com.revision_date=gv('F_revision_date');
+  if(gv('F_archived_date')) com.archived_date=gv('F_archived_date');
+  if(gv('F_doi')) com.doi=gv('F_doi');
+  if(LANGS.length) com.languages=LANGS.slice();
+  if(gv('F_default_language')) com.default_language=gv('F_default_language');
+  var t=mlObj('title'); if(t) com.title=t;
+  var sub=mlObj('subtitle'); if(sub) com.subtitle=sub;
+  var sum=mlObj('summary'); if(sum) com.summary=sum;
+  var dsc=mlObj('description'); if(dsc) com.description=dsc;
+  var pub=mlObj('publisher'); if(pub) com.publisher=pub;
+  var cit=mlObj('citation'); if(cit) com.citation=cit;
+  if(gv('F_slug')) com.slug=gv('F_slug');
+  if(gv('F_canonical_url')) com.canonical_url=gv('F_canonical_url');
+  if(gv('F_supersedes')) com.supersedes=gv('F_supersedes');
+  if(gv('F_superseded_by')) com.superseded_by=gv('F_superseded_by');
+  if(TAGS.keywords.length) com.keywords=TAGS.keywords.slice();
+  // distributions
+  var validDists=DISTS.filter(function(d){return d.fmt&&d.url;});
+  if(validDists.length) com.distributions=validDists.map(function(d){
+    var r={format:d.fmt,language:d.lang,url:d.url};
+    if(d.size) r.size_mb=parseFloat(d.size);
+    if(d.chk){r.checksum=d.chk;r.checksum_algorithm=d.algo||'sha256';}
+    return r;
+  });
+  // related reports
+  var validRels=RELS.filter(function(r){return r.pid&&r.rel;});
+  if(validRels.length) com.related_reports=validRels.map(function(r){
+    var o={product_id:r.pid,relationship_type:r.rel};
+    if(r.label) o.label={en:r.label};
+    return o;
+  });
+
+  // INHERITABLE
+  var inh={};
+  if(ARRS.audit_type.length) inh.audit_type=ARRS.audit_type.slice();
+  if(ARRS.report_sector.length) inh.report_sector=ARRS.report_sector.slice();
+  var aps=gn('F_ap_start'), ape=gn('F_ap_end');
+  if(aps!==null||ape!==null){
+    inh.audit_period={};
+    if(aps!==null) inh.audit_period.start_year=aps;
+    if(ape!==null) inh.audit_period.end_year=ape;
+  }
+  var reg={};
+  if(TAGS.states_uts.length) reg.states_uts=TAGS.states_uts.slice();
+  if(TAGS.ulbs.length) reg.ulbs=TAGS.ulbs.slice();
+  if(TAGS.pris.length) reg.pris=TAGS.pris.slice();
+  if(Object.keys(reg).length) inh.regions=reg;
+  if(TAGS.topics.length) inh.topics=TAGS.topics.slice();
+  if(TAGS.findings.length) inh.audit_findings_categories=TAGS.findings.slice();
+  if(TAGS.primary_schemes.length) inh.primary_schemes=TAGS.primary_schemes.slice();
+  if(TAGS.other_schemes.length) inh.other_schemes=TAGS.other_schemes.slice();
+  // main_audited_entities
+  if(ENT.main_ent.length) inh.main_audited_entities=ENT.main_ent.map(function(e){
+    return {ministry:e.ministry||null,department:e.dept||null,autonomous_bodies:e.auto||[],other_bodies:e.other||[]};
+  });
+  if(ENT.other_ent.length) inh.other_audited_entities=ENT.other_ent.map(function(e){
+    return {ministry:e.ministry||null,department:e.dept||null,autonomous_bodies:e.auto||[],other_bodies:e.other||[]};
+  });
+  if(TAGS.ref_ent.length) inh.referenced_entities=TAGS.ref_ent.slice();
+  // impact
+  var validImp=IMPACTS.filter(function(i){return i.type;});
+  if(validImp.length) inh.impact=validImp.map(function(i){
+    var desc={};
+    LANGS.forEach(function(l){if(i['desc_'+l]&&i['desc_'+l].trim()) desc[l]=i['desc_'+l];});
+    var r={impact_type:i.type,description:desc};
+    if(i.amount!==''&&i.amount!==null&&i.amount!==undefined) r.amount=parseFloat(i.amount);
+    if(i.unit) r.unit=i.unit;
+    if(i.currency) r.currency=i.currency;
+    if(i.approx) r.approximate=true;
+    if(i.period) r.period=i.period;
+    return r;
+  });
+  // examination_coverage
+  if(gv('F_cov_type')){
+    var cov={coverage_type:gv('F_cov_type')};
+    if(gv('F_sel_basis')) cov.selection_basis=gv('F_sel_basis');
+    if(TAGS.cov_states.length) cov.state_ut_ids=TAGS.cov_states.slice();
+    var ss={};
+    var sv2=gn('F_samp_st'),sd=gn('F_samp_dist'),su2=gn('F_samp_units'),suv=gn('F_samp_univ');
+    if(sv2!==null) ss.states_examined=sv2;
+    if(sd!==null) ss.districts_examined=sd;
+    if(su2!==null) ss.units_examined=su2;
+    if(suv!==null) ss.total_universe=suv;
+    if(Object.keys(ss).length) cov.sample_size=ss;
+    var cn=mlObj('cov_note'); if(cn) cov.coverage_note=cn;
+    inh.examination_coverage=cov;
+  }
+  if(ARRS.dpc_sections.length) inh.dpc_act_sections=ARRS.dpc_sections.slice();
+  if(gv('F_unit_structure')) inh.unit_structure=gv('F_unit_structure');
+
+  // REPORT LEVEL
+  var rl={};
+  var rn=gn('F_rpt_num'), ry=gn('F_rpt_yr');
+  if(rn!==null&&ry!==null) rl.report_number={number:rn,year:ry};
+  if(gv('F_jurisdiction')) rl.jurisdiction=gv('F_jurisdiction');
+  if(gv('F_status')) rl.audit_report_status=gv('F_status');
+  if(gv('F_date_sub')) rl.date_of_submission_to_government=gv('F_date_sub');
+  // state_ut
+  if(gv('F_state_ut_id')){
+    var sut={id:gv('F_state_ut_id')};
+    if(gv('F_sut_name_en')){sut.name={en:gv('F_sut_name_en')};if(gv('F_sut_name_hi'))sut.name.hi=gv('F_sut_name_hi');}
+    rl.state_ut=sut;
+  }
+  // tabling
+  var tappl=gc('F_tabl_appl');
+  var tab={applicable:tappl};
+  if(tappl){
+    var radios=document.querySelectorAll('input[name="legislature"]');
+    var selRadio=null;
+    for(var ri=0;ri<radios.length;ri++){if(radios[ri].checked){selRadio=radios[ri].value;break;}}
+    if(selRadio) tab.legislature=selRadio;
+    var lhName=mlObj('lh_name'), lhDate=gv('F_lh_date');
+    if(lhName||lhDate){
+      tab.lower_house={};
+      if(lhName) tab.lower_house.name=lhName;
+      if(lhDate) tab.lower_house.date_of_placing=lhDate;
+      if(gv('F_lh_session')) tab.lower_house.session={en:gv('F_lh_session')};
+      if(gv('F_lh_sesnum')) tab.lower_house.session_number=gv('F_lh_sesnum');
+    }
+    var uhName=mlObj('uh_name'), uhDate=gv('F_uh_date');
+    if(uhName||uhDate){
+      tab.upper_house={};
+      if(uhName) tab.upper_house.name=uhName;
+      if(uhDate) tab.upper_house.date_of_placing=uhDate;
+      if(gv('F_uh_session')) tab.upper_house.session={en:gv('F_uh_session')};
+      if(gv('F_uh_sesnum')) tab.upper_house.session_number=gv('F_uh_sesnum');
+    }
+  } else {
+    if(TAGS.submitted_to.length) tab.submitted_to=TAGS.submitted_to.slice();
+    var rnt=mlObj('reason_not_tabled'); if(rnt) tab.reason_not_tabled=rnt;
+  }
+  rl.tabling=tab;
+  // signed_by
+  var sn=mlObj('signed_name'), sd2=mlObj('signed_desig'), sp=mlObj('signed_place');
+  if(sn||sd2){
+    rl.signed_by={};
+    if(sn) rl.signed_by.name=sn;
+    if(sd2) rl.signed_by.designation=sd2;
+    if(gv('F_signed_date')) rl.signed_by.date=gv('F_signed_date');
+    if(sp) rl.signed_by.place=sp;
+  }
+  // countersigned_by
+  var cn2=mlObj('cs_name'), cd=mlObj('cs_desig'), cp2=mlObj('cs_place');
+  if(cn2||cd){
+    rl.countersigned_by={};
+    if(cn2) rl.countersigned_by.name=cn2;
+    if(cd) rl.countersigned_by.designation=cd;
+    if(gv('F_cs_date')) rl.countersigned_by.date=gv('F_cs_date');
+    if(cp2) rl.countersigned_by.place=cp2;
+  }
+  // government_context
+  if(gv('F_nodal_ministry')||TAGS.nodal_dept.length){
+    rl.government_context={nodal_ministry:gv('F_nodal_ministry')||null};
+    if(TAGS.nodal_dept.length) rl.government_context.nodal_departments=TAGS.nodal_dept.slice();
+  }
+  if(gv('F_rpt_structure')) rl.report_structure=gv('F_rpt_structure');
+  // pac
+  var ps=gc('F_pac_sel'), pd2=gc('F_pac_disc'), pr=gv('F_pac_ref'), pdt=gv('F_pac_date');
+  if(ps||pd2||pr||pdt){
+    rl.pac_report_level={selected_for_discussion:ps,discussed:pd2};
+    if(pr) rl.pac_report_level.pac_report_reference=pr;
+    if(pdt) rl.pac_report_level.discussion_date=pdt;
+  }
+  // atn
+  var ar=gc('F_atn_rec'), ad=gv('F_atn_date'), ap2=gn('F_atn_pend'), as2=gn('F_atn_sett');
+  if(ar||ad||ap2!==null||as2!==null){
+    rl.atn={atn_received:ar};
+    if(ad) rl.atn.atn_date=ad;
+    if(ap2!==null) rl.atn.pending_paragraphs=ap2;
+    if(as2!==null) rl.atn.settled_paragraphs=as2;
+  }
+  // amendment
+  if(gv('F_amendment_type')){
+    rl.amendment={amendment_type:gv('F_amendment_type')};
+    if(gv('F_amends_report')) rl.amendment.amends_report=gv('F_amends_report');
+    var amd=mlObj('amendment_desc'); if(amd) rl.amendment.amendment_description=amd;
+  }
+
+  // SPECIFIC
+  var spec={};
+  if(Object.keys(inh).length) spec.inheritable=inh;
+  if(Object.keys(rl).length) spec.report_level=rl;
+
+  return {common:com,specific:spec};
+}
+
+// ══════════ SYNTAX HIGHLIGHT ══════════
+function hl(json){
+  return json
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/("(?:\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(?:true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,function(m){
+      var c='jn';
+      if(/^"/.test(m)) c=/:$/.test(m)?'jk':'js';
+      else if(/true|false/.test(m)) c='jb';
+      else if(/null/.test(m)) c='jz';
+      return '<span class="'+c+'">'+m+'</span>';
+    })
+    .replace(/[{}\[\]]/g,function(m){return '<span class="jbr">'+m+'</span>';});
+}
+
+// ══════════ COUNT FILLED ══════════
+function countFilled(tabId){
+  var n=0, p=document.getElementById(tabId);
+  if(!p) return 0;
+  var els=p.querySelectorAll('input[type=text]:not(.ti),input[type=number],input[type=date],input[type=url],select,textarea');
+  for(var i=0;i<els.length;i++) if(els[i].value&&els[i].value.trim()) n++;
+  var cbs=p.querySelectorAll('input[type=checkbox]:checked');
+  n+=cbs.length;
+  return n;
+}
+
+// ══════════ MAIN UPDATE ══════════
+function u(){
+  var data=buildJSON();
+  var json=JSON.stringify(data,null,2);
+  document.getElementById('preview').innerHTML=hl(json);
+  document.getElementById('schars').textContent=json.length+' chars';
+  ['t1','t2','t3','t4','t5','t6'].forEach(function(id){
+    var el=document.getElementById('n-'+id);
+    if(el) el.textContent=countFilled(id);
+  });
+  // validation
+  var c=data.common, missing=[];
+  if(!c.product_id) missing.push('product_id');
+  if(!c.product_type) missing.push('product_type');
+  if(!c.year) missing.push('year');
+  if(!c.default_language) missing.push('default_language');
+  if(!c.title) missing.push('title.en');
+  var sm=document.getElementById('smsg');
+  if(!missing.length){sm.className='sok';sm.textContent='✓ Required fields present';}
+  else{sm.className='swrn';sm.textContent='⚠ Missing: '+missing.join(', ');}
+}
+
+// ══════════ DOWNLOAD / COPY ══════════
+function downloadJSON(){
+  var json=JSON.stringify(buildJSON(),null,2);
+  var blob=new Blob([json],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='metadata.json';
+  a.click();
+}
+function copyJSON(){
+  var json=JSON.stringify(buildJSON(),null,2);
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(json).then(function(){
+      var b=document.getElementById('copybtn');
+      b.textContent='Copied!';
+      setTimeout(function(){b.textContent='Copy';},1500);
+    });
+  }
+}
+
+
+// ══════════ LOAD JSON FOR EDITING ══════════
+function handleFileLoad(input){
+  var file=input.files[0];
+  if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      loadFromJSON(data);
+    }catch(err){
+      alert('Invalid JSON file: '+err.message);
+    }
+  };
+  reader.readAsText(file);
+  // Reset file input so the same file can be re-loaded
+  input.value='';
+}
+
+function sv(id,val){
+  var el=document.getElementById(id);
+  if(el&&val!==null&&val!==undefined) el.value=val;
+}
+function sc(id,val){
+  var el=document.getElementById(id);
+  if(el) el.checked=!!val;
+}
+function setMLField(field,obj){
+  if(!obj||typeof obj!=='object') return;
+  if(!ML[field]) ML[field]={};
+  Object.keys(obj).forEach(function(lang){ ML[field][lang]=obj[lang]||''; });
+  // Make sure all langs in the object are in LANGS
+  Object.keys(obj).forEach(function(lang){
+    if(LANGS.indexOf(lang)<0) LANGS.push(lang);
+  });
+}
+function setTags(key,arr){
+  if(!Array.isArray(arr)) return;
+  TAGS[key]=arr.slice();
+  renderTag(key);
+}
+function setCheckboxArr(key,arr){
+  if(!Array.isArray(arr)) return;
+  ARRS[key]=arr.slice();
+  // tick the DOM checkboxes
+  document.querySelectorAll('[id^="cg-"] input[type=checkbox],[id^="cg-dpc"] input[type=checkbox]').forEach(function(cb){
+    if(ARRS[key]&&ARRS[key].indexOf(cb.value)>=0){
+      cb.checked=true;
+      var p=cb.closest('.cp');
+      if(p) p.classList.add('on');
+    }
+  });
+  // Also handle the cg divs by id
+  var cgId='cg-'+key.replace('_sections','').replace('_','-');
+  var cgEl=document.getElementById(cgId)||document.getElementById('cg-'+key);
+  if(cgEl){
+    cgEl.querySelectorAll('input[type=checkbox]').forEach(function(cb){
+      var checked=arr.indexOf(cb.value)>=0;
+      cb.checked=checked;
+      var p=cb.closest('.cp');
+      if(p) p.classList.toggle('on',checked);
+    });
+  }
+}
+
+function loadFromJSON(data){
+  // silently reset without confirm
+  var inputs=document.querySelectorAll('input[type=text],input[type=number],input[type=date],input[type=url],textarea');
+  for(var i=0;i<inputs.length;i++) inputs[i].value='';
+  var sels=document.querySelectorAll('select');
+  for(var i=0;i<sels.length;i++) sels[i].selectedIndex=0;
+  var cbs=document.querySelectorAll('input[type=checkbox]');
+  for(var i=0;i<cbs.length;i++) cbs[i].checked=false;
+  var radios=document.querySelectorAll('input[type=radio]');
+  for(var i=0;i<radios.length;i++) radios[i].checked=false;
+  document.querySelectorAll('.cp,.rp').forEach(function(el){el.classList.remove('on');});
+  Object.keys(TAGS).forEach(function(k){TAGS[k]=[];});
+  Object.keys(ARRS).forEach(function(k){ARRS[k]=[];});
+  Object.keys(ML).forEach(function(k){delete ML[k];});
+  ENT.main_ent=[];ENT.other_ent=[];
+  IMPACTS=[];DISTS=[];RELS=[];
+
+  var com=data.common||{};
+  var spec=data.specific||{};
+  var rl=spec.report_level||{};
+  var inh=spec.inheritable||{};
+  var tab=rl.tabling||{};
+
+  // ── COMMON ──
+  sv('F_product_id', com.product_id);
+  if(com.product_type) sv('F_product_type', com.product_type);
+  if(com.year) sv('F_year', com.year);
+  sv('F_version', com.version);
+  sv('F_published_date', com.published_date);
+  sv('F_revision_date', com.revision_date);
+  sv('F_archived_date', com.archived_date);
+  sv('F_doi', com.doi);
+  sv('F_slug', com.slug);
+  sv('F_canonical_url', com.canonical_url);
+  sv('F_supersedes', com.supersedes);
+  sv('F_superseded_by', com.superseded_by);
+
+  // Languages
+  if(Array.isArray(com.languages)&&com.languages.length){
+    LANGS=com.languages.slice();
+  }
+  if(com.default_language) sv('F_default_language', com.default_language);
+  if(TAGS.keywords) setTags('keywords', com.keywords||[]);
+
+  // Multilingual fields
+  setMLField('title', com.title);
+  setMLField('subtitle', com.subtitle);
+  setMLField('summary', com.summary);
+  setMLField('description', com.description);
+  setMLField('publisher', com.publisher);
+  setMLField('citation', com.citation);
+
+  // Distributions
+  if(Array.isArray(com.distributions)){
+    com.distributions.forEach(function(d){
+      DISTS.push({fmt:d.format||'',lang:d.language||'en',url:d.url||'',
+        size:d.size_mb||'',chk:d.checksum||'',algo:d.checksum_algorithm||'sha256'});
+    });
+  }
+  // Related reports
+  if(Array.isArray(com.related_reports)){
+    com.related_reports.forEach(function(r){
+      RELS.push({pid:r.product_id||'',rel:r.relationship_type||'',
+        label:(r.label&&r.label.en)||''});
+    });
+  }
+
+  // ── REPORT LEVEL ──
+  if(rl.report_number){
+    sv('F_rpt_num', rl.report_number.number);
+    sv('F_rpt_yr', rl.report_number.year);
+  }
+  if(rl.jurisdiction) sv('F_jurisdiction', rl.jurisdiction);
+  if(rl.audit_report_status) sv('F_status', rl.audit_report_status);
+  sv('F_date_sub', rl.date_of_submission_to_government);
+  if(rl.state_ut){
+    sv('F_state_ut_id', rl.state_ut.id);
+    if(rl.state_ut.name){
+      sv('F_sut_name_en', rl.state_ut.name.en);
+      sv('F_sut_name_hi', rl.state_ut.name.hi);
+    }
+  }
+  if(rl.report_structure) sv('F_rpt_structure', rl.report_structure);
+  if(rl.government_context){
+    sv('F_nodal_ministry', rl.government_context.nodal_ministry);
+    setTags('nodal_dept', rl.government_context.nodal_departments||[]);
+  }
+  // Signed by
+  if(rl.signed_by){
+    setMLField('signed_name', rl.signed_by.name);
+    setMLField('signed_desig', rl.signed_by.designation);
+    setMLField('signed_place', rl.signed_by.place);
+    sv('F_signed_date', rl.signed_by.date);
+  }
+  // Countersigned by
+  if(rl.countersigned_by){
+    setMLField('cs_name', rl.countersigned_by.name);
+    setMLField('cs_desig', rl.countersigned_by.designation);
+    setMLField('cs_place', rl.countersigned_by.place);
+    sv('F_cs_date', rl.countersigned_by.date);
+  }
+  // Tabling
+  sc('F_tabl_appl', tab.applicable);
+  if(tab.applicable){
+    if(tab.legislature){
+      var radios2=document.querySelectorAll('input[name="legislature"]');
+      for(var ri=0;ri<radios2.length;ri++){
+        if(radios2[ri].value===tab.legislature){
+          radios2[ri].checked=true;
+          var rp2=radios2[ri].closest('.rp');
+          if(rp2) rp2.classList.add('on');
+        }
+      }
+    }
+    if(tab.lower_house){
+      setMLField('lh_name', tab.lower_house.name);
+      sv('F_lh_date', tab.lower_house.date_of_placing);
+      var lhSess=tab.lower_house.session;
+      sv('F_lh_session', lhSess&&lhSess.en||lhSess||'');
+      sv('F_lh_sesnum', tab.lower_house.session_number);
+    }
+    if(tab.upper_house){
+      setMLField('uh_name', tab.upper_house.name);
+      sv('F_uh_date', tab.upper_house.date_of_placing);
+      var uhSess=tab.upper_house.session;
+      sv('F_uh_session', uhSess&&uhSess.en||uhSess||'');
+      sv('F_uh_sesnum', tab.upper_house.session_number);
+    }
+  } else {
+    setTags('submitted_to', tab.submitted_to||[]);
+    setMLField('reason_not_tabled', tab.reason_not_tabled);
+  }
+  // PAC
+  if(rl.pac_report_level){
+    sc('F_pac_sel', rl.pac_report_level.selected_for_discussion);
+    sc('F_pac_disc', rl.pac_report_level.discussed);
+    sv('F_pac_ref', rl.pac_report_level.pac_report_reference);
+    sv('F_pac_date', rl.pac_report_level.discussion_date);
+  }
+  // ATN
+  if(rl.atn){
+    sc('F_atn_rec', rl.atn.atn_received);
+    sv('F_atn_date', rl.atn.atn_date);
+    sv('F_atn_pend', rl.atn.pending_paragraphs);
+    sv('F_atn_sett', rl.atn.settled_paragraphs);
+  }
+  // Amendment
+  if(rl.amendment){
+    if(rl.amendment.amendment_type) sv('F_amendment_type', rl.amendment.amendment_type);
+    sv('F_amends_report', rl.amendment.amends_report);
+    setMLField('amendment_desc', rl.amendment.amendment_description);
+  }
+
+  // ── INHERITABLE ──
+  if(inh.audit_type) setCheckboxArr('audit_type', inh.audit_type);
+  if(inh.report_sector) setCheckboxArr('report_sector', inh.report_sector);
+  if(inh.dpc_act_sections) setCheckboxArr('dpc_sections', inh.dpc_act_sections);
+  if(inh.audit_period){
+    sv('F_ap_start', inh.audit_period.start_year);
+    sv('F_ap_end', inh.audit_period.end_year);
+  }
+  if(inh.regions){
+    setTags('states_uts', inh.regions.states_uts||[]);
+    setTags('ulbs', inh.regions.ulbs||[]);
+    setTags('pris', inh.regions.pris||[]);
+  }
+  setTags('topics', inh.topics||[]);
+  setTags('findings', inh.audit_findings_categories||[]);
+  setTags('primary_schemes', inh.primary_schemes||[]);
+  setTags('other_schemes', inh.other_schemes||[]);
+  setTags('ref_ent', inh.referenced_entities||[]);
+  // Entities
+  if(Array.isArray(inh.main_audited_entities)){
+    ENT.main_ent=inh.main_audited_entities.map(function(e){
+      return {ministry:e.ministry||'',dept:e.department||'',
+        auto:e.autonomous_bodies||[],other:e.other_bodies||[]};
+    });
+  }
+  if(Array.isArray(inh.other_audited_entities)){
+    ENT.other_ent=inh.other_audited_entities.map(function(e){
+      return {ministry:e.ministry||'',dept:e.department||'',
+        auto:e.autonomous_bodies||[],other:e.other_bodies||[]};
+    });
+  }
+  // Impact
+  if(Array.isArray(inh.impact)){
+    IMPACTS=inh.impact.map(function(i){
+      var imp={type:i.impact_type||'',amount:i.amount||'',unit:i.unit||'',
+        currency:i.currency||'',approx:!!i.approximate,period:i.period||''};
+      LANGS.forEach(function(l){ imp['desc_'+l]=(i.description&&i.description[l])||''; });
+      // also copy langs not in LANGS yet
+      if(i.description) Object.keys(i.description).forEach(function(l){
+        imp['desc_'+l]=i.description[l]||'';
+        if(LANGS.indexOf(l)<0) LANGS.push(l);
+      });
+      return imp;
+    });
+  }
+  // Examination coverage
+  if(inh.examination_coverage){
+    var ec=inh.examination_coverage;
+    if(ec.coverage_type) sv('F_cov_type', ec.coverage_type);
+    if(ec.selection_basis) sv('F_sel_basis', ec.selection_basis);
+    setTags('cov_states', ec.state_ut_ids||[]);
+    if(ec.sample_size){
+      sv('F_samp_st', ec.sample_size.states_examined);
+      sv('F_samp_dist', ec.sample_size.districts_examined);
+      sv('F_samp_units', ec.sample_size.units_examined);
+      sv('F_samp_univ', ec.sample_size.total_universe);
+    }
+    setMLField('cov_note', ec.coverage_note);
+  }
+  if(inh.unit_structure) sv('F_unit_structure', inh.unit_structure);
+
+  // Re-render everything with loaded data
+  initLangPills();
+restoreTaxCache();
+renderDynamicFields();
+renderDynamicFields();
+  renderAllML();
+  renderEnts('main_ent');
+  renderEnts('other_ent');
+  renderImpacts();
+  renderDists();
+  renderRels();
+  Object.keys(TAGS).forEach(function(k){renderTag(k);});
+
+  // Re-apply conditionals
+  onJuris();
+  onTabl();
+  onCov();
+
+  // Re-tick checkbox pills that were loaded
+  ['audit_type','report_sector','dpc_sections'].forEach(function(key){
+    var cgMap={'audit_type':'cg-audit_type','report_sector':'cg-report_sector','dpc_sections':'cg-dpc'};
+    var cgEl=document.getElementById(cgMap[key]);
+    if(!cgEl) return;
+    cgEl.querySelectorAll('input[type=checkbox]').forEach(function(cb){
+      var checked=ARRS[key].indexOf(cb.value)>=0;
+      cb.checked=checked;
+      cb.closest('.cp').classList.toggle('on',checked);
+    });
+  });
+  renderDynamicFields();
+
+  u();
+  alert('Loaded successfully. Review all tabs to verify.');
+}
+
+// ══════════ CLEAR ══════════
+function clearAll(){
+  if(!confirm('Clear all fields?')) return;
+  var inputs=document.querySelectorAll('input[type=text],input[type=number],input[type=date],input[type=url],textarea');
+  for(var i=0;i<inputs.length;i++) inputs[i].value='';
+  var sels=document.querySelectorAll('select');
+  for(var i=0;i<sels.length;i++) sels[i].selectedIndex=0;
+  var cbs=document.querySelectorAll('input[type=checkbox]');
+  for(var i=0;i<cbs.length;i++) cbs[i].checked=false;
+  var radios=document.querySelectorAll('input[type=radio]');
+  for(var i=0;i<radios.length;i++) radios[i].checked=false;
+  document.querySelectorAll('.cp,.rp').forEach(function(el){el.classList.remove('on');});
+  Object.keys(TAGS).forEach(function(k){TAGS[k]=[];renderTag(k);});
+  Object.keys(ARRS).forEach(function(k){ARRS[k]=[];});
+  Object.keys(ML).forEach(function(k){delete ML[k];});
+  ENT.main_ent=[];ENT.other_ent=[];
+  IMPACTS=[];DISTS=[];RELS=[];
+  renderEnts('main_ent');renderEnts('other_ent');
+  renderImpacts();renderDists();renderRels();
+  LANGS=['en'];
+  initLangPills();
+  renderAllML();
+  document.getElementById('lp-en').classList.add('on');
+  document.getElementById('F_default_language').value='en';
+  document.getElementById('cond-state').classList.remove('on');
+  document.getElementById('cond-not-tabl').classList.remove('on');
+  document.getElementById('cond-tabl').classList.remove('on');
+  document.getElementById('cond-cov-states').classList.remove('on');
+  u();
+}
+
+
+
+// == TAXONOMY ENGINE ==
+var TAX_FILE_MAP = {
+  'taxonomy_audit_type.json':                   'audit_type',
+  'taxonomy_report_sector.json':                'report_sector',
+  'taxonomy_topics.json':                       'topics',
+  'taxonomy_audit_findings_audit_report.json':  'findings',
+  'registry_states_uts.json':                   'states_uts',
+  'registry_entities.json':                     'entities',
+  'registry_schemes.json':                      'schemes'
+};
+
+// ── LOAD TAXONOMY FOLDER (File System Access API) ───────────────────────────
+
+var TAX = {
+  audit_type:   [],   // [{id,en}]
+  report_sector:[],   // [{id,en,par}]
+  topics:       [],   // [{id,en,par}]
+  findings:     [],   // [{id,en,par}]
+  states_uts:   [],   // [{id,en}]
+  entities:     [],   // [{id,en,type}]
+  schemes:      []    // [{id,en}]
+};
+var TAX_LOADED = false;
+var TAX_DIR_HANDLE = null; // FileSystemDirectoryHandle
+
+var TAX_DIR_HANDLE=null;
+var REG_DIR_HANDLE=null;
+
+async function loadTaxonomyFolder(){ await _pickAndLoad("taxonomy"); }
+async function loadRegistryFolder(){  await _pickAndLoad("registry");  }
+async function _pickAndLoad(which){
+  if(!window.showDirectoryPicker){
+    document.getElementById("tax-fallback-btn").style.display="";
+    document.getElementById("btn-load-tax").style.display="none";
+    document.getElementById("btn-load-reg").style.display="none";
+    sbar("Firefox: use file picker to load JSON files"); return;
+  }
+  try{
+    var h=await window.showDirectoryPicker({mode:"read",startIn:"documents",id:which});
+    if(which==="taxonomy") TAX_DIR_HANDLE=h; else REG_DIR_HANDLE=h;
+    await readTaxFromDir(h);
+    document.getElementById("btn-reload-tax").style.display="";
+    document.getElementById("btn-clear-tax").style.display="";
+    sbar((which==="taxonomy"?"Taxonomy":"Registry")+" loaded from: "+h.name);
+  }catch(e){ if(e.name!=="AbortError") sbar("Error: "+e.message); }
+}
+async function reloadTaxonomy(){
+  if(TAX_DIR_HANDLE) await readTaxFromDir(TAX_DIR_HANDLE);
+  if(REG_DIR_HANDLE) await readTaxFromDir(REG_DIR_HANDLE);
+  sbar("Reloaded taxonomy + registry");
+}
+
+async function readTaxFromDir(dirHandle){
+  var loaded=[], missing=[];
+  // Recursively search for files in this dir and one level of sub-dirs
+  async function scanDir(dh, depth){
+    for await(var entry of dh.values()){
+      if(entry.kind==='file' && TAX_FILE_MAP[entry.name]){
+        var file = await entry.getFile();
+        var text = await file.text();
+        try{
+          var data = JSON.parse(text);
+          var key = TAX_FILE_MAP[entry.name];
+          TAX[key] = parseEntries(data, key);
+          loaded.push(entry.name);
+        }catch(e){ missing.push(entry.name+'(parse error)'); }
+      } else if(entry.kind==='directory' && depth<2){
+        await scanDir(entry, depth+1);
+      }
+    }
+  }
+  await scanDir(dirHandle, 0);
+
+  var expected = Object.keys(TAX_FILE_MAP).length;
+  TAX_LOADED = loaded.length>0;
+
+  // Cache in localStorage
+  try{
+    var cache={};
+    Object.keys(TAX).forEach(function(k){cache[k]=TAX[k];});
+    localStorage.setItem('cag_tax_cache', JSON.stringify(cache));
+    localStorage.setItem('cag_tax_loaded_at', new Date().toISOString());
+  }catch(e){}
+
+  updateTaxStatus(loaded.length, expected);
+  sbar('Loaded '+loaded.length+'/'+expected+' taxonomy files');
+}
+
+// ── HANDLE FILE-BY-FILE (Firefox fallback) ──────────────────────────────────
+function handleTaxFiles(files){
+  var loaded=0;
+  Array.from(files).forEach(function(file){
+    if(!TAX_FILE_MAP[file.name]) return;
+    var reader=new FileReader();
+    reader.onload=function(e){
+      try{
+        var data=JSON.parse(e.target.result);
+        TAX[TAX_FILE_MAP[file.name]]=parseEntries(data, TAX_FILE_MAP[file.name]);
+        loaded++;
+        TAX_LOADED=true;
+        try{
+          var cache={};
+          Object.keys(TAX).forEach(function(k){cache[k]=TAX[k];});
+          localStorage.setItem('cag_tax_cache',JSON.stringify(cache));
+        }catch(ex){}      }catch(ex){ sbar('Parse error in '+file.name+': '+ex.message); }
+    };
+    reader.readAsText(file);
+  });
+}
+
+// ── RELOAD from same directory ───────────────────────────────────────────────
+async function reloadTaxonomy(){
+  if(TAX_DIR_HANDLE){
+    sbar('Reloading from disk…');
+    await readTaxFromDir(TAX_DIR_HANDLE);
+  } else {
+    sbar('No folder handle — load the folder again to refresh');
+  }
+}
+
+// ── CLEAR ────────────────────────────────────────────────────────────────────
+function clearTaxonomy(){
+  Object.keys(TAX).forEach(function(k){TAX[k]=[];});
+  TAX_LOADED=false; TAX_DIR_HANDLE=null;
+  try{localStorage.removeItem('cag_tax_cache');localStorage.removeItem('cag_tax_loaded_at');}catch(e){}
+  updateTaxStatus(0,0);  sbar('Taxonomy cleared');
+}
+
+// ── RESTORE FROM CACHE ────────────────────────────────────────────────────────
+function restoreTaxCache(){
+  try{
+    var raw=localStorage.getItem('cag_tax_cache');
+    var at=localStorage.getItem('cag_tax_loaded_at');
+    if(!raw) return;
+    var cache=JSON.parse(raw);
+    var anyLoaded=false;
+    Object.keys(cache).forEach(function(k){ if(TAX[k]!==undefined&&cache[k].length){TAX[k]=cache[k];anyLoaded=true;} });
+    TAX_LOADED=anyLoaded;
+    if(anyLoaded){
+      var total=Object.keys(TAX_FILE_MAP).length;
+      var loaded=Object.values(TAX).filter(function(v){return v.length>0;}).length;
+      updateTaxStatus(loaded, total, at);
+    }
+  }catch(e){}
+}
+
+// ── PARSE ENTRIES helper ──────────────────────────────────────────────────────
+function parseEntries(data, key){
+  var entries=data.entries||[];
+  if(key==='audit_type')    return entries.map(function(e){return {id:e.id,en:e.label&&e.label.en||e.id};});
+  if(key==='report_sector') return entries.map(function(e){return {id:e.id,en:e.label&&e.label.en||e.id,par:e.parent_id||''};});
+  if(key==='topics')        return entries.map(function(e){return {id:e.id,en:e.label&&e.label.en||e.id,par:e.parent_id||''};});
+  if(key==='findings')      return entries.map(function(e){return {id:e.id,en:e.label&&e.label.en||e.id,par:e.parent_id||''};});
+  if(key==='states_uts')    return entries.map(function(e){return {id:e.id,en:e.name&&e.name.en||e.id};});
+  if(key==='entities')      return entries.map(function(e){return {id:e.id,en:e.name&&e.name.en||e.id,type:e.entity_type||''};});
+  if(key==='schemes')       return entries.map(function(e){return {id:e.id,en:e.name&&e.name.en||e.id};});
+  return [];
+}
+
+// ── STATUS BAR ────────────────────────────────────────────────────────────────
+function updateTaxStatus(loaded, total, cachedAt){
+  var el=document.getElementById('tax-status');
+  var reload=document.getElementById('btn-reload-tax');
+  var clear=document.getElementById('btn-clear-tax');
+  if(loaded>0){
+    var counts=Object.keys(TAX).map(function(k){return TAX[k].length;}).reduce(function(a,b){return a+b;},0);
+    var msg='✓ Taxonomy loaded: '+counts+' entries across '+loaded+' files';
+    if(cachedAt) msg+=' (cached '+cachedAt.slice(0,10)+')';
+    el.textContent=msg; el.className='tax-status loaded';
+    reload.style.display='';clear.style.display='';
+  } else {
+    el.textContent='No taxonomy loaded — dropdowns show plain text inputs';
+    el.className='tax-status none';
+    reload.style.display='none'; clear.style.display='none';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// TYPEAHEAD SEARCH INPUT  (replaces plain tagInputSimple for taxonomy fields)
+// ══════════════════════════════════════════════════════
+// Renders: tags for current values + search input + live dropdown
+var TA_ACTIVE = null; // id of currently open dropdown
+
+
+function taxTagInput(id, arr, taxKey, stateKey){
+  var items = TAX[taxKey]||[];
+  // If taxonomy not loaded, fall back to plain tag input
+  if(!items.length) return tagInputSimple(id, arr, taxKey+' id…', stateKey);
+
+  var tagsHtml = arr.map(function(v,i){
+    var entry=items.find(function(e){return e.id===v;});
+    var label=entry?entry.en+' ('+v+')':v;
+    return '<span class="tag" title="'+esc(v)+'">'+esc(v)
+      +'<span class="tag-x" onclick="taxRemoveTag(\''+stateKey+'\','+i+')">×</span></span>';
+  }).join('');
+
+  return '<div class="ta-wrap" id="taw-'+id+'">'
+    +'<div class="tw" id="tw-'+id+'" onclick="document.getElementById(\'tai-'+id+'\').focus()">'
+      +tagsHtml
+      +'<input class="ti" id="tai-'+id+'" placeholder="Type to search…"'
+      +' oninput="taxSearch(\''+id+'\',\''+taxKey+'\',\''+stateKey+'\',this.value)"'
+      +' onkeydown="taxKeyDown(event,\''+id+'\',\''+taxKey+'\',\''+stateKey+'\')"'
+      +' onfocus="taxSearch(\''+id+'\',\''+taxKey+'\',\''+stateKey+'\',this.value)">'
+    +'</div>'
+    +'<div class="ta-dropdown" id="tad-'+id+'"></div>'
+    +'</div>';
+}
+
+function taxSearch(id, taxKey, stateKey, q){
+  var items=TAX[taxKey]||[];
+  var dd=document.getElementById('tad-'+id);
+  if(!dd) return;
+  q=(q||'').toLowerCase().trim();
+
+  // Get current selected values to exclude them
+  var curr=getTaxArr(stateKey);
+
+  // Filter
+  var filtered=items.filter(function(e){
+    if(curr.indexOf(e.id)>=0) return false;
+    if(!q) return true;
+    return e.id.toLowerCase().indexOf(q)>=0 || e.en.toLowerCase().indexOf(q)>=0;
+  });
+
+  if(!filtered.length){dd.innerHTML='<div class="ta-item" style="color:var(--txt3);cursor:default">No matches</div>';dd.classList.add('on');return;}
+
+  // Group by parent if has parent info
+  var hasParents=filtered.some(function(e){return e.par;});
+  var html='';
+  if(hasParents&&q.length<3){
+    // Show grouped by parent
+    var groups={};
+    filtered.slice(0,80).forEach(function(e){
+      var g=e.par||'__top';
+      if(!groups[g]) groups[g]=[];
+      groups[g].push(e);
+    });
+    Object.keys(groups).forEach(function(g){
+      if(g!=='__top'){
+        var parentEntry=items.find(function(e){return e.id===g;});
+        html+='<div class="ta-group">'+(parentEntry?parentEntry.en:g)+'</div>';
+      }
+      groups[g].forEach(function(e){
+        html+='<div class="ta-item" onclick="taxPick(\''+id+'\',\''+stateKey+'\',\''+esc(e.id)+'\')">'
+          +'<span>'+esc(e.en)+'</span><span class="ta-item-id">'+esc(e.id)+'</span></div>';
+      });
+    });
+  } else {
+    filtered.slice(0,60).forEach(function(e){
+      html+='<div class="ta-item" onclick="taxPick(\''+id+'\',\''+stateKey+'\',\''+esc(e.id)+'\')">'
+        +'<span>'+esc(e.en)+'</span><span class="ta-item-id">'+esc(e.id)+'</span></div>';
+    });
+    if(filtered.length>60) html+='<div class="ta-item" style="color:var(--txt3);cursor:default">…'+(filtered.length-60)+' more — type to filter</div>';
+  }
+  dd.innerHTML=html;
+  dd.classList.add('on');
+  TA_ACTIVE=id;
+}
+
+function taxKeyDown(e,id,taxKey,stateKey){
+  if(e.key==='Escape'){closeTaDd(id);return;}
+  if(e.key==='Enter'){
+    var dd=document.getElementById('tad-'+id);
+    if(!dd) return;
+    var first=dd.querySelector('.ta-item:not([style*="cursor:default"])');
+    if(first) first.click();
+    return;
+  }
+}
+
+function taxPick(id, stateKey, val){
+  var inp=document.getElementById('tai-'+id);
+  if(inp) inp.value='';
+  closeTaDd(id);
+  // Add to state
+  addTaxTag(stateKey, val);}
+
+function closeTaDd(id){
+  var dd=document.getElementById('tad-'+id);
+  if(dd) dd.classList.remove('on');
+  TA_ACTIVE=null;
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', function(e){
+  if(TA_ACTIVE){
+    var wrap=document.getElementById('taw-'+TA_ACTIVE);
+    if(wrap&&!wrap.contains(e.target)) closeTaDd(TA_ACTIVE);
+  }
+});
+
+// ── GET / ADD / REMOVE TAG helpers ──────────────────────────────────────────
+function getTaxArr(stateKey){
+  if(!SEL_UNIT) return [];
+  var m=SEL_UNIT.metadata||{};
+  if(stateKey==='topics') return m.topics||[];
+  if(stateKey==='findings') return m.audit_findings_categories||[];
+  if(stateKey==='states_uts') return (m.regions&&m.regions.states_uts)||[];
+  if(stateKey==='primary_schemes') return m.primary_schemes||[];
+  if(stateKey==='__bm_findings'&&SEL_BLOCK) return (SEL_BLOCK.block_metadata&&SEL_BLOCK.block_metadata.audit_findings_categories)||[];
+  if(stateKey==='__bm_entities'&&SEL_BLOCK) return (SEL_BLOCK.block_metadata&&SEL_BLOCK.block_metadata.referenced_entities)||[];
+  return [];
+}
+
+function addTaxTag(stateKey, val){
+  if(!SEL_UNIT) return;
+  if(!SEL_UNIT.metadata) SEL_UNIT.metadata={};
+  var m=SEL_UNIT.metadata;
+  function push(arr){ if(arr.indexOf(val)<0) arr.push(val); }
+  if(stateKey==='topics')          { if(!m.topics)m.topics=[];push(m.topics); }
+  else if(stateKey==='findings')   { if(!m.audit_findings_categories)m.audit_findings_categories=[];push(m.audit_findings_categories); }
+  else if(stateKey==='states_uts') { if(!m.regions)m.regions={};if(!m.regions.states_uts)m.regions.states_uts=[];push(m.regions.states_uts); }
+  else if(stateKey==='primary_schemes'){ if(!m.primary_schemes)m.primary_schemes=[];push(m.primary_schemes); }
+  else if(stateKey==='__bm_findings'&&SEL_BLOCK){ if(!SEL_BLOCK.block_metadata)SEL_BLOCK.block_metadata={};if(!SEL_BLOCK.block_metadata.audit_findings_categories)SEL_BLOCK.block_metadata.audit_findings_categories=[];push(SEL_BLOCK.block_metadata.audit_findings_categories); }
+  else if(stateKey==='__bm_entities'&&SEL_BLOCK){ if(!SEL_BLOCK.block_metadata)SEL_BLOCK.block_metadata={};if(!SEL_BLOCK.block_metadata.referenced_entities)SEL_BLOCK.block_metadata.referenced_entities=[];push(SEL_BLOCK.block_metadata.referenced_entities); }
+}
+
+function taxRemoveTag(stateKey, idx){
+  if(!SEL_UNIT) return;
+  var m=SEL_UNIT.metadata||{};
+  if(stateKey==='topics'&&m.topics) m.topics.splice(idx,1);
+  else if(stateKey==='findings'&&m.audit_findings_categories) m.audit_findings_categories.splice(idx,1);
+  else if(stateKey==='states_uts'&&m.regions&&m.regions.states_uts) m.regions.states_uts.splice(idx,1);
+  else if(stateKey==='primary_schemes'&&m.primary_schemes) m.primary_schemes.splice(idx,1);
+  else if(stateKey==='__bm_findings'&&SEL_BLOCK&&SEL_BLOCK.block_metadata&&SEL_BLOCK.block_metadata.audit_findings_categories) SEL_BLOCK.block_metadata.audit_findings_categories.splice(idx,1);}
+
+// ── ENTITY SELECT DROPDOWN (ministry / department) ──────────────────────────
+function entitySelect(field, idx, subKey, currentVal){
+  var items=TAX.entities||[];
+  if(!items.length){
+    return '<input class="mono" type="text" value="'+esc(currentVal||'')+'"'
+      +' placeholder="GOI-MIN-FINANCE" oninput="setMetaEntity(\''+field+'\','+idx+',\''+subKey+'\',this.value)">';
+  }
+  var html='<select class="ent-sel" onchange="setMetaEntity(\''+field+'\','+idx+',\''+subKey+'\',this.value)">';
+  html+='<option value="">— select entity —</option>';
+  // Group by type
+  var types={};
+  items.forEach(function(e){ if(!types[e.type])types[e.type]=[]; types[e.type].push(e); });
+  Object.keys(types).sort().forEach(function(t){
+    html+='<optgroup label="'+esc(t)+'">';
+    types[t].forEach(function(e){
+      html+='<option value="'+esc(e.id)+'"'+(currentVal===e.id?' selected':'')+'>'+esc(e.en)+' ('+esc(e.id)+')</option>';
+    });
+    html+='</optgroup>';
+  });
+  html+='</select>';
+  return html;
+}
+
+// ── SCHEME SELECT ─────────────────────────────────────────────────────────────
+function schemeSelect(field, idx, currentVal){
+  var items=TAX.schemes||[];
+  if(!items.length){
+    return '<input class="mono" type="text" value="'+esc(currentVal||'')+'"'
+      +' placeholder="GOI-SCH-MGNREGS" oninput="setMetaEntity(\''+field+'\','+idx+',\'scheme\',this.value)">';
+  }
+  var html='<select class="ent-sel" onchange="setMetaEntity(\''+field+'\','+idx+',\'scheme\',this.value)">';
+  html+='<option value="">— select scheme —</option>';
+  items.forEach(function(e){
+    html+='<option value="'+esc(e.id)+'"'+(currentVal===e.id?' selected':'')+'>'+esc(e.en)+'</option>';
+  });
+  html+='</select>';
+  return html;
+}
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SESSION SAVE / LOAD
+// Session format: { pid, langs, struct, blocks, timestamp, version }
+// Saves the FULL state — all units, all blocks, product_id, languages.
+// Use to build chapter by chapter across multiple sessions.
+// ══════════════════════════════════════════════════════════════════════════════
+
+initLangPills();
+restoreTaxCache();
+
+
+// ── GROUPED TOPIC/FINDING TAG INPUT ─────────────────────────────────────────
+// Shows parent categories as <optgroup> headers, sub-topics as <option>.
+// Selecting a parent adds the parent ID; selecting a child adds the child ID.
+function mbGroupedTag(domId, arr, taxKey, stateKey) {
+  var items  = TAX[taxKey] || [];
+  var sel    = arr || [];
+
+  // Separate parents (no par) and children (have par)
+  var parents  = items.filter(function(e){ return !e.par; });
+  var byParent = {};
+  items.forEach(function(e){
+    if(e.par){ if(!byParent[e.par]) byParent[e.par]=[]; byParent[e.par].push(e); }
+  });
+
+  // Tag chips for already-selected items
+  var tags = sel.map(function(v, i){
+    var entry = items.find(function(e){ return e.id === v; });
+    var label = entry ? (entry.par ? entry.par.replace(/_/g,' ')+' \u203a '+entry.en : entry.en) : v;
+    return '<span class="tag" title="'+esc(v)+'">'
+      + esc(label.length > 45 ? label.slice(0,45)+'\u2026' : label)
+      + '<span class="tag-x" onclick="mbRmTag(\''+stateKey+'\','+i+')">x</span></span>';
+  }).join('');
+
+  // Build <optgroup> structure
+  var opts = '<option value="">+ add topic\u2026</option>';
+  parents.forEach(function(p){
+    var children = byParent[p.id] || [];
+    // Add parent itself as selectable option (bold group label)
+    opts += '<optgroup label="\u25b6 '+esc(p.en)+'">';
+    opts += '<option value="'+esc(p.id)+'" style="font-style:italic;color:#aaa">'
+          + esc(p.en)+' (all sub-topics)</option>';
+    children.forEach(function(c){
+      opts += '<option value="'+esc(c.id)+'">'+esc(c.en)+'</option>';
+    });
+    opts += '</optgroup>';
+  });
+
+  return '<div class="tw" style="min-height:28px" id="'+esc(domId)+'">'
+    + tags
+    + '<select style="background:transparent;border:none;outline:none;'
+    + 'font-size:11px;color:var(--txt2);max-width:280px;cursor:pointer"'
+    + ' onchange="if(this.value&&TAGS.'+stateKey+'.indexOf(this.value)<0)'
+    + '{TAGS.'+stateKey+'.push(this.value);renderDynamicFields();u();}this.value=\'\';">'
+    + opts
+    + '</select></div>';
+}
+
+function renderDynamicFields(){
+  var atW=document.getElementById('cg-audit_type-dyn');
+  if(atW){
+    var at=TAX.audit_type||[];
+    var ST=[['ATYPE-COMPLIANCE','Compliance'],['ATYPE-PERFORMANCE','Performance'],
+      ['ATYPE-FINANCIAL','Financial'],['ATYPE-IT-AUDIT','IT Audit'],
+      ['ATYPE-CERTIFICATION','Certification'],['ATYPE-ENVIRONMENTAL','Environmental'],
+      ['ATYPE-IT-ASSISTED','IT-Assisted'],['ATYPE-OUTCOME','Outcome'],
+      ['ATYPE-HORIZONTAL','Horizontal'],['ATYPE-COMBINED','Combined'],
+      ['ATYPE-SPECIAL-PURPOSE','Special Purpose']];
+    var src=at.length?at.map(function(e){return[e.id,e.en];}):ST;
+    var h='<div class="cg" id="cg-audit_type">';
+    src.forEach(function(p){
+      var c=ARRS.audit_type.indexOf(p[0])>=0;
+      h+='<label class="cp'+(c?' on':'')+'"><input type="checkbox" value="'+esc(p[0])+'"'+(c?' checked':'')+' onchange="chkArr(\'audit_type\',this)"><div class="dot"></div>'+esc(p[1])+'</label>';
+    });
+    atW.innerHTML=h+'</div>'+(at.length?'':'<div class="hint" style="color:var(--amb);margin-top:4px">Load taxonomy for full list</div>');
+  }
+  var rsW=document.getElementById('cg-report_sector-dyn');
+  if(rsW){
+    var rs=TAX.report_sector||[];
+    var RS=[['SECT-CIVIL','Civil'],['SECT-COMMERCIAL','Commercial'],
+      ['SECT-REVENUE','Revenue'],['SECT-DEFENCE','Defence'],
+      ['SECT-TELECOM','Telecom/IT'],['SECT-RAILWAYS','Railways']];
+    var rsSrc=rs.length?rs.map(function(e){return[e.id,e.par?e.par+' \u2014 '+e.en:e.en];}):RS;
+    var h='<div class="cg" id="cg-report_sector">';
+    rsSrc.forEach(function(p){
+      var c=ARRS.report_sector.indexOf(p[0])>=0;
+      h+='<label class="cp'+(c?' on':'')+'"><input type="checkbox" value="'+esc(p[0])+'"'+(c?' checked':'')+' onchange="chkArr(\'report_sector\',this)"><div class="dot"></div>'+esc(p[1])+'</label>';
+    });
+    rsW.innerHTML=h+'</div>'+(rs.length?'':'<div class="hint" style="color:var(--amb);margin-top:4px">Load taxonomy for all 40 sub-sectors</div>');
+  }
+  var tW=document.getElementById('topics-dyn-wrap');
+  if(tW){
+    var tH=document.getElementById('topics-hint');
+    if(TAX.topics&&TAX.topics.length){
+      tW.innerHTML=mbGroupedTag('tw-topics',TAGS.topics,'topics','topics');
+      if(tH) tH.textContent='Typeahead \u2014 '+TAX.topics.length+' topics loaded';
+    } else {
+      tW.innerHTML=mbSimpleTag('tw-topics',TAGS.topics,'topics','e.g. rural_employment \u2014 Enter');
+      if(tH) tH.textContent='Load taxonomy — grouped by parent category';
+    }
+  }
+  var fW=document.getElementById('findings-dyn-wrap');
+  if(fW){
+    var fH=document.getElementById('findings-hint');
+    if(TAX.findings&&TAX.findings.length){
+      fW.innerHTML=mbGroupedTag('tw-findings',TAGS.findings,'findings','findings');
+      if(fH) fH.textContent='Typeahead \u2014 '+TAX.findings.length+' categories loaded';
+    } else {
+      fW.innerHTML=mbSimpleTag('tw-findings',TAGS.findings,'findings','finding_id \u2014 Enter');
+      if(fH) fH.textContent='Load taxonomy — grouped by parent category';
+    }
+  }
+  var sW=document.getElementById('states-dyn-wrap');
+  if(sW){
+    var sH=document.getElementById('states-hint');
+    if(TAX.states_uts&&TAX.states_uts.length){
+      sW.innerHTML=taxTagInput('tw-states_uts',TAGS.states_uts,'states_uts','states_uts');
+      if(sH) sH.textContent='Typeahead \u2014 type state name or code';
+    } else {
+      sW.innerHTML=mbSimpleTag('tw-states_uts',TAGS.states_uts,'states_uts','IN-MP \u2014 Enter');
+    }
+  }
+  var psW=document.getElementById('pschemes-dyn-wrap');
+  if(psW) psW.innerHTML=(TAX.schemes&&TAX.schemes.length)?mbSchemeTag('primary_schemes'):mbSimpleTag('tw-primary_schemes',TAGS.primary_schemes,'primary_schemes','GOI-SCH-MGNREGS');
+  var osW=document.getElementById('oschemes-dyn-wrap');
+  if(osW) osW.innerHTML=(TAX.schemes&&TAX.schemes.length)?mbSchemeTag('other_schemes'):mbSimpleTag('tw-other_schemes',TAGS.other_schemes,'other_schemes','GOI-SCH-*');
+}
+function mbSimpleTag(id,arr,k,ph){
+  var t=(arr||[]).map(function(v,i){return '<span class="tag">'+esc(v)+'<span class="tag-x" onclick="mbRmTag(\''+k+'\','+i+')">x</span></span>';}).join('');
+  return '<div class="tw" id="'+id+'" onclick="document.getElementById(\'mbi-'+k+'\').focus()">'+t+'<input class="ti" id="mbi-'+k+'" placeholder="'+esc(ph)+'" onkeydown="mbAddTag(event,\''+k+'\')"></div>';
+}
+function mbAddTag(e,k){if(e.key!=='Enter')return;var v=e.target.value.trim();if(!v)return;e.target.value='';if(!TAGS[k])TAGS[k]=[];if(TAGS[k].indexOf(v)<0)TAGS[k].push(v);renderDynamicFields();u();}
+function mbRmTag(k,i){if(TAGS[k])TAGS[k].splice(i,1);renderDynamicFields();u();}
+function mbSchemeTag(k){
+  var items=TAX.schemes||[];var arr=TAGS[k]||[];
+  var t=arr.map(function(v,i){var e2=items.find(function(x){return x.id===v;});return '<span class="tag" title="'+esc(v)+'">'+esc(e2?e2.en:v)+'<span class="tag-x" onclick="mbRmTag(\''+k+'\','+i+')">x</span></span>';}).join('');
+  var o='<option value="">+ add scheme</option>'+items.map(function(x){return '<option value="'+esc(x.id)+'">'+esc(x.en)+' ('+esc(x.id)+')</option>';}).join('');
+  return '<div class="tw">'+t+'<select style="background:transparent;border:none;font-size:11px;color:var(--txt2)" onchange="if(this.value&&TAGS.'+k+'.indexOf(this.value)<0){TAGS.'+k+'.push(this.value);renderDynamicFields();u();}this.value=\'\';">'+o+'</select></div>';
+}
+(function(){var o=typeof updateTaxStatus==='function'?updateTaxStatus:null;window.updateTaxStatus=function(){if(o)o.apply(this,arguments);renderDynamicFields();u();};})();
+
+
+// ══════════ INIT ══════════
+initLangPills();
+renderAllML();
+renderEnts('main_ent');
+renderEnts('other_ent');
+renderImpacts();
+renderDists();
+renderRels();
+u();
+</script>
+</body>
+</html>

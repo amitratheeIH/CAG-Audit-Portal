@@ -124,6 +124,12 @@
       "label": { "en": "Petroleum, Natural Gas and Minerals", "hi": "पेट्रोलियम, प्राकृतिक गैस एवं खनिज" },
       "description": { "en": "Oil and gas exploration, refining, distribution, and mineral extraction." },
       "sort_order": 19
+    },
+    {
+      "id": "FUNC-LABOUR",
+      "label": { "en": "Labour Welfare and Employment", "hi": "श्रम कल्याण एवं रोजगार" },
+      "description": { "en": "Labour welfare, industrial relations, employment exchanges, occupational safety, construction worker welfare, and enforcement of labour laws." },
+      "sort_order": 20
     }
   ]
 }

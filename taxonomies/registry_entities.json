@@ -83,7 +83,8 @@
       { "id": "FUNC-TELECOM", "label": { "en": "Telecommunications and IT" } },
       { "id": "FUNC-PLANNING", "label": { "en": "Planning and Programme Implementation" } },
       { "id": "FUNC-AUDIT", "label": { "en": "Audit and Accounts" } },
-      { "id": "FUNC-PETROLEUM", "label": { "en": "Petroleum, Natural Gas and Minerals" } }
+      { "id": "FUNC-PETROLEUM", "label": { "en": "Petroleum, Natural Gas and Minerals" } },
+      { "id": "FUNC-LABOUR", "label": { "en": "Labour Welfare and Employment" } }
     ]
   },
   "entries": [
@@ -407,6 +408,50 @@
       "predecessor_ids": [],
       "successor_ids": [],
       "notes": { "en": "Responsible for water resource management, irrigation, and river conservation in Madhya Pradesh." }
+    },
+    {
+      "id": "IN-DL-DEPT-LABOUR",
+      "name": { "en": "Labour Department, Government of NCT of Delhi", "hi": "श्रम विभाग, राष्ट्रीय राजधानी क्षेत्र दिल्ली सरकार" },
+      "short_name": { "en": "Delhi Labour Dept", "hi": "दिल्ली श्रम विभाग" },
+      "acronym": null,
+      "level": "department",
+      "entity_type": "department",
+      "jurisdiction": "STATE",
+      "state_ut_id": "IN-DL",
+      "function_ids": ["FUNC-LABOUR"],
+      "parent_id": null,
+      "hq": { "en": "New Delhi", "hi": "नई दिल्ली" },
+      "established": null,
+      "active": true,
+      "archived": false,
+      "dissolution_reason": null,
+      "dissolved_on": null,
+      "name_history": [],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": { "en": "Nodal department for labour welfare, employment, and industrial relations in the NCT of Delhi. Administrative parent of IN-DL-AUTH-BOCW." }
+    },
+    {
+      "id": "IN-DL-AUTH-BOCW",
+      "name": { "en": "Delhi Building and Other Construction Workers Welfare Board", "hi": "दिल्ली भवन एवं अन्य सन्निर्माण कर्मकार कल्याण बोर्ड" },
+      "short_name": { "en": "Delhi BOCW Board", "hi": "दिल्ली BOCW बोर्ड" },
+      "acronym": "DBOCWWB",
+      "level": "statutory_body",
+      "entity_type": "statutory_body",
+      "jurisdiction": "STATE",
+      "state_ut_id": "IN-DL",
+      "function_ids": ["FUNC-LABOUR"],
+      "parent_id": "IN-DL-DEPT-LABOUR",
+      "hq": { "en": "New Delhi", "hi": "नई दिल्ली" },
+      "established": "1996-01-01",
+      "active": true,
+      "archived": false,
+      "dissolution_reason": null,
+      "dissolved_on": null,
+      "name_history": [],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": { "en": "Statutory body constituted under the Building and Other Construction Workers (Regulation of Employment and Conditions of Service) Act, 1996 and the BOCW Welfare Cess Act, 1996. Administers welfare schemes for registered construction workers in Delhi." }
     }
   ]
 }

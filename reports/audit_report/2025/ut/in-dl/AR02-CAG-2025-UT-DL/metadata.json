@@ -1,0 +1,117 @@
+{
+  "common": {
+    "product_id": "AR02-CAG-2025-UT-DL",
+    "product_type": "audit_report",
+    "year": 2025,
+    "version": "1.0",
+    "published_date": "2025-08-04",
+    "languages": [
+      "en"
+    ],
+    "default_language": "en",
+    "title": {
+      "en": "Report of the Comptroller and Auditor General of India on Welfare of Building and Other Construction Workers for the year ended 31 March 2023"
+    },
+    "summary": {
+      "en": "This Report contains the results of the Performance Audit of ‘Welfare of Building and Other Construction Workers’ in Delhi covering the period 2019-20 to 2022-23.  Major audit findings include shortcomings in identification and registration of establishments engaged in construction activities and registration and renewal of construction workers; deficiencies in database of registered construction workers; inadequacies in providing welfare measures to construction workers etc."
+    }
+  },
+  "specific": {
+    "inheritable": {
+      "audit_type": [
+        "ATYPE-PERFORMANCE"
+      ],
+      "report_sector": [
+        "SECT-CIVIL",
+        "SECT-CIVIL-SOCIAL-WELFARE"
+      ],
+      "audit_period": {
+        "start_year": 2019,
+        "end_year": 2023
+      },
+      "topics": [
+        "construction_workers",
+        "unorganised_workers"
+      ],
+      "main_audited_entities": [
+        {
+          "ministry": null,
+          "department": "IN-DL-DEPT-LABOUR",
+          "autonomous_bodies": [
+            "IN-DL-AUTH-BOCW"
+          ],
+          "other_bodies": []
+        }
+      ],
+      "examination_coverage": {
+        "coverage_type": "single_state"
+      },
+      "dpc_act_sections": [
+        "S13",
+        "S14",
+        "S15",
+        "S16",
+        "S17",
+        "S20"
+      ],
+      "unit_structure": "standalone"
+    },
+    "report_level": {
+      "report_number": {
+        "number": 2,
+        "year": 2025
+      },
+      "jurisdiction": "UT",
+      "audit_report_status": "tabled",
+      "date_of_submission_to_government": "2025-06-13",
+      "state_ut": {
+        "id": "IN-DL",
+        "name": {
+          "en": "National Capital Territory of Delhi"
+        }
+      },
+      "tabling": {
+        "applicable": true,
+        "legislature": "State Legislature",
+        "lower_house": {
+          "name": {
+            "en": "Legislative Assembly of the National Capital Territory of Delhi"
+          },
+          "date_of_placing": "2025-08-04"
+        }
+      },
+      "signed_by": {
+        "name": {
+          "en": "Roli Shukla Malge"
+        },
+        "designation": {
+          "en": "Accountant General (Audit), Delhi"
+        },
+        "date": "2025-05-27",
+        "place": {
+          "en": "New Delhi"
+        }
+      },
+      "countersigned_by": {
+        "name": {
+          "en": "K. Sanjay Murthy"
+        },
+        "designation": {
+          "en": "Comptroller and Auditor General of India"
+        },
+        "date": "2025-06-05",
+        "place": {
+          "en": "New Delhi"
+        }
+      },
+      "government_context": {
+        "nodal_ministry": null,
+        "nodal_departments": [
+          "IN-DL-DEPT-LABOUR",
+          "IN-DL-AUTH-BOCW"
+        ]
+      },
+      "report_structure": "standalone"
+    }
+  }
+}
