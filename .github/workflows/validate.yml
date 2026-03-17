@@ -1,0 +1,46 @@
+name: Validate CAG Audit Portal
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.6.0
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install jsonschema referencing
+
+      # ── Schema & registry integrity ──────────────────────────────────────────
+      - name: Sync product_type enum (check mode)
+        run: python sync_product_type_enum.py --check
+
+      - name: Check registry integrity
+        run: python check_registry_integrity.py
+
+      # ── Report validation ─────────────────────────────────────────────────────
+      - name: Validate registry references (cross-file IDs)
+        run: python validate_registry_refs.py
+
+      - name: Validate all report packages (JSON Schema)
+        run: python validate_report.py --all
+
+      - name: Validate content blocks (block-level rules)
+        run: python validate_content_blocks.py --all
+
+      # ── Schema version governance ─────────────────────────────────────────────
+      - name: Check schema version bumps (dry-run)
+        run: python bump_schema_versions.py --dry-run
+
