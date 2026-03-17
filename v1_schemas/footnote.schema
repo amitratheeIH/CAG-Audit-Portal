@@ -1,0 +1,153 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$version": "1.0",
+  "title": "Footnote Schema",
+  "description": "Chapter-level footnote file. v3.1: footnote_id now has enforced pattern; oneOf constraint enforces that exactly one anchor type is present per footnote — either anchor_block_id (paragraph/list/callout anchor) OR the triple (anchor_dataset_id + anchor_row_id + anchor_col_id) for table cell anchors. Both can be set only if the same footnote marker appears in both a block and a table derived from that block.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "unit_id",
+    "footnotes"
+  ],
+  "properties": {
+    "unit_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+      "description": "unit_id of the chapter or section this footnote file covers."
+    },
+    "footnotes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "footnote_id",
+          "marker",
+          "text"
+        ],
+        "description": "Exactly one anchor type must be set: anchor_block_id for paragraph/callout/list anchors, OR (anchor_dataset_id + anchor_row_id + anchor_col_id) for table cell anchors. The oneOf constraint enforces this.",
+        "oneOf": [
+          {
+            "required": [
+              "anchor_block_id"
+            ],
+            "not": {
+              "required": [
+                "anchor_dataset_id"
+              ]
+            }
+          },
+          {
+            "required": [
+              "anchor_dataset_id",
+              "anchor_row_id",
+              "anchor_col_id"
+            ],
+            "not": {
+              "required": [
+                "anchor_block_id"
+              ]
+            }
+          },
+          {
+            "required": [
+              "anchor_block_id",
+              "anchor_dataset_id",
+              "anchor_row_id",
+              "anchor_col_id"
+            ],
+            "description": "Both anchors permitted only when the same marker appears in a block AND in a table derived from that block."
+          },
+          {
+            "required": [
+              "anchor_unit_title"
+            ]
+          }
+        ],
+        "properties": {
+          "footnote_id": {
+            "type": "string",
+            "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]-FN[0-9]+$",
+            "description": "Stable unique ID. Pattern: {unit_id}-FN{N}. e.g. CH01-FN3, CH02-SEC03-FN12. N is a sequential integer within the unit, assigned at ingest time."
+          },
+          "marker": {
+            "type": "string",
+            "description": "Superscript marker as printed. e.g. '1', '*', '†', 'a'"
+          },
+          "anchor_block_id": {
+            "type": "string",
+            "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+            "description": "block_id of the block where the footnote superscript appears. Use for paragraph/list/callout anchors."
+          },
+          "anchor_dataset_id": {
+            "type": "string",
+            "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+            "description": "dataset_id of the table where the footnote superscript appears in a cell. Use for table cell anchors."
+          },
+          "anchor_row_id": {
+            "type": "string",
+            "description": "row_id within the dataset where the marker appears. Required when anchor_dataset_id is set."
+          },
+          "anchor_col_id": {
+            "type": "string",
+            "description": "Column id within the row where the marker appears. Required when anchor_dataset_id is set."
+          },
+          "section_id": {
+            "type": "string",
+            "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+            "description": "unit_id of the section. Enables section-wise display grouping."
+          },
+          "display_scope": {
+            "type": "string",
+            "enum": [
+              "chapter",
+              "section",
+              "inline"
+            ],
+            "default": "chapter",
+            "description": "Where this footnote renders. 'chapter' (default) — at end of the chapter. 'section' — at end of the section identified by section_id. 'inline' — immediately below the anchor block or richbox. Dataset footnotes (in dataset.schema) always render below the table regardless of this field."
+          },
+          "footnote_type": {
+            "type": "string",
+            "enum": [
+              "legal_citation",
+              "statistical_source",
+              "data_note",
+              "cross_reference",
+              "explanatory",
+              "editorial"
+            ],
+            "description": "data_note: explains a value/calculation in a table cell. statistical_source: cites the data source. legal_citation: cites an Act/Rule/Order."
+          },
+          "text": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Multilingual footnote text. Keyed by ISO-639 language code."
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "$ref": "./reference.schema"
+            }
+          },
+          "anchor_unit_title": {
+            "type": "boolean",
+            "description": "When true, the footnote marker appears on the unit title itself (section heading, chapter title). Mutually exclusive with anchor_block_id and anchor_dataset_id."
+          },
+          "anchor_char_start": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Character offset (0-indexed) within the anchor block's text where the footnote superscript marker is inserted. Used for mid-sentence placement. If omitted, marker appears at the end of the block."
+          },
+          "anchor_char_end": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Character offset (0-indexed, exclusive) marking the end of the span that carries the superscript. Typically anchor_char_end = anchor_char_start (zero-width insertion). Set end > start only when the marker should visually attach to a specific word span. If omitted, marker appears at the end of the block."
+          }
+        }
+      }
+    }
+  }
+}

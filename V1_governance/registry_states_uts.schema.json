@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$version": "1.0",
+  "title": "Registry States UTs Governance Schema",
+  "description": "Validates registry_states_uts.json. hq is a multilingual object with 'en' key holding an array of city strings. legislature field must not be present — it was removed in v1.0 as it is derivable from current_status.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$version", "updated_at", "status_values", "entries"],
+  "properties": {
+    "$version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "$schema": { "type": "string" },
+    "updated_at": { "type": "string", "format": "date" },
+    "description": { "type": "string" },
+    "status_values": { "type": "array", "items": { "type": "string" } },
+    "pipeline_note": { "type": "string" },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "iso_3166_2", "name", "current_status", "current_since", "hq", "ag_office", "active", "status_history"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^IN-[A-Z]{2,3}$" },
+          "iso_3166_2": { "type": "string", "pattern": "^IN-[A-Z]{2,3}$" },
+          "name": {
+            "type": "object",
+            "required": ["en"],
+            "properties": { "en": { "type": "string", "minLength": 1 } },
+            "additionalProperties": { "type": "string" }
+          },
+          "current_status": {
+            "type": "string",
+            "enum": ["state", "ut_with_legislature", "ut_without_legislature"]
+          },
+          "current_since": { "type": "string", "format": "date" },
+          "hq": {
+            "type": "object",
+            "required": ["en"],
+            "properties": {
+              "en": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "string" },
+                "description": "Array of city names — some states have multiple capital cities."
+              }
+            }
+          },
+          "ag_office": { "type": "string", "description": "Accountant General office code." },
+          "active": { "type": "boolean" },
+          "name_history": { "type": "array" },
+          "status_history": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["status", "valid_from"],
+              "properties": {
+                "status": { "type": "string", "enum": ["state", "ut_with_legislature", "ut_without_legislature"] },
+                "valid_from": { "type": "string", "format": "date" },
+                "valid_to": { "type": ["string", "null"], "format": "date" }
+              }
+            }
+          },
+          "predecessor_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^IN-[A-Z]{2,3}$" }
+          },
+          "successor_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^IN-[A-Z]{2,3}$" }
+          },
+          "notes": { "type": "object", "additionalProperties": { "type": "string" } }
+        },
+        "not": {
+          "required": ["legislature"],
+          "description": "legislature field was removed in v1.0 — derive from current_status at runtime."
+        }
+      }
+    }
+  }
+}

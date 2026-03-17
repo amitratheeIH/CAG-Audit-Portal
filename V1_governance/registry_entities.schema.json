@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$version": "1.0",
+  "title": "Registry Entities Governance Schema",
+  "description": "Validates registry_entities.json. Every entry must have id matching the correct prefix pattern for its level, name.en, level from level_values, entity_type from entity_type_values, and consistent level/entity_type pairing per level_entity_type_mapping.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$version", "updated_at", "level_values", "entity_type_values", "level_entity_type_mapping", "entries"],
+  "properties": {
+    "$version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "$schema": { "type": "string" },
+    "updated_at": { "type": "string", "format": "date" },
+    "description": { "type": "string" },
+    "id_convention": { "type": "object" },
+    "level_values": { "type": "array", "items": { "type": "string" } },
+    "entity_type_values": { "type": "array", "items": { "type": "string" } },
+    "level_entity_type_mapping": { "type": "object" },
+    "function_vocabulary_ref": { "type": "string" },
+    "function_vocabulary": { "type": "object" },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "level", "entity_type", "jurisdiction", "active", "archived"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+          },
+          "name": {
+            "type": "object",
+            "required": ["en"],
+            "properties": { "en": { "type": "string", "minLength": 1 } },
+            "additionalProperties": { "type": "string" }
+          },
+          "short_name": { "type": "object", "additionalProperties": { "type": "string" } },
+          "acronym": { "type": ["string", "null"] },
+          "level": { "type": "string" },
+          "entity_type": { "type": "string" },
+          "jurisdiction": { "type": "string", "enum": ["UNION", "STATE", "UT", "LG"] },
+          "state_ut_id": {
+            "type": ["string", "null"],
+            "pattern": "^IN-[A-Z]{2,3}$"
+          },
+          "function_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^FUNC-[A-Z][A-Z0-9\\-]+$" }
+          },
+          "parent_id": {
+            "type": ["string", "null"],
+            "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+          },
+          "hq": { "type": "object", "additionalProperties": { "type": "string" } },
+          "established": { "type": ["string", "null"], "format": "date" },
+          "active": { "type": "boolean" },
+          "archived": { "type": "boolean" },
+          "dissolution_reason": { "type": ["string", "null"] },
+          "dissolved_on": { "type": ["string", "null"], "format": "date" },
+          "name_history": { "type": "array" },
+          "predecessor_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$" }
+          },
+          "successor_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$" }
+          },
+          "notes": { "type": "object", "additionalProperties": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CAG Footnote Builder</title>
+<style>
+:root{
+  --bg:#0c0f1a;--sur:#131825;--sur2:#192033;--sur3:#1e2840;
+  --bdr:#273050;--bdr2:#3a4870;
+  --acc:#6875f5;--grn:#1fcc9e;--amb:#f5c842;--red:#f56060;--pur:#a78bfa;
+  --txt:#d8dff0;--txt2:#7e8db5;--txt3:#404e78;
+  --r:5px;--mono:'Cascadia Code','Fira Code','Consolas',monospace;
+  --sans:-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--txt);font-size:12px;overflow:hidden}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;gap:10px;padding:8px 16px;background:var(--sur);border-bottom:1px solid var(--bdr);flex-shrink:0;flex-wrap:wrap}
+.logo{width:24px;height:24px;background:var(--amb);border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:#0c0f1a;flex-shrink:0}
+.hdr-title{font-size:13px;font-weight:500;white-space:nowrap}
+.hdr-meta{display:flex;align-items:center;gap:8px;flex:1;min-width:260px;flex-wrap:wrap}
+.mf{display:flex;align-items:center;gap:5px}
+.mf label{font-size:10px;color:var(--txt2);white-space:nowrap;font-weight:500}
+.mf input,.mf select{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);color:var(--txt);font-family:var(--mono);font-size:11px;padding:4px 7px;outline:none;transition:border-color .15s}
+.mf input{width:180px}.mf input:focus,.mf select:focus{border-color:var(--acc)}
+.hdr-btns{display:flex;gap:5px;flex-shrink:0}
+.btn{padding:4px 11px;border-radius:var(--r);font-family:var(--sans);font-size:11px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all .15s;outline:none;white-space:nowrap}
+.bg{background:transparent;border-color:var(--bdr);color:var(--txt2)}.bg:hover{border-color:var(--txt2);color:var(--txt)}
+.bgg{background:rgba(31,204,158,.12);border-color:rgba(31,204,158,.3);color:var(--grn)}.bgg:hover{background:rgba(31,204,158,.2)}
+.bga{background:var(--acc);color:#fff;border-color:var(--acc)}.bga:hover{background:#5565e8}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:280px 1fr;height:calc(100vh - 45px)}
+
+/* LEFT: FOOTNOTE LIST */
+.list-pane{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--bdr);background:var(--sur)}
+.list-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--bdr);flex-shrink:0}
+.list-hdr-ttl{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--txt3)}
+.list-hdr-cnt{font-size:9px;background:var(--sur2);border-radius:3px;padding:1px 5px;color:var(--txt3)}
+.list-scr{overflow-y:auto;flex:1}.list-scr::-webkit-scrollbar{width:3px}.list-scr::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+
+/* FOOTNOTE ROW */
+.fn-row{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border-bottom:1px solid rgba(39,48,80,.4);cursor:pointer;transition:background .12s;user-select:none}
+.fn-row:hover{background:var(--sur2)}.fn-row.sel{background:rgba(104,117,245,.1);border-left:2px solid var(--acc)}
+.fn-marker{flex-shrink:0;min-width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amb);background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.2)}
+.fn-body{flex:1;min-width:0}
+.fn-id{font-family:var(--mono);font-size:9px;color:var(--txt3)}
+.fn-preview{font-size:11px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.fn-tags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
+.fn-type-badge{font-size:8px;padding:1px 5px;border-radius:3px;font-weight:600;background:rgba(104,117,245,.1);color:var(--acc);border:1px solid rgba(104,117,245,.18)}
+.fn-anchor-badge{font-size:8px;padding:1px 5px;border-radius:3px;font-weight:600}
+.anc-block{background:rgba(31,204,158,.1);color:var(--grn);border:1px solid rgba(31,204,158,.2)}
+.anc-table{background:rgba(167,139,250,.1);color:var(--pur);border:1px solid rgba(167,139,250,.2)}
+.anc-both{background:rgba(245,200,66,.1);color:var(--amb);border:1px solid rgba(245,200,66,.2)}
+.anc-none{background:rgba(245,96,96,.1);color:var(--red);border:1px solid rgba(245,96,96,.2)}
+.fn-row-del{opacity:0;background:none;border:none;cursor:pointer;color:var(--txt3);font-size:13px;padding:2px 4px;margin-left:auto;flex-shrink:0;transition:all .15s;align-self:center}
+.fn-row:hover .fn-row-del{opacity:1}.fn-row-del:hover{color:var(--red)}
+
+.empty-list{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;color:var(--txt3);font-size:11px;padding:20px;text-align:center}
+.esc{font-size:32px;opacity:.25}
+
+/* RIGHT: EDIT FORM */
+.form-pane{display:flex;flex-direction:column;overflow:hidden}
+.form-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:var(--sur);border-bottom:1px solid var(--bdr);flex-shrink:0}
+.form-hdr-ttl{font-size:11px;font-weight:500;color:var(--txt2)}
+.form-scr{overflow-y:auto;flex:1;padding:16px}.form-scr::-webkit-scrollbar{width:4px}.form-scr::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+.empty-form{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;color:var(--txt3);font-size:11px;padding:20px;text-align:center}
+
+/* FORM ELEMENTS */
+.sec{margin-bottom:18px}
+.slbl{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--txt3);padding-bottom:6px;border-bottom:1px solid var(--bdr);margin-bottom:10px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.bdb{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;background:rgba(104,117,245,.12);color:var(--acc);border:1px solid rgba(104,117,245,.2)}
+.bdg{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;background:rgba(31,204,158,.1);color:var(--grn);border:1px solid rgba(31,204,158,.2)}
+.bdr2{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;background:rgba(245,96,96,.1);color:var(--red);border:1px solid rgba(245,96,96,.2)}
+.fld{margin-bottom:9px}
+.lbl{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:var(--txt2);margin-bottom:3px;flex-wrap:wrap}
+.req{color:var(--red);font-size:10px}
+.hint{font-size:10px;color:var(--txt3);margin-top:2px;line-height:1.4}
+input[type=text],input[type=number],select,textarea{
+  width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);
+  color:var(--txt);font-family:var(--sans);font-size:11px;padding:5px 8px;outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--acc)}
+input::placeholder,textarea::placeholder{color:var(--txt3)}
+select option{background:var(--sur2)}
+textarea{resize:vertical;min-height:52px;line-height:1.5}
+.mono{font-family:var(--mono);font-size:11px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+
+/* ML rows */
+.ml-row{display:grid;grid-template-columns:36px 1fr;gap:5px;margin-bottom:4px;align-items:start}
+.ml-lbl{padding:5px 3px;background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);font-family:var(--mono);font-size:9px;color:var(--txt3);text-align:center}
+
+/* ANCHOR TYPE SELECTOR */
+.anc-selector{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.anc-pill{display:flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid var(--bdr);border-radius:20px;font-size:11px;color:var(--txt3);cursor:pointer;transition:all .15s;user-select:none}
+.anc-pill input{display:none}
+.anc-pill.on-block{border-color:var(--grn);color:var(--grn);background:rgba(31,204,158,.08)}
+.anc-pill.on-table{border-color:var(--pur);color:var(--pur);background:rgba(167,139,250,.08)}
+.anc-pill.on-both{border-color:var(--amb);color:var(--amb);background:rgba(245,200,66,.08)}
+
+/* ANCHOR PANELS */
+.anc-panel{display:none;padding:10px;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:8px}
+.anc-panel.on{display:block}
+.anc-panel-ttl{font-size:10px;font-weight:600;color:var(--txt2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.anc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.adg{background:var(--grn)}.adp{background:var(--pur)}
+
+/* VALIDATION */
+.val-bar{padding:6px 16px;background:rgba(245,96,96,.06);border-top:1px solid rgba(245,96,96,.15);font-size:10px;color:var(--red);display:none;flex-shrink:0}
+.val-bar.on{display:block}
+
+/* STATUS BAR */
+.sbar{display:flex;align-items:center;justify-content:space-between;padding:4px 16px;background:var(--sur);border-top:1px solid var(--bdr);font-size:10px;color:var(--txt3);flex-shrink:0}
+.sok{color:var(--grn)}.swrn{color:var(--amb)}
+
+/* TOGGLE */
+.togrow{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:6px}
+.toglbl{font-size:11px;color:var(--txt2)}
+.tog{position:relative;width:32px;height:18px;cursor:pointer;flex-shrink:0}
+.tog input{display:none}.tog-t{position:absolute;inset:0;background:var(--bdr);border-radius:9px;transition:background .2s}
+.tog input:checked+.tog-t{background:var(--acc)}
+.tog-k{position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:transform .2s;pointer-events:none}
+.tog input:checked~.tog-k{transform:translateX(14px)}
+
+/* TAG INPUT */
+.tw{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);padding:4px 6px;display:flex;flex-wrap:wrap;gap:3px;min-height:30px;cursor:text;transition:border-color .15s}
+.tw:focus-within{border-color:var(--acc)}
+.tag{display:inline-flex;align-items:center;gap:2px;background:rgba(104,117,245,.15);border:1px solid rgba(104,117,245,.25);color:var(--acc);border-radius:3px;font-size:9px;font-family:var(--mono);padding:1px 5px}
+.tag-x{cursor:pointer;color:var(--txt3);font-size:11px;line-height:1}.tag-x:hover{color:var(--red)}
+.ti{border:none!important;outline:none!important;background:transparent!important;color:var(--txt)!important;font-family:var(--mono)!important;font-size:10px!important;width:90px!important;min-width:60px;padding:1px 3px!important}
+
+/* INFO BOX */
+.info-box{padding:8px 10px;background:var(--sur2);border-radius:var(--r);border-left:2px solid var(--acc);font-size:10px;color:var(--txt2);line-height:1.6;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="logo">FN</div>
+  <div class="hdr-title">Footnote Builder</div>
+  <div class="hdr-meta">
+    <div class="mf">
+      <label>UNIT ID</label>
+      <input class="mono" type="text" id="G_unit_id" placeholder="AR01-CAG-2025-STATE-MP-CH02" oninput="onUnitIdChange()">
+    </div>
+    <div class="mf">
+      <label>LANGS</label>
+      <div id="lang-pills" style="display:flex;flex-wrap:wrap;gap:3px"></div>
+    </div>
+  </div>
+  <div class="hdr-btns">
+    <input type="file" id="load-fn" accept=".json" style="display:none" onchange="handleLoad(this)">
+    <button class="btn bg" onclick="document.getElementById('load-fn').click()">↑ Load JSON</button>
+    <button class="btn bga" onclick="addFootnote()">+ Add footnote</button>
+    <button class="btn bgg" onclick="downloadJSON()">↓ Download footnotes JSON</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- LEFT: LIST -->
+  <div class="list-pane">
+    <div class="list-hdr">
+      <span class="list-hdr-ttl">Footnotes <span class="list-hdr-cnt" id="fn-count">0</span></span>
+      <span style="font-size:9px;color:var(--txt3)" id="fn-filename"></span>
+    </div>
+    <div class="list-scr" id="fn-list">
+      <div class="empty-list">
+        <div class="esc">†</div>
+        <div>No footnotes yet.<br>Click "+ Add footnote" to begin.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: FORM -->
+  <div class="form-pane">
+    <div class="form-hdr">
+      <span class="form-hdr-ttl" id="form-ttl">Select a footnote to edit</span>
+      <div style="display:flex;gap:6px" id="form-actions" style="display:none">
+        <button class="btn bg" style="font-size:10px;padding:3px 8px;color:var(--red)" onclick="deleteSelected()">Delete</button>
+      </div>
+    </div>
+    <div class="form-scr" id="form-body">
+      <div class="empty-form">
+        <div class="esc" style="font-size:40px">†</div>
+        <div>Select a footnote from the list,<br>or add a new one.</div>
+      </div>
+    </div>
+    <div class="val-bar" id="val-bar"></div>
+    <div class="sbar"><span id="sbar-msg" class="sok">Ready</span><span id="sbar-info"></span></div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+var LANGS = ['en'];
+var ALL_LANGS = [['en','English'],['hi','Hindi'],['ta','Tamil'],['te','Telugu'],
+  ['ur','Urdu'],['kn','Kannada'],['ml','Malayalam'],['mr','Marathi'],
+  ['gu','Gujarati'],['pa','Punjabi'],['bn','Bengali'],['or','Odia']];
+
+// footnote objects
+var FOOTNOTES = [];
+var SEL_IDX = -1;
+
+// reference tags per footnote (keyed by index)
+var REF_TAGS = {};
+
+// ══════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════
+function gv(id){ var e=document.getElementById(id); return e?(e.value||'').trim():''; }
+function sv(id,val){ var e=document.getElementById(id); if(e&&val!=null) e.value=val; }
+function gc(id){ var e=document.getElementById(id); return e?e.checked:false; }
+function sc(id,val){ var e=document.getElementById(id); if(e) e.checked=!!val; }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function unitId(){ return gv('G_unit_id'); }
+function pad3(n){ return n<10?'00'+n:n<100?'0'+n:''+n; }
+
+function genFnId(n){
+  var uid=unitId();
+  var base=uid||'UNIT';
+  return base+'-FN'+pad3(n);
+}
+
+// ══════════════════════════════════════════════════════
+// LANGUAGE
+// ══════════════════════════════════════════════════════
+function initLangPills(){
+  var w=document.getElementById('lang-pills');
+  w.innerHTML=ALL_LANGS.map(function(l){
+    var code=l[0], sel=LANGS.indexOf(code)>=0;
+    return '<label style="display:flex;align-items:center;gap:3px;padding:2px 6px;border:1px solid '
+      +(sel?'rgba(104,117,245,.4)':'var(--bdr)')+';border-radius:12px;font-size:9px;color:'
+      +(sel?'var(--acc)':'var(--txt3)')+';cursor:pointer;user-select:none" id="lp-'+code+'">'
+      +'<input type="checkbox" value="'+code+'" '+(sel?'checked':'')
+      +' onchange="toggleLang(\''+code+'\',this.checked)" style="display:none">'+code+'</label>';
+  }).join('');
+}
+function toggleLang(code,add){
+  if(add){if(LANGS.indexOf(code)<0)LANGS.push(code);}
+  else LANGS=LANGS.filter(function(l){return l!==code;});
+  var p=document.getElementById('lp-'+code);
+  if(p){ p.style.borderColor=add?'rgba(104,117,245,.4)':'var(--bdr)'; p.style.color=add?'var(--acc)':'var(--txt3)'; }
+  if(SEL_IDX>=0) renderForm(SEL_IDX);
+}
+
+// ══════════════════════════════════════════════════════
+// UNIT ID CHANGE → regenerate IDs if possible
+// ══════════════════════════════════════════════════════
+function onUnitIdChange(){
+  var uid=unitId();
+  document.getElementById('fn-filename').textContent = uid ? 'footnotes_'+uid+'.json' : '';
+  // offer to regenerate all IDs
+  FOOTNOTES.forEach(function(fn,i){
+    // only auto-regen if it's still default pattern (ends in -FN###)
+    if(/\-FN\d+$/.test(fn.footnote_id)){
+      fn.footnote_id = genFnId(i+1);
+    }
+  });
+  renderList();
+  if(SEL_IDX>=0) renderForm(SEL_IDX);
+  sbar('Unit ID updated');
+}
+
+// ══════════════════════════════════════════════════════
+// FOOTNOTE CRUD
+// ══════════════════════════════════════════════════════
+function addFootnote(){
+  var n=FOOTNOTES.length+1;
+  FOOTNOTES.push({
+    footnote_id: genFnId(n),
+    marker: '',
+    text: {},
+    anchor_type: 'block',   // UI-only: 'block' | 'table' | 'both'
+    anchor_block_id: '',
+    anchor_dataset_id: '',
+    anchor_row_id: '',
+    anchor_col_id: '',
+    section_id: '',
+    display_scope: 'chapter',
+    footnote_type: '',
+    references: []
+  });
+  REF_TAGS[FOOTNOTES.length-1]=[];
+  renderList();
+  selectFn(FOOTNOTES.length-1);
+  sbar('Footnote added. Fill in required fields.');
+}
+
+function deleteSelected(){
+  if(SEL_IDX<0) return;
+  if(!confirm('Delete footnote '+FOOTNOTES[SEL_IDX].footnote_id+'?')) return;
+  FOOTNOTES.splice(SEL_IDX,1);
+  delete REF_TAGS[SEL_IDX];
+  // renumber REF_TAGS
+  var newRT={};
+  Object.keys(REF_TAGS).forEach(function(k){
+    var ki=parseInt(k);
+    if(ki>SEL_IDX) newRT[ki-1]=REF_TAGS[k];
+    else if(ki<SEL_IDX) newRT[ki]=REF_TAGS[k];
+  });
+  REF_TAGS=newRT;
+  SEL_IDX=Math.min(SEL_IDX, FOOTNOTES.length-1);
+  renderList();
+  if(SEL_IDX>=0) renderForm(SEL_IDX);
+  else clearForm();
+  updateCounters();
+}
+
+function selectFn(i){
+  SEL_IDX=i;
+  renderList();
+  renderForm(i);
+  document.getElementById('form-actions').style.display='flex';
+}
+
+// ══════════════════════════════════════════════════════
+// LIST RENDERING
+// ══════════════════════════════════════════════════════
+function anchorBadge(fn){
+  var at=fn.anchor_type||'block';
+  if(at==='block'&&!fn.anchor_block_id) return '<span class="fn-anchor-badge anc-none">no anchor</span>';
+  if(at==='block') return '<span class="fn-anchor-badge anc-block">block</span>';
+  if(at==='table'&&(!fn.anchor_dataset_id||!fn.anchor_row_id||!fn.anchor_col_id)) return '<span class="fn-anchor-badge anc-none">incomplete table anchor</span>';
+  if(at==='table') return '<span class="fn-anchor-badge anc-table">table cell</span>';
+  return '<span class="fn-anchor-badge anc-both">block + table</span>';
+}
+
+function renderList(){
+  var el=document.getElementById('fn-list');
+  if(!FOOTNOTES.length){
+    el.innerHTML='<div class="empty-list"><div class="esc">†</div><div>No footnotes yet.<br>Click "+ Add footnote" to begin.</div></div>';
+    document.getElementById('fn-count').textContent='0';
+    return;
+  }
+  var html='';
+  FOOTNOTES.forEach(function(fn,i){
+    var sel=SEL_IDX===i;
+    var preview=(fn.text&&(fn.text[LANGS[0]]||fn.text.en))||'(no text yet)';
+    var typeBadge=fn.footnote_type?'<span class="fn-type-badge">'+fn.footnote_type.replace(/_/g,' ')+'</span>':'';
+    html+='<div class="fn-row'+(sel?' sel':'')+'" onclick="selectFn('+i+')">'
+      +'<div class="fn-marker">'+(fn.marker?esc(fn.marker):'?')+'</div>'
+      +'<div class="fn-body">'
+        +'<div class="fn-id">'+esc(fn.footnote_id)+'</div>'
+        +'<div class="fn-preview">'+esc(preview.slice(0,60)+(preview.length>60?'…':''))+'</div>'
+        +'<div class="fn-tags">'+typeBadge+anchorBadge(fn)+'</div>'
+      +'</div>'
+      +'<button class="fn-row-del" onclick="event.stopPropagation();SEL_IDX='+i+';deleteSelected()" title="Delete">✕</button>'
+      +'</div>';
+  });
+  el.innerHTML=html;
+  document.getElementById('fn-count').textContent=FOOTNOTES.length;
+  updateCounters();
+}
+
+// ══════════════════════════════════════════════════════
+// FORM RENDERING
+// ══════════════════════════════════════════════════════
+function clearForm(){
+  SEL_IDX=-1;
+  document.getElementById('form-body').innerHTML='<div class="empty-form"><div class="esc" style="font-size:40px">†</div><div>Select a footnote from the list.</div></div>';
+  document.getElementById('form-ttl').textContent='Select a footnote to edit';
+  document.getElementById('form-actions').style.display='none';
+  document.getElementById('val-bar').classList.remove('on');
+}
+
+function renderForm(i){
+  var fn=FOOTNOTES[i];
+  if(!fn){ clearForm(); return; }
+  document.getElementById('form-ttl').textContent='Editing: '+fn.footnote_id;
+  document.getElementById('form-actions').style.display='flex';
+
+  if(!REF_TAGS[i]) REF_TAGS[i]=[];
+  var refs=REF_TAGS[i];
+  var at=fn.anchor_type||'block';
+
+  var h='';
+
+  // ── IDENTITY ──
+  h+='<div class="sec"><div class="slbl">Identity</div>';
+  h+='<div class="g2">';
+  h+='<div class="fld"><div class="lbl">footnote_id <span class="req">*</span></div>'
+    +'<input class="mono" type="text" id="F_footnote_id" value="'+esc(fn.footnote_id)+'"'
+    +' oninput="FOOTNOTES['+i+'].footnote_id=this.value;renderList()">'
+    +'<div class="hint">Pattern: {unit_id}-FN{N}  e.g. AR01-CH02-FN001</div></div>';
+  h+='<div class="fld"><div class="lbl">marker <span class="req">*</span></div>'
+    +'<input class="mono" type="text" id="F_marker" value="'+esc(fn.marker)+'"'
+    +' oninput="FOOTNOTES['+i+'].marker=this.value;renderList()" placeholder="* or 1 or †">'
+    +'<div class="hint">Superscript symbol as printed in the report</div></div>';
+  h+='</div></div>';
+
+  // ── TEXT ──
+  h+='<div class="sec"><div class="slbl">Footnote text <span class="req">*</span> <span class="bdb">multilingual</span></div>';
+  h+=LANGS.map(function(l){
+    var v=(fn.text&&fn.text[l]||'').replace(/"/g,'&quot;');
+    return '<div class="ml-row"><div class="ml-lbl">'+l+'</div>'
+      +'<textarea rows="2" oninput="if(!FOOTNOTES['+i+'].text)FOOTNOTES['+i+'].text={};FOOTNOTES['+i+'].text[\''+l+'\']=this.value;renderList()">'+v+'</textarea></div>';
+  }).join('');
+  h+='</div>';
+
+  // ── FOOTNOTE TYPE ──
+  h+='<div class="sec"><div class="slbl">Classification</div>';
+  h+='<div class="g2">';
+  h+='<div class="fld"><div class="lbl">footnote_type</div>'
+    +'<select id="F_fn_type" onchange="FOOTNOTES['+i+'].footnote_type=this.value;renderList()">';
+  ['','legal_citation','statistical_source','data_note','cross_reference','explanatory','editorial'].forEach(function(v){
+    h+='<option value="'+v+'"'+(fn.footnote_type===v?' selected':'')+'>'+(v||'— select —')+'</option>';
+  });
+  h+='</select>'
+    +'<div class="hint">legal_citation: cites an Act/Rule. statistical_source: data provenance. data_note: explains a table value. cross_reference: points to another unit/report.</div></div>';
+  h+='<div class="fld"><div class="lbl">display_scope</div>'
+    +'<select id="F_display_scope" onchange="FOOTNOTES['+i+'].display_scope=this.value">'
+    +'<option value="chapter"'+(fn.display_scope!=='section'?' selected':'')+'>chapter — renders at end of chapter</option>'
+    +'<option value="section"'+(fn.display_scope==='section'?' selected':'')+'>section — renders at end of section</option>'
+    +'</select></div>';
+  h+='</div>';
+
+  // section_id — only shown when display_scope=section
+  h+='<div id="section-id-row" class="fld" style="'+(fn.display_scope==='section'?'':'display:none')+'">'
+    +'<div class="lbl">section_id <span class="req">*</span> <span class="hint" style="display:inline">required when display_scope=section</span></div>'
+    +'<input class="mono" type="text" id="F_section_id" value="'+esc(fn.section_id||'')+'"'
+    +' oninput="FOOTNOTES['+i+'].section_id=this.value" placeholder="AR01-CH02-SEC03">'
+    +'<div class="hint">unit_id of the section at the end of which this footnote renders</div></div>';
+  h+='</div>';
+
+  // ── ANCHOR ──
+  h+='<div class="sec">';
+  h+='<div class="slbl">Anchor <span class="bdr2">required — exactly one anchor type</span></div>';
+  h+='<div class="info-box">Every footnote must be anchored to a location in the report where its superscript marker appears. Choose <b>Block anchor</b> for markers in paragraph, list, heading, or callout text. Choose <b>Table cell anchor</b> for markers in a dataset cell. Choose <b>Both</b> only when the same marker appears in a block AND in a table derived directly from that block.</div>';
+
+  // anchor type selector
+  h+='<div class="anc-selector">'
+    +'<label class="anc-pill'+(at==='block'?' on-block':'')+'" onclick="setAnchorType('+i+',\'block\')">'
+    +'<input type="radio" name="anc_'+i+'" value="block"'+(at==='block'?' checked':'')+'> ◼ Block anchor</label>'
+    +'<label class="anc-pill'+(at==='table'?' on-table':'')+'" onclick="setAnchorType('+i+',\'table\')">'
+    +'<input type="radio" name="anc_'+i+'" value="table"'+(at==='table'?' checked':'')+'> ⊞ Table cell anchor</label>'
+    +'<label class="anc-pill'+(at==='both'?' on-both':'')+'" onclick="setAnchorType('+i+',\'both\')">'
+    +'<input type="radio" name="anc_'+i+'" value="both"'+(at==='both'?' checked':'')+'> ◈ Both</label>'
+    +'</div>';
+
+  // block anchor panel
+  h+='<div class="anc-panel'+(at==='block'||at==='both'?' on':'')+'" id="anc-block-panel">'
+    +'<div class="anc-panel-ttl"><span class="anc-dot adg"></span> Block anchor</div>'
+    +'<div class="fld"><div class="lbl">anchor_block_id <span class="req">*</span></div>'
+    +'<input class="mono" type="text" id="F_anchor_block_id" value="'+esc(fn.anchor_block_id||'')+'"'
+    +' oninput="FOOTNOTES['+i+'].anchor_block_id=this.value;renderList()" placeholder="AR01-CAG-2025-STATE-MP-CH02-P003">'
+    +'<div class="hint">block_id of the paragraph/list/callout/heading where the superscript appears</div></div>'
+    +'</div>';
+
+  // table anchor panel
+  h+='<div class="anc-panel'+(at==='table'||at==='both'?' on':'')+'" id="anc-table-panel">'
+    +'<div class="anc-panel-ttl"><span class="anc-dot adp"></span> Table cell anchor</div>'
+    +'<div class="fld"><div class="lbl">anchor_dataset_id <span class="req">*</span></div>'
+    +'<input class="mono" type="text" id="F_anchor_dataset_id" value="'+esc(fn.anchor_dataset_id||'')+'"'
+    +' oninput="FOOTNOTES['+i+'].anchor_dataset_id=this.value;renderList()" placeholder="CH02-DS01">'
+    +'<div class="hint">dataset_id of the table this footnote belongs to</div></div>'
+    +'<div class="g2">'
+    +'<div class="fld"><div class="lbl">anchor_row_id <span class="req">*</span></div>'
+    +'<input class="mono" type="text" id="F_anchor_row_id" value="'+esc(fn.anchor_row_id||'')+'"'
+    +' oninput="FOOTNOTES['+i+'].anchor_row_id=this.value" placeholder="CH02-DS01-R003">'
+    +'<div class="hint">row_id of the row containing the marker</div></div>'
+    +'<div class="fld"><div class="lbl">anchor_col_id <span class="req">*</span></div>'
+    +'<input class="mono" type="text" id="F_anchor_col_id" value="'+esc(fn.anchor_col_id||'')+'"'
+    +' oninput="FOOTNOTES['+i+'].anchor_col_id=this.value" placeholder="amount_collected">'
+    +'<div class="hint">column id in the row where the marker appears</div></div>'
+    +'</div></div>';
+
+  h+='</div>'; // /anchor sec
+
+  // ── REFERENCES ──
+  h+='<div class="sec"><div class="slbl">References <span class="bdb">cross-references attached to this footnote</span></div>';
+  h+='<div class="info-box" style="margin-bottom:8px">Use reference.schema objects to link this footnote to legislation, another report section, a dataset, or an external URL. Press Enter to add each reference type:id pair.</div>';
+  h+='<div class="fld"><div class="lbl">reference targets <span class="bdb">format: type:target — press Enter</span></div>';
+  h+='<div class="tw" id="tw-refs-'+i+'" onclick="document.getElementById(\'ti-refs-'+i+'\').focus()">';
+  refs.forEach(function(r,ri){
+    h+='<span class="tag">'+esc(r)+'<span class="tag-x" onclick="removeRef('+i+','+ri+')">×</span></span>';
+  });
+  h+='<input class="ti" id="ti-refs-'+i+'" placeholder="legislation:ACT-NREGA-2005 or report:AR05…" onkeydown="addRef(event,'+i+')">';
+  h+='</div><div class="hint">Examples: legislation:ACT-NREGA-2005 · report:AR05-CAG-2022-STATE-MP · external:https://… · dataset:CH02-DS01</div></div>';
+  h+='</div>';
+
+  document.getElementById('form-body').innerHTML=h;
+
+  // wire display_scope change to show/hide section_id row
+  document.getElementById('F_display_scope').addEventListener('change', function(){
+    var row=document.getElementById('section-id-row');
+    if(row) row.style.display=this.value==='section'?'':'none';
+  });
+
+  validate(i);
+}
+
+// ══════════════════════════════════════════════════════
+// ANCHOR TYPE SWITCH
+// ══════════════════════════════════════════════════════
+function setAnchorType(i, type){
+  FOOTNOTES[i].anchor_type=type;
+  // show/hide panels
+  var bp=document.getElementById('anc-block-panel');
+  var tp=document.getElementById('anc-table-panel');
+  if(bp) bp.classList.toggle('on', type==='block'||type==='both');
+  if(tp) tp.classList.toggle('on', type==='table'||type==='both');
+  // update pill styles
+  document.querySelectorAll('.anc-pill').forEach(function(p){ p.classList.remove('on-block','on-table','on-both'); });
+  var pills=document.querySelectorAll('.anc-pill');
+  if(type==='block'&&pills[0]) pills[0].classList.add('on-block');
+  if(type==='table'&&pills[1]) pills[1].classList.add('on-table');
+  if(type==='both'&&pills[2]) pills[2].classList.add('on-both');
+  renderList();
+  validate(i);
+}
+
+// ══════════════════════════════════════════════════════
+// REFERENCES
+// ══════════════════════════════════════════════════════
+function addRef(e,i){
+  if(e.key!=='Enter') return;
+  var val=e.target.value.trim(); if(!val) return;
+  e.target.value='';
+  if(!REF_TAGS[i]) REF_TAGS[i]=[];
+  REF_TAGS[i].push(val);
+  renderForm(i);
+}
+function removeRef(i,ri){
+  REF_TAGS[i].splice(ri,1);
+  renderForm(i);
+}
+
+// ══════════════════════════════════════════════════════
+// VALIDATION
+// ══════════════════════════════════════════════════════
+function validate(i){
+  var fn=FOOTNOTES[i];
+  var errs=[];
+  if(!fn.footnote_id) errs.push('footnote_id is required');
+  if(!fn.marker) errs.push('marker is required');
+  if(!fn.text||!Object.values(fn.text).some(function(v){return v&&v.trim();})) errs.push('text.en (or at least one language) is required');
+  var at=fn.anchor_type||'block';
+  if(at==='block'||at==='both'){
+    if(!fn.anchor_block_id) errs.push('anchor_block_id is required for block anchor');
+  }
+  if(at==='table'||at==='both'){
+    if(!fn.anchor_dataset_id) errs.push('anchor_dataset_id is required for table anchor');
+    if(!fn.anchor_row_id) errs.push('anchor_row_id is required for table anchor');
+    if(!fn.anchor_col_id) errs.push('anchor_col_id is required for table anchor');
+  }
+  if(fn.display_scope==='section'&&!fn.section_id) errs.push('section_id is required when display_scope=section');
+  var bar=document.getElementById('val-bar');
+  if(errs.length){ bar.innerHTML='⚠ '+errs.join(' · '); bar.classList.add('on'); }
+  else { bar.classList.remove('on'); }
+  return errs.length===0;
+}
+
+// ══════════════════════════════════════════════════════
+// BUILD JSON
+// ══════════════════════════════════════════════════════
+function buildJSON(){
+  var uid=unitId();
+  var fnArray=FOOTNOTES.map(function(fn,i){
+    var out={};
+    out.footnote_id=fn.footnote_id;
+    out.marker=fn.marker;
+    // text
+    var textOut={};
+    LANGS.forEach(function(l){if(fn.text&&fn.text[l]&&fn.text[l].trim())textOut[l]=fn.text[l];});
+    if(Object.keys(textOut).length) out.text=textOut;
+    // anchor
+    var at=fn.anchor_type||'block';
+    if(at==='block'||at==='both'){
+      if(fn.anchor_block_id) out.anchor_block_id=fn.anchor_block_id;
+    }
+    if(at==='table'||at==='both'){
+      if(fn.anchor_dataset_id) out.anchor_dataset_id=fn.anchor_dataset_id;
+      if(fn.anchor_row_id) out.anchor_row_id=fn.anchor_row_id;
+      if(fn.anchor_col_id) out.anchor_col_id=fn.anchor_col_id;
+    }
+    if(fn.section_id) out.section_id=fn.section_id;
+    if(fn.display_scope&&fn.display_scope!=='chapter') out.display_scope=fn.display_scope;
+    if(fn.footnote_type) out.footnote_type=fn.footnote_type;
+    // references
+    var refs=REF_TAGS[i]||[];
+    if(refs.length){
+      out.references=refs.map(function(r){
+        var parts=r.split(':'); var type=parts[0]; var target=parts.slice(1).join(':');
+        return {type:type.trim(), target:target.trim()};
+      });
+    }
+    return out;
+  });
+  return { unit_id: uid||'', footnotes: fnArray };
+}
+
+// ══════════════════════════════════════════════════════
+// DOWNLOAD
+// ══════════════════════════════════════════════════════
+function downloadJSON(){
+  if(!FOOTNOTES.length){alert('No footnotes to download.');return;}
+  var uid=unitId();
+  var fname=uid?'footnotes_'+uid+'.json':'footnotes.json';
+  var json=JSON.stringify(buildJSON(),null,2);
+  var blob=new Blob([json],{type:'application/json'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=fname;
+  a.click();
+  sbar('Downloaded '+fname+' ('+FOOTNOTES.length+' footnotes)');
+}
+
+// ══════════════════════════════════════════════════════
+// LOAD
+// ══════════════════════════════════════════════════════
+function handleLoad(input){
+  var file=input.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var d=JSON.parse(e.target.result);
+      if(d.unit_id) sv('G_unit_id',d.unit_id);
+      FOOTNOTES=[];
+      REF_TAGS={};
+      (d.footnotes||[]).forEach(function(fn,i){
+        var at='block';
+        if(fn.anchor_block_id&&fn.anchor_dataset_id) at='both';
+        else if(fn.anchor_dataset_id) at='table';
+        FOOTNOTES.push({
+          footnote_id: fn.footnote_id||'',
+          marker: fn.marker||'',
+          text: fn.text||{},
+          anchor_type: at,
+          anchor_block_id: fn.anchor_block_id||'',
+          anchor_dataset_id: fn.anchor_dataset_id||'',
+          anchor_row_id: fn.anchor_row_id||'',
+          anchor_col_id: fn.anchor_col_id||'',
+          section_id: fn.section_id||'',
+          display_scope: fn.display_scope||'chapter',
+          footnote_type: fn.footnote_type||''
+        });
+        // references
+        var refs=[];
+        (fn.references||[]).forEach(function(r){
+          if(r.type&&r.target) refs.push(r.type+':'+r.target);
+        });
+        REF_TAGS[i]=refs;
+      });
+      onUnitIdChange();
+      renderList();
+      if(FOOTNOTES.length){ selectFn(0); }
+      else clearForm();
+      sbar('Loaded '+d.unit_id+' — '+FOOTNOTES.length+' footnotes');
+    }catch(err){ alert('Error loading: '+err.message); }
+  };
+  reader.readAsText(file);
+  input.value='';
+}
+
+// ══════════════════════════════════════════════════════
+// STATUS
+// ══════════════════════════════════════════════════════
+function updateCounters(){
+  document.getElementById('fn-count').textContent=FOOTNOTES.length;
+  document.getElementById('sbar-info').textContent=FOOTNOTES.length+' footnotes';
+  var uid=unitId();
+  document.getElementById('fn-filename').textContent=uid?'footnotes_'+uid+'.json':'';
+}
+function sbar(msg){ document.getElementById('sbar-msg').textContent=msg; updateCounters(); }
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+initLangPills();
+renderList();
+</script>
+</body>
+</html>

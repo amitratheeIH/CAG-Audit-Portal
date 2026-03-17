@@ -1,0 +1,4669 @@
+{
+  "$version": "1.0",
+  "description": "CAG India audit topics taxonomy. 33 top-level topics, 224 sub-topics. Derived from the Seventh, Eleventh and Twelfth Schedules of the Constitution of India. Used in inheritable_audit_metadata.topics[] at report and chapter level. IDs are snake_case strings. parent_id=null marks top-level topics. sub_topics[] on parent entries lists direct child IDs. INHERITANCE: ADDITIVE — chapter topics aggregate upward to report level.",
+  "usage_notes": "Use the most specific applicable sub_topic ID, not the parent topic. Multiple IDs permitted. Set at REPORT level for report-wide themes; set at CHAPTER level for chapter-specific themes. Do not set at SECTION level. Pipeline aggregates: report.topics = union(explicit report.metadata.topics, all chapter.metadata.topics).",
+  "entries": [
+    {
+      "id": "defence_security",
+      "label": {
+        "en": "Defence & National Security",
+        "hi": "रक्षा एवं राष्ट्रीय सुरक्षा"
+      },
+      "short_label": {
+        "en": "Defence & National Security"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "defence_procurement",
+        "armed_forces_welfare",
+        "border_infrastructure",
+        "defence_psu",
+        "internal_security_expenditure"
+      ],
+      "sort_order": 1
+    },
+    {
+      "id": "defence_procurement",
+      "label": {
+        "en": "Defence Procurement & Capital Expenditure",
+        "hi": "रक्षा खरीद एवं पूंजीगत व्यय"
+      },
+      "short_label": {
+        "en": "Defence Procurement"
+      },
+      "level": "sub_topic",
+      "parent_id": "defence_security",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 2
+    },
+    {
+      "id": "armed_forces_welfare",
+      "label": {
+        "en": "Armed Forces Welfare & Cantonments",
+        "hi": "सशस्त्र बलों का कल्याण एवं छावनियाँ"
+      },
+      "short_label": {
+        "en": "Armed Forces Welfare & Cantonments"
+      },
+      "level": "sub_topic",
+      "parent_id": "defence_security",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 3
+    },
+    {
+      "id": "border_infrastructure",
+      "label": {
+        "en": "Border Infrastructure Construction",
+        "hi": "सीमा अवसंरचना निर्माण"
+      },
+      "short_label": {
+        "en": "Border Infrastructure Construction"
+      },
+      "level": "sub_topic",
+      "parent_id": "defence_security",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 4
+    },
+    {
+      "id": "defence_psu",
+      "label": {
+        "en": "Defence PSUs & Ordnance Factories",
+        "hi": "रक्षा सार्वजनिक उपक्रम एवं आयुध कारखाने"
+      },
+      "short_label": {
+        "en": "Defence PSUs & Ordnance"
+      },
+      "level": "sub_topic",
+      "parent_id": "defence_security",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 5
+    },
+    {
+      "id": "internal_security_expenditure",
+      "label": {
+        "en": "Intelligence & Internal Security Expenditure",
+        "hi": "खुफिया एवं आंतरिक सुरक्षा व्यय"
+      },
+      "short_label": {
+        "en": "Intelligence"
+      },
+      "level": "sub_topic",
+      "parent_id": "defence_security",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 6
+    },
+    {
+      "id": "foreign_affairs",
+      "label": {
+        "en": "Foreign Affairs & International Relations",
+        "hi": "विदेश मामले एवं अंतरराष्ट्रीय संबंध"
+      },
+      "short_label": {
+        "en": "Foreign Affairs"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "treaty_implementation",
+        "diplomatic_missions",
+        "multilateral_contributions",
+        "foreign_aid"
+      ],
+      "sort_order": 7
+    },
+    {
+      "id": "treaty_implementation",
+      "label": {
+        "en": "Treaty & Agreement Implementation",
+        "hi": "संधि एवं समझौता क्रियान्वयन"
+      },
+      "short_label": {
+        "en": "Treaty & Agreement Implementation"
+      },
+      "level": "sub_topic",
+      "parent_id": "foreign_affairs",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 8
+    },
+    {
+      "id": "diplomatic_missions",
+      "label": {
+        "en": "Diplomatic Mission Operations & Costs",
+        "hi": "राजनयिक मिशन परिचालन एवं लागत"
+      },
+      "short_label": {
+        "en": "Diplomatic Mission Operations"
+      },
+      "level": "sub_topic",
+      "parent_id": "foreign_affairs",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 9
+    },
+    {
+      "id": "multilateral_contributions",
+      "label": {
+        "en": "UN & Multilateral Contributions",
+        "hi": "संयुक्त राष्ट्र एवं बहुपक्षीय अंशदान"
+      },
+      "short_label": {
+        "en": "UN & Multilateral Contributions"
+      },
+      "level": "sub_topic",
+      "parent_id": "foreign_affairs",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 10
+    },
+    {
+      "id": "foreign_aid",
+      "label": {
+        "en": "Foreign Aid Disbursement & Utilisation",
+        "hi": "विदेशी सहायता वितरण एवं उपयोग"
+      },
+      "short_label": {
+        "en": "Foreign Aid Disbursement"
+      },
+      "level": "sub_topic",
+      "parent_id": "foreign_affairs",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 11
+    },
+    {
+      "id": "railways",
+      "label": {
+        "en": "Railways",
+        "hi": "रेलवे"
+      },
+      "short_label": {
+        "en": "Railways"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "railway_capital_works",
+        "rolling_stock",
+        "railway_safety",
+        "railway_psu",
+        "railway_passenger",
+        "railway_station"
+      ],
+      "sort_order": 12
+    },
+    {
+      "id": "railway_capital_works",
+      "label": {
+        "en": "Railway Capital Works & Project Execution",
+        "hi": "रेलवे पूंजीगत कार्य एवं परियोजना क्रियान्वयन"
+      },
+      "short_label": {
+        "en": "Railway Capital Works"
+      },
+      "level": "sub_topic",
+      "parent_id": "railways",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 13
+    },
+    {
+      "id": "rolling_stock",
+      "label": {
+        "en": "Rolling Stock Procurement",
+        "hi": "रोलिंग स्टॉक खरीद"
+      },
+      "short_label": {
+        "en": "Rolling Stock Procurement"
+      },
+      "level": "sub_topic",
+      "parent_id": "railways",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 14
+    },
+    {
+      "id": "railway_safety",
+      "label": {
+        "en": "Railway Safety & Accident Prevention",
+        "hi": "रेलवे सुरक्षा एवं दुर्घटना निवारण"
+      },
+      "short_label": {
+        "en": "Railway Safety"
+      },
+      "level": "sub_topic",
+      "parent_id": "railways",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 15
+    },
+    {
+      "id": "railway_psu",
+      "label": {
+        "en": "Railway PSU Performance",
+        "hi": "रेलवे सार्वजनिक उपक्रम निष्पादन"
+      },
+      "short_label": {
+        "en": "Railway PSU Performance"
+      },
+      "level": "sub_topic",
+      "parent_id": "railways",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 16
+    },
+    {
+      "id": "railway_passenger",
+      "label": {
+        "en": "Passenger Amenities & Service Delivery",
+        "hi": "यात्री सुविधाएं एवं सेवा प्रदायगी"
+      },
+      "short_label": {
+        "en": "Passenger Amenities"
+      },
+      "level": "sub_topic",
+      "parent_id": "railways",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 17
+    },
+    {
+      "id": "railway_station",
+      "label": {
+        "en": "Station Development & Redevelopment",
+        "hi": "स्टेशन विकास एवं पुनर्विकास"
+      },
+      "short_label": {
+        "en": "Station Development & Redevelopment"
+      },
+      "level": "sub_topic",
+      "parent_id": "railways",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 18
+    },
+    {
+      "id": "road_transport",
+      "label": {
+        "en": "Road Transport & Highways",
+        "hi": "सड़क परिवहन एवं राजमार्ग"
+      },
+      "short_label": {
+        "en": "Road Transport & Highways"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "national_highways",
+        "toll_ppp",
+        "road_safety",
+        "nhai_delivery",
+        "road_construction_quality"
+      ],
+      "sort_order": 19
+    },
+    {
+      "id": "national_highways",
+      "label": {
+        "en": "National Highway Construction & Maintenance",
+        "hi": "राष्ट्रीय राजमार्ग निर्माण एवं रखरखाव"
+      },
+      "short_label": {
+        "en": "National Highway Construction"
+      },
+      "level": "sub_topic",
+      "parent_id": "road_transport",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 20
+    },
+    {
+      "id": "toll_ppp",
+      "label": {
+        "en": "Toll Collection & PPP Concessions",
+        "hi": "टोल संग्रह एवं पीपीपी रियायतें"
+      },
+      "short_label": {
+        "en": "Toll Collection & PPP"
+      },
+      "level": "sub_topic",
+      "parent_id": "road_transport",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 21
+    },
+    {
+      "id": "road_safety",
+      "label": {
+        "en": "Road Safety Infrastructure",
+        "hi": "सड़क सुरक्षा अवसंरचना"
+      },
+      "short_label": {
+        "en": "Road Safety Infrastructure"
+      },
+      "level": "sub_topic",
+      "parent_id": "road_transport",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 22
+    },
+    {
+      "id": "nhai_delivery",
+      "label": {
+        "en": "NHAI Programme Delivery",
+        "hi": "एनएचएआई कार्यक्रम प्रदायगी"
+      },
+      "short_label": {
+        "en": "NHAI Programme Delivery"
+      },
+      "level": "sub_topic",
+      "parent_id": "road_transport",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 23
+    },
+    {
+      "id": "road_construction_quality",
+      "label": {
+        "en": "Road Construction Quality & Contract Management",
+        "hi": "सड़क निर्माण गुणवत्ता एवं संविदा प्रबंधन"
+      },
+      "short_label": {
+        "en": "Road Construction Quality"
+      },
+      "level": "sub_topic",
+      "parent_id": "road_transport",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 24
+    },
+    {
+      "id": "shipping_ports",
+      "label": {
+        "en": "Shipping, Ports & Waterways",
+        "hi": "जहाजरानी, बंदरगाह एवं जलमार्ग"
+      },
+      "short_label": {
+        "en": "Shipping, Ports & Waterways"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "major_ports",
+        "inland_waterways",
+        "lighthouse_navigation",
+        "coastal_shipping"
+      ],
+      "sort_order": 25
+    },
+    {
+      "id": "major_ports",
+      "label": {
+        "en": "Major Port Capacity & Infrastructure",
+        "hi": "प्रमुख बंदरगाह क्षमता एवं अवसंरचना"
+      },
+      "short_label": {
+        "en": "Major Port Capacity"
+      },
+      "level": "sub_topic",
+      "parent_id": "shipping_ports",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 26
+    },
+    {
+      "id": "inland_waterways",
+      "label": {
+        "en": "Inland Waterways Development",
+        "hi": "अंतर्देशीय जलमार्ग विकास"
+      },
+      "short_label": {
+        "en": "Inland Waterways Development"
+      },
+      "level": "sub_topic",
+      "parent_id": "shipping_ports",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 27
+    },
+    {
+      "id": "lighthouse_navigation",
+      "label": {
+        "en": "Lighthouse & Navigational Aids",
+        "hi": "प्रकाशस्तंभ एवं नौवहन सहायता"
+      },
+      "short_label": {
+        "en": "Lighthouse & Navigational Aids"
+      },
+      "level": "sub_topic",
+      "parent_id": "shipping_ports",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 28
+    },
+    {
+      "id": "coastal_shipping",
+      "label": {
+        "en": "Coastal Shipping Promotion",
+        "hi": "तटीय जहाजरानी प्रोत्साहन"
+      },
+      "short_label": {
+        "en": "Coastal Shipping Promotion"
+      },
+      "level": "sub_topic",
+      "parent_id": "shipping_ports",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 29
+    },
+    {
+      "id": "civil_aviation",
+      "label": {
+        "en": "Civil Aviation",
+        "hi": "नागरिक उड्डयन"
+      },
+      "short_label": {
+        "en": "Civil Aviation"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "airport_infrastructure",
+        "air_navigation",
+        "dgca_oversight",
+        "regional_connectivity",
+        "aviation_security"
+      ],
+      "sort_order": 30
+    },
+    {
+      "id": "airport_infrastructure",
+      "label": {
+        "en": "Airport Infrastructure & Development",
+        "hi": "हवाई अड्डा अवसंरचना एवं विकास"
+      },
+      "short_label": {
+        "en": "Airport Infrastructure"
+      },
+      "level": "sub_topic",
+      "parent_id": "civil_aviation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 31
+    },
+    {
+      "id": "air_navigation",
+      "label": {
+        "en": "Air Navigation Services",
+        "hi": "वायु नौवहन सेवाएं"
+      },
+      "short_label": {
+        "en": "Air Navigation Services"
+      },
+      "level": "sub_topic",
+      "parent_id": "civil_aviation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 32
+    },
+    {
+      "id": "dgca_oversight",
+      "label": {
+        "en": "DGCA Regulatory Oversight",
+        "hi": "डीजीसीए विनियामक निगरानी"
+      },
+      "short_label": {
+        "en": "DGCA Regulatory Oversight"
+      },
+      "level": "sub_topic",
+      "parent_id": "civil_aviation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 33
+    },
+    {
+      "id": "regional_connectivity",
+      "label": {
+        "en": "Regional Connectivity Scheme",
+        "hi": "क्षेत्रीय संपर्क योजना"
+      },
+      "short_label": {
+        "en": "Regional Connectivity Scheme"
+      },
+      "level": "sub_topic",
+      "parent_id": "civil_aviation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 34
+    },
+    {
+      "id": "aviation_security",
+      "label": {
+        "en": "Aviation Security Systems",
+        "hi": "विमानन सुरक्षा प्रणाली"
+      },
+      "short_label": {
+        "en": "Aviation Security Systems"
+      },
+      "level": "sub_topic",
+      "parent_id": "civil_aviation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 35
+    },
+    {
+      "id": "posts_telecom",
+      "label": {
+        "en": "Posts & Telecommunications",
+        "hi": "डाक एवं दूरसंचार"
+      },
+      "short_label": {
+        "en": "Posts & Telecommunications"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "dept_posts",
+        "bharatnet",
+        "spectrum_management",
+        "usof",
+        "ippb"
+      ],
+      "sort_order": 36
+    },
+    {
+      "id": "dept_posts",
+      "label": {
+        "en": "Department of Posts Performance",
+        "hi": "डाक विभाग निष्पादन"
+      },
+      "short_label": {
+        "en": "Department of Posts Performance"
+      },
+      "level": "sub_topic",
+      "parent_id": "posts_telecom",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 37
+    },
+    {
+      "id": "bharatnet",
+      "label": {
+        "en": "BharatNet & Rural Broadband",
+        "hi": "भारतनेट एवं ग्रामीण ब्रॉडबैंड"
+      },
+      "short_label": {
+        "en": "BharatNet & Rural Broadband"
+      },
+      "level": "sub_topic",
+      "parent_id": "posts_telecom",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 38
+    },
+    {
+      "id": "spectrum_management",
+      "label": {
+        "en": "Spectrum Allocation & Management",
+        "hi": "स्पेक्ट्रम आवंटन एवं प्रबंधन"
+      },
+      "short_label": {
+        "en": "Spectrum Allocation & Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "posts_telecom",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 39
+    },
+    {
+      "id": "usof",
+      "label": {
+        "en": "Universal Service Obligation Fund",
+        "hi": "सार्वभौमिक सेवा दायित्व निधि"
+      },
+      "short_label": {
+        "en": "Universal Service Obligation Fund"
+      },
+      "level": "sub_topic",
+      "parent_id": "posts_telecom",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 40
+    },
+    {
+      "id": "ippb",
+      "label": {
+        "en": "India Post Payments Bank",
+        "hi": "इंडिया पोस्ट पेमेंट्स बैंक"
+      },
+      "short_label": {
+        "en": "India Post Payments Bank"
+      },
+      "level": "sub_topic",
+      "parent_id": "posts_telecom",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 41
+    },
+    {
+      "id": "banking_finance",
+      "label": {
+        "en": "Banking & Financial Institutions",
+        "hi": "बैंकिंग एवं वित्तीय संस्थाएं"
+      },
+      "short_label": {
+        "en": "Banking & Financial Institutions"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "psb_npa",
+        "financial_inclusion",
+        "cooperative_banks",
+        "nbfc_oversight",
+        "govt_guarantees"
+      ],
+      "sort_order": 42
+    },
+    {
+      "id": "psb_npa",
+      "label": {
+        "en": "Public Sector Bank Performance & NPA",
+        "hi": "सार्वजनिक क्षेत्र के बैंक निष्पादन एवं एनपीए"
+      },
+      "short_label": {
+        "en": "Public Sector Bank Performance"
+      },
+      "level": "sub_topic",
+      "parent_id": "banking_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 43
+    },
+    {
+      "id": "financial_inclusion",
+      "label": {
+        "en": "Financial Inclusion Schemes",
+        "hi": "वित्तीय समावेश योजनाएं"
+      },
+      "short_label": {
+        "en": "Financial Inclusion Schemes"
+      },
+      "level": "sub_topic",
+      "parent_id": "banking_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 44
+    },
+    {
+      "id": "cooperative_banks",
+      "label": {
+        "en": "Cooperative Bank Regulation",
+        "hi": "सहकारी बैंक विनियमन"
+      },
+      "short_label": {
+        "en": "Cooperative Bank Regulation"
+      },
+      "level": "sub_topic",
+      "parent_id": "banking_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 45
+    },
+    {
+      "id": "nbfc_oversight",
+      "label": {
+        "en": "NBFC Oversight",
+        "hi": "एनबीएफसी निगरानी"
+      },
+      "short_label": {
+        "en": "NBFC Oversight"
+      },
+      "level": "sub_topic",
+      "parent_id": "banking_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 46
+    },
+    {
+      "id": "govt_guarantees",
+      "label": {
+        "en": "Government Guarantee Obligations",
+        "hi": "सरकारी गारंटी दायित्व"
+      },
+      "short_label": {
+        "en": "Government Guarantee Obligations"
+      },
+      "level": "sub_topic",
+      "parent_id": "banking_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 47
+    },
+    {
+      "id": "insurance",
+      "label": {
+        "en": "Insurance",
+        "hi": "बीमा"
+      },
+      "short_label": {
+        "en": "Insurance"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "ps_insurance",
+        "crop_insurance",
+        "social_insurance",
+        "irdai_regulation"
+      ],
+      "sort_order": 48
+    },
+    {
+      "id": "ps_insurance",
+      "label": {
+        "en": "Public Sector Insurance Performance",
+        "hi": "सार्वजनिक क्षेत्र बीमा निष्पादन"
+      },
+      "short_label": {
+        "en": "Public Sector Insurance Performance"
+      },
+      "level": "sub_topic",
+      "parent_id": "insurance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 49
+    },
+    {
+      "id": "crop_insurance",
+      "label": {
+        "en": "Crop Insurance Scheme Delivery",
+        "hi": "फसल बीमा योजना प्रदायगी"
+      },
+      "short_label": {
+        "en": "Crop Insurance Scheme Delivery"
+      },
+      "level": "sub_topic",
+      "parent_id": "insurance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 50
+    },
+    {
+      "id": "social_insurance",
+      "label": {
+        "en": "Social Security Insurance Programmes",
+        "hi": "सामाजिक सुरक्षा बीमा कार्यक्रम"
+      },
+      "short_label": {
+        "en": "Social Security Insurance Programmes"
+      },
+      "level": "sub_topic",
+      "parent_id": "insurance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 51
+    },
+    {
+      "id": "irdai_regulation",
+      "label": {
+        "en": "IRDAI Regulatory Effectiveness",
+        "hi": "आईआरडीएआई विनियामक प्रभावशीलता"
+      },
+      "short_label": {
+        "en": "IRDAI Regulatory Effectiveness"
+      },
+      "level": "sub_topic",
+      "parent_id": "insurance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 52
+    },
+    {
+      "id": "currency_forex",
+      "label": {
+        "en": "Currency, Coinage & Foreign Exchange",
+        "hi": "मुद्रा, सिक्के एवं विदेशी मुद्रा"
+      },
+      "short_label": {
+        "en": "Currency, Coinage"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "rbi_currency",
+        "forex_reserves",
+        "external_debt",
+        "counterfeit_controls"
+      ],
+      "sort_order": 53
+    },
+    {
+      "id": "rbi_currency",
+      "label": {
+        "en": "RBI Currency Management",
+        "hi": "भारतीय रिजर्व बैंक मुद्रा प्रबंधन"
+      },
+      "short_label": {
+        "en": "RBI Currency Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "currency_forex",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 54
+    },
+    {
+      "id": "forex_reserves",
+      "label": {
+        "en": "Foreign Exchange Reserve Management",
+        "hi": "विदेशी मुद्रा भंडार प्रबंधन"
+      },
+      "short_label": {
+        "en": "Foreign Exchange Reserve Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "currency_forex",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 55
+    },
+    {
+      "id": "external_debt",
+      "label": {
+        "en": "External Debt Management",
+        "hi": "बाह्य ऋण प्रबंधन"
+      },
+      "short_label": {
+        "en": "External Debt Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "currency_forex",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 56
+    },
+    {
+      "id": "counterfeit_controls",
+      "label": {
+        "en": "Counterfeit Currency Controls",
+        "hi": "जाली मुद्रा नियंत्रण"
+      },
+      "short_label": {
+        "en": "Counterfeit Currency Controls"
+      },
+      "level": "sub_topic",
+      "parent_id": "currency_forex",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 57
+    },
+    {
+      "id": "direct_taxation",
+      "label": {
+        "en": "Direct Taxation",
+        "hi": "प्रत्यक्ष कराधान"
+      },
+      "short_label": {
+        "en": "Direct Taxation"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "income_tax_admin",
+        "corporate_tax",
+        "capital_gains_tax",
+        "tax_exemptions",
+        "cbdt_performance"
+      ],
+      "sort_order": 58
+    },
+    {
+      "id": "income_tax_admin",
+      "label": {
+        "en": "Income Tax Administration & Collection",
+        "hi": "आयकर प्रशासन एवं संग्रह"
+      },
+      "short_label": {
+        "en": "Income Tax Administration"
+      },
+      "level": "sub_topic",
+      "parent_id": "direct_taxation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 59
+    },
+    {
+      "id": "corporate_tax",
+      "label": {
+        "en": "Corporate Tax Compliance & Disputes",
+        "hi": "निगम कर अनुपालन एवं विवाद"
+      },
+      "short_label": {
+        "en": "Corporate Tax Compliance & Disputes"
+      },
+      "level": "sub_topic",
+      "parent_id": "direct_taxation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 60
+    },
+    {
+      "id": "capital_gains_tax",
+      "label": {
+        "en": "Capital Gains Tax Systems",
+        "hi": "पूंजीगत लाभ कर प्रणाली"
+      },
+      "short_label": {
+        "en": "Capital Gains Tax Systems"
+      },
+      "level": "sub_topic",
+      "parent_id": "direct_taxation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 61
+    },
+    {
+      "id": "tax_exemptions",
+      "label": {
+        "en": "Tax Expenditure & Exemptions",
+        "hi": "कर व्यय एवं छूट"
+      },
+      "short_label": {
+        "en": "Tax Expenditure & Exemptions"
+      },
+      "level": "sub_topic",
+      "parent_id": "direct_taxation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 62
+    },
+    {
+      "id": "cbdt_performance",
+      "label": {
+        "en": "CBDT Performance Audit",
+        "hi": "सीबीडीटी निष्पादन लेखापरीक्षा"
+      },
+      "short_label": {
+        "en": "CBDT Performance Audit"
+      },
+      "level": "sub_topic",
+      "parent_id": "direct_taxation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 63
+    },
+    {
+      "id": "indirect_taxation",
+      "label": {
+        "en": "Indirect Taxation & GST",
+        "hi": "अप्रत्यक्ष कराधान एवं जीएसटी"
+      },
+      "short_label": {
+        "en": "Indirect Taxation & GST"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "gst_collection",
+        "customs_duty",
+        "itc_fraud",
+        "gstn_system",
+        "state_gst"
+      ],
+      "sort_order": 64
+    },
+    {
+      "id": "gst_collection",
+      "label": {
+        "en": "GST Revenue Collection & Compliance",
+        "hi": "जीएसटी राजस्व संग्रह एवं अनुपालन"
+      },
+      "short_label": {
+        "en": "GST Revenue Collection & Compliance"
+      },
+      "level": "sub_topic",
+      "parent_id": "indirect_taxation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 65
+    },
+    {
+      "id": "customs_duty",
+      "label": {
+        "en": "Customs Duty Administration",
+        "hi": "सीमा शुल्क प्रशासन"
+      },
+      "short_label": {
+        "en": "Customs Duty Administration"
+      },
+      "level": "sub_topic",
+      "parent_id": "indirect_taxation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 66
+    },
+    {
+      "id": "itc_fraud",
+      "label": {
+        "en": "Input Tax Credit Fraud & Leakage",
+        "hi": "इनपुट टैक्स क्रेडिट धोखाधड़ी एवं रिसाव"
+      },
+      "short_label": {
+        "en": "Input Tax Credit Fraud"
+      },
+      "level": "sub_topic",
+      "parent_id": "indirect_taxation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 67
+    },
+    {
+      "id": "gstn_system",
+      "label": {
+        "en": "GSTN System Performance",
+        "hi": "जीएसटीएन प्रणाली निष्पादन"
+      },
+      "short_label": {
+        "en": "GSTN System Performance"
+      },
+      "level": "sub_topic",
+      "parent_id": "indirect_taxation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 68
+    },
+    {
+      "id": "state_gst",
+      "label": {
+        "en": "State GST Administration",
+        "hi": "राज्य जीएसटी प्रशासन"
+      },
+      "short_label": {
+        "en": "State GST Administration"
+      },
+      "level": "sub_topic",
+      "parent_id": "indirect_taxation",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 69
+    },
+    {
+      "id": "trade_commerce",
+      "label": {
+        "en": "Trade & Commerce",
+        "hi": "व्यापार एवं वाणिज्य"
+      },
+      "short_label": {
+        "en": "Trade & Commerce"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "export_promotion",
+        "import_regulation",
+        "price_control",
+        "competition_regulation",
+        "consumer_protection"
+      ],
+      "sort_order": 70
+    },
+    {
+      "id": "export_promotion",
+      "label": {
+        "en": "Export Promotion Schemes & Outcomes",
+        "hi": "निर्यात प्रोत्साहन योजनाएं एवं परिणाम"
+      },
+      "short_label": {
+        "en": "Export Promotion Schemes & Outcomes"
+      },
+      "level": "sub_topic",
+      "parent_id": "trade_commerce",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 71
+    },
+    {
+      "id": "import_regulation",
+      "label": {
+        "en": "Import Licensing & Regulation",
+        "hi": "आयात लाइसेंसिंग एवं विनियमन"
+      },
+      "short_label": {
+        "en": "Import Licensing & Regulation"
+      },
+      "level": "sub_topic",
+      "parent_id": "trade_commerce",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 72
+    },
+    {
+      "id": "price_control",
+      "label": {
+        "en": "Price Control & Essential Commodities",
+        "hi": "मूल्य नियंत्रण एवं आवश्यक वस्तुएं"
+      },
+      "short_label": {
+        "en": "Price Control"
+      },
+      "level": "sub_topic",
+      "parent_id": "trade_commerce",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 73
+    },
+    {
+      "id": "competition_regulation",
+      "label": {
+        "en": "Competition Regulation",
+        "hi": "प्रतिस्पर्धा विनियमन"
+      },
+      "short_label": {
+        "en": "Competition Regulation"
+      },
+      "level": "sub_topic",
+      "parent_id": "trade_commerce",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 74
+    },
+    {
+      "id": "consumer_protection",
+      "label": {
+        "en": "Consumer Protection Enforcement",
+        "hi": "उपभोक्ता संरक्षण प्रवर्तन"
+      },
+      "short_label": {
+        "en": "Consumer Protection Enforcement"
+      },
+      "level": "sub_topic",
+      "parent_id": "trade_commerce",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 75
+    },
+    {
+      "id": "industry_manufacturing",
+      "label": {
+        "en": "Industry & Manufacturing",
+        "hi": "उद्योग एवं विनिर्माण"
+      },
+      "short_label": {
+        "en": "Industry & Manufacturing"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "central_psu",
+        "msme_development",
+        "sez",
+        "factory_safety",
+        "make_in_india"
+      ],
+      "sort_order": 76
+    },
+    {
+      "id": "central_psu",
+      "label": {
+        "en": "Central PSU Financial Performance",
+        "hi": "केंद्रीय सार्वजनिक उपक्रम वित्तीय निष्पादन"
+      },
+      "short_label": {
+        "en": "Central PSU Financial Performance"
+      },
+      "level": "sub_topic",
+      "parent_id": "industry_manufacturing",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 77
+    },
+    {
+      "id": "msme_development",
+      "label": {
+        "en": "MSME Development Schemes",
+        "hi": "एमएसएमई विकास योजनाएं"
+      },
+      "short_label": {
+        "en": "MSME Development Schemes"
+      },
+      "level": "sub_topic",
+      "parent_id": "industry_manufacturing",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 78
+    },
+    {
+      "id": "sez",
+      "label": {
+        "en": "Special Economic Zones",
+        "hi": "विशेष आर्थिक क्षेत्र"
+      },
+      "short_label": {
+        "en": "Special Economic Zones"
+      },
+      "level": "sub_topic",
+      "parent_id": "industry_manufacturing",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 79
+    },
+    {
+      "id": "factory_safety",
+      "label": {
+        "en": "Factory Safety & Labour Compliance",
+        "hi": "कारखाना सुरक्षा एवं श्रम अनुपालन"
+      },
+      "short_label": {
+        "en": "Factory Safety & Labour"
+      },
+      "level": "sub_topic",
+      "parent_id": "industry_manufacturing",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 80
+    },
+    {
+      "id": "make_in_india",
+      "label": {
+        "en": "Make in India & Industrial Policy",
+        "hi": "मेक इन इंडिया एवं औद्योगिक नीति"
+      },
+      "short_label": {
+        "en": "Make in India & Industrial Policy"
+      },
+      "level": "sub_topic",
+      "parent_id": "industry_manufacturing",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 81
+    },
+    {
+      "id": "mining_minerals",
+      "label": {
+        "en": "Mining & Mineral Resources",
+        "hi": "खनन एवं खनिज संसाधन"
+      },
+      "short_label": {
+        "en": "Mining & Mineral Resources"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "mining_leases",
+        "oil_gas",
+        "coal_india",
+        "mine_safety",
+        "mmdr_implementation"
+      ],
+      "sort_order": 82
+    },
+    {
+      "id": "mining_leases",
+      "label": {
+        "en": "Mining Lease Management & Royalty Collection",
+        "hi": "खनन पट्टा प्रबंधन एवं रॉयल्टी संग्रह"
+      },
+      "short_label": {
+        "en": "Mining Lease Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "mining_minerals",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 83
+    },
+    {
+      "id": "oil_gas",
+      "label": {
+        "en": "Offshore Oil & Gas Production",
+        "hi": "अपतटीय तेल एवं गैस उत्पादन"
+      },
+      "short_label": {
+        "en": "Offshore Oil & Gas"
+      },
+      "level": "sub_topic",
+      "parent_id": "mining_minerals",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 84
+    },
+    {
+      "id": "coal_india",
+      "label": {
+        "en": "Coal India Operations",
+        "hi": "कोल इंडिया परिचालन"
+      },
+      "short_label": {
+        "en": "Coal India Operations"
+      },
+      "level": "sub_topic",
+      "parent_id": "mining_minerals",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 85
+    },
+    {
+      "id": "mine_safety",
+      "label": {
+        "en": "Mine Safety & Environmental Compliance",
+        "hi": "खान सुरक्षा एवं पर्यावरण अनुपालन"
+      },
+      "short_label": {
+        "en": "Mine Safety"
+      },
+      "level": "sub_topic",
+      "parent_id": "mining_minerals",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 86
+    },
+    {
+      "id": "mmdr_implementation",
+      "label": {
+        "en": "MMDR Act Implementation",
+        "hi": "एमएमडीआर अधिनियम क्रियान्वयन"
+      },
+      "short_label": {
+        "en": "MMDR Act Implementation"
+      },
+      "level": "sub_topic",
+      "parent_id": "mining_minerals",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 87
+    },
+    {
+      "id": "energy_electricity",
+      "label": {
+        "en": "Energy & Electricity",
+        "hi": "ऊर्जा एवं विद्युत"
+      },
+      "short_label": {
+        "en": "Energy & Electricity"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "power_distribution",
+        "renewable_energy",
+        "rural_electrification",
+        "electricity_tariff",
+        "discoms_losses",
+        "nuclear_power"
+      ],
+      "sort_order": 88
+    },
+    {
+      "id": "power_distribution",
+      "label": {
+        "en": "Power Generation & Distribution Utility Performance",
+        "hi": "विद्युत उत्पादन एवं वितरण उपयोगिता निष्पादन"
+      },
+      "short_label": {
+        "en": "Power Generation"
+      },
+      "level": "sub_topic",
+      "parent_id": "energy_electricity",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 89
+    },
+    {
+      "id": "renewable_energy",
+      "label": {
+        "en": "Renewable Energy Scheme Delivery",
+        "hi": "नवीकरणीय ऊर्जा योजना प्रदायगी"
+      },
+      "short_label": {
+        "en": "Renewable Energy Scheme Delivery"
+      },
+      "level": "sub_topic",
+      "parent_id": "energy_electricity",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 90
+    },
+    {
+      "id": "rural_electrification",
+      "label": {
+        "en": "Rural Electrification Programmes",
+        "hi": "ग्रामीण विद्युतीकरण कार्यक्रम"
+      },
+      "short_label": {
+        "en": "Rural Electrification Programmes"
+      },
+      "level": "sub_topic",
+      "parent_id": "energy_electricity",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 91
+    },
+    {
+      "id": "electricity_tariff",
+      "label": {
+        "en": "Electricity Tariff Regulation",
+        "hi": "विद्युत शुल्क विनियमन"
+      },
+      "short_label": {
+        "en": "Electricity Tariff Regulation"
+      },
+      "level": "sub_topic",
+      "parent_id": "energy_electricity",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 92
+    },
+    {
+      "id": "discoms_losses",
+      "label": {
+        "en": "Distribution Company Losses (DISCOM)",
+        "hi": "वितरण कंपनी हानि (डिस्कॉम)"
+      },
+      "short_label": {
+        "en": "Distribution Company Losses (DISCOM)"
+      },
+      "level": "sub_topic",
+      "parent_id": "energy_electricity",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 93
+    },
+    {
+      "id": "nuclear_power",
+      "label": {
+        "en": "Nuclear Power Programme",
+        "hi": "परमाणु ऊर्जा कार्यक्रम"
+      },
+      "short_label": {
+        "en": "Nuclear Power Programme"
+      },
+      "level": "sub_topic",
+      "parent_id": "energy_electricity",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 94
+    },
+    {
+      "id": "environment_forests",
+      "label": {
+        "en": "Environment & Forests",
+        "hi": "पर्यावरण एवं वन"
+      },
+      "short_label": {
+        "en": "Environment & Forests"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "environmental_governance",
+        "environmental_clearance",
+        "pollution_control",
+        "forest_conservation",
+        "wildlife_protection",
+        "river_management",
+        "waste_management",
+        "climate_adaptation",
+        "wetlands_coastal"
+      ],
+      "sort_order": 95
+    },
+    {
+      "id": "environmental_governance",
+      "label": {
+        "en": "Environmental Governance & Regulation",
+        "hi": "पर्यावरण शासन एवं विनियमन"
+      },
+      "short_label": {
+        "en": "Environmental Governance"
+      },
+      "level": "sub_topic",
+      "parent_id": "environment_forests",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 96
+    },
+    {
+      "id": "environmental_clearance",
+      "label": {
+        "en": "Environmental Clearance Systems",
+        "hi": "पर्यावरण मंजूरी प्रणाली"
+      },
+      "short_label": {
+        "en": "Environmental Clearance Systems"
+      },
+      "level": "sub_topic",
+      "parent_id": "environment_forests",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 97
+    },
+    {
+      "id": "pollution_control",
+      "label": {
+        "en": "Pollution Control Board Effectiveness",
+        "hi": "प्रदूषण नियंत्रण बोर्ड प्रभावशीलता"
+      },
+      "short_label": {
+        "en": "Pollution Control Board Effectiveness"
+      },
+      "level": "sub_topic",
+      "parent_id": "environment_forests",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 98
+    },
+    {
+      "id": "forest_conservation",
+      "label": {
+        "en": "Forest Conservation & Compensatory Afforestation",
+        "hi": "वन संरक्षण एवं प्रतिपूरक वनीकरण"
+      },
+      "short_label": {
+        "en": "Forest Conservation"
+      },
+      "level": "sub_topic",
+      "parent_id": "environment_forests",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 99
+    },
+    {
+      "id": "wildlife_protection",
+      "label": {
+        "en": "Wildlife Protection",
+        "hi": "वन्यजीव संरक्षण"
+      },
+      "short_label": {
+        "en": "Wildlife Protection"
+      },
+      "level": "sub_topic",
+      "parent_id": "environment_forests",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 100
+    },
+    {
+      "id": "river_management",
+      "label": {
+        "en": "River Management & Rejuvenation",
+        "hi": "नदी प्रबंधन एवं कायाकल्प"
+      },
+      "short_label": {
+        "en": "River Management & Rejuvenation"
+      },
+      "level": "sub_topic",
+      "parent_id": "environment_forests",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 101
+    },
+    {
+      "id": "waste_management",
+      "label": {
+        "en": "Waste Management & Plastic Pollution",
+        "hi": "अपशिष्ट प्रबंधन एवं प्लास्टिक प्रदूषण"
+      },
+      "short_label": {
+        "en": "Waste Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "environment_forests",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 102
+    },
+    {
+      "id": "climate_adaptation",
+      "label": {
+        "en": "Climate Change Adaptation Schemes",
+        "hi": "जलवायु परिवर्तन अनुकूलन योजनाएं"
+      },
+      "short_label": {
+        "en": "Climate Change Adaptation Schemes"
+      },
+      "level": "sub_topic",
+      "parent_id": "environment_forests",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 103
+    },
+    {
+      "id": "wetlands_coastal",
+      "label": {
+        "en": "Wetlands & Coastal Zone Management",
+        "hi": "आर्द्रभूमि एवं तटीय क्षेत्र प्रबंधन"
+      },
+      "short_label": {
+        "en": "Wetlands & Coastal Zone"
+      },
+      "level": "sub_topic",
+      "parent_id": "environment_forests",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 104
+    },
+    {
+      "id": "water_resources",
+      "label": {
+        "en": "Water Resources & Irrigation",
+        "hi": "जल संसाधन एवं सिंचाई"
+      },
+      "short_label": {
+        "en": "Water Resources & Irrigation"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "irrigation_projects",
+        "dam_safety",
+        "groundwater_management",
+        "drinking_water",
+        "flood_management",
+        "pmksy",
+        "sewage_management",
+        "water_quality_monitoring",
+        "interstate_rivers"
+      ],
+      "sort_order": 105
+    },
+    {
+      "id": "irrigation_projects",
+      "label": {
+        "en": "Irrigation Project Completion & Utilisation",
+        "hi": "सिंचाई परियोजना पूर्णता एवं उपयोग"
+      },
+      "short_label": {
+        "en": "Irrigation Project Completion"
+      },
+      "level": "sub_topic",
+      "parent_id": "water_resources",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 106
+    },
+    {
+      "id": "dam_safety",
+      "label": {
+        "en": "Dam Safety & Maintenance",
+        "hi": "बांध सुरक्षा एवं रखरखाव"
+      },
+      "short_label": {
+        "en": "Dam Safety & Maintenance"
+      },
+      "level": "sub_topic",
+      "parent_id": "water_resources",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 107
+    },
+    {
+      "id": "groundwater_management",
+      "label": {
+        "en": "Groundwater Regulation & Depletion",
+        "hi": "भूजल विनियमन एवं ह्रास"
+      },
+      "short_label": {
+        "en": "Groundwater Regulation & Depletion"
+      },
+      "level": "sub_topic",
+      "parent_id": "water_resources",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 108
+    },
+    {
+      "id": "drinking_water",
+      "label": {
+        "en": "Drinking Water Supply Schemes",
+        "hi": "पेयजल आपूर्ति योजनाएं"
+      },
+      "short_label": {
+        "en": "Drinking Water Supply Schemes"
+      },
+      "level": "sub_topic",
+      "parent_id": "water_resources",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 109
+    },
+    {
+      "id": "flood_management",
+      "label": {
+        "en": "Flood Management & Embankments",
+        "hi": "बाढ़ प्रबंधन एवं तटबंध"
+      },
+      "short_label": {
+        "en": "Flood Management & Embankments"
+      },
+      "level": "sub_topic",
+      "parent_id": "water_resources",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 110
+    },
+    {
+      "id": "pmksy",
+      "label": {
+        "en": "PMKSY Implementation",
+        "hi": "पीएमकेएसवाई क्रियान्वयन"
+      },
+      "short_label": {
+        "en": "PMKSY Implementation"
+      },
+      "level": "sub_topic",
+      "parent_id": "water_resources",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 111
+    },
+    {
+      "id": "sewage_management",
+      "label": {
+        "en": "Sewage & Wastewater Management",
+        "hi": "सीवेज एवं अपशिष्ट जल प्रबंधन"
+      },
+      "short_label": {
+        "en": "Sewage & Wastewater Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "water_resources",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 112
+    },
+    {
+      "id": "water_quality_monitoring",
+      "label": {
+        "en": "Water Quality Monitoring",
+        "hi": "जल गुणवत्ता निगरानी"
+      },
+      "short_label": {
+        "en": "Water Quality Monitoring"
+      },
+      "level": "sub_topic",
+      "parent_id": "water_resources",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 113
+    },
+    {
+      "id": "interstate_rivers",
+      "label": {
+        "en": "Inter-State River Dispute Resolution",
+        "hi": "अंतर-राज्यीय नदी विवाद समाधान"
+      },
+      "short_label": {
+        "en": "Inter-State River Dispute Resolution"
+      },
+      "level": "sub_topic",
+      "parent_id": "water_resources",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 114
+    },
+    {
+      "id": "agriculture_food",
+      "label": {
+        "en": "Agriculture & Food Security",
+        "hi": "कृषि एवं खाद्य सुरक्षा"
+      },
+      "short_label": {
+        "en": "Agriculture & Food Security"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "msp_operations",
+        "pds_delivery",
+        "fertiliser_subsidy",
+        "agri_credit",
+        "cold_chain",
+        "fci_storage",
+        "agri_research"
+      ],
+      "sort_order": 115
+    },
+    {
+      "id": "msp_operations",
+      "label": {
+        "en": "Minimum Support Price Operations",
+        "hi": "न्यूनतम समर्थन मूल्य परिचालन"
+      },
+      "short_label": {
+        "en": "Minimum Support Price Operations"
+      },
+      "level": "sub_topic",
+      "parent_id": "agriculture_food",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 116
+    },
+    {
+      "id": "pds_delivery",
+      "label": {
+        "en": "Food Subsidy & PDS Delivery",
+        "hi": "खाद्य सब्सिडी एवं सार्वजनिक वितरण प्रणाली"
+      },
+      "short_label": {
+        "en": "Food Subsidy & PDS"
+      },
+      "level": "sub_topic",
+      "parent_id": "agriculture_food",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 117
+    },
+    {
+      "id": "fertiliser_subsidy",
+      "label": {
+        "en": "Fertiliser Subsidy Management",
+        "hi": "उर्वरक सब्सिडी प्रबंधन"
+      },
+      "short_label": {
+        "en": "Fertiliser Subsidy Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "agriculture_food",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 118
+    },
+    {
+      "id": "agri_credit",
+      "label": {
+        "en": "Agricultural Credit Delivery",
+        "hi": "कृषि ऋण प्रदायगी"
+      },
+      "short_label": {
+        "en": "Agricultural Credit Delivery"
+      },
+      "level": "sub_topic",
+      "parent_id": "agriculture_food",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 119
+    },
+    {
+      "id": "cold_chain",
+      "label": {
+        "en": "Cold Chain & Food Processing",
+        "hi": "शीत श्रृंखला एवं खाद्य प्रसंस्करण"
+      },
+      "short_label": {
+        "en": "Cold Chain & Food"
+      },
+      "level": "sub_topic",
+      "parent_id": "agriculture_food",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 120
+    },
+    {
+      "id": "fci_storage",
+      "label": {
+        "en": "FCI Grain Procurement & Storage",
+        "hi": "एफसीआई अनाज खरीद एवं भंडारण"
+      },
+      "short_label": {
+        "en": "FCI Grain Procurement & Storage"
+      },
+      "level": "sub_topic",
+      "parent_id": "agriculture_food",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 121
+    },
+    {
+      "id": "agri_research",
+      "label": {
+        "en": "Agricultural Research Institution Performance",
+        "hi": "कृषि अनुसंधान संस्थान निष्पादन"
+      },
+      "short_label": {
+        "en": "Agricultural Research Institution Performance"
+      },
+      "level": "sub_topic",
+      "parent_id": "agriculture_food",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 122
+    },
+    {
+      "id": "public_health",
+      "label": {
+        "en": "Public Health & Sanitation",
+        "hi": "सार्वजनिक स्वास्थ्य एवं स्वच्छता"
+      },
+      "short_label": {
+        "en": "Public Health & Sanitation"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "nhm_delivery",
+        "hospital_infrastructure",
+        "drug_procurement",
+        "immunisation",
+        "sanitation_mission",
+        "health_insurance",
+        "medical_education"
+      ],
+      "sort_order": 123
+    },
+    {
+      "id": "nhm_delivery",
+      "label": {
+        "en": "National Health Mission Delivery",
+        "hi": "राष्ट्रीय स्वास्थ्य मिशन प्रदायगी"
+      },
+      "short_label": {
+        "en": "National Health Mission Delivery"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_health",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 124
+    },
+    {
+      "id": "hospital_infrastructure",
+      "label": {
+        "en": "Hospital Infrastructure & Equipment",
+        "hi": "अस्पताल अवसंरचना एवं उपकरण"
+      },
+      "short_label": {
+        "en": "Hospital Infrastructure & Equipment"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_health",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 125
+    },
+    {
+      "id": "drug_procurement",
+      "label": {
+        "en": "Drug Procurement & Availability",
+        "hi": "औषधि खरीद एवं उपलब्धता"
+      },
+      "short_label": {
+        "en": "Drug Procurement & Availability"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_health",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 126
+    },
+    {
+      "id": "immunisation",
+      "label": {
+        "en": "Immunisation Programme Coverage",
+        "hi": "टीकाकरण कार्यक्रम охват"
+      },
+      "short_label": {
+        "en": "Immunisation Programme Coverage"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_health",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 127
+    },
+    {
+      "id": "sanitation_mission",
+      "label": {
+        "en": "Sanitation Mission Outcomes",
+        "hi": "स्वच्छता मिशन परिणाम"
+      },
+      "short_label": {
+        "en": "Sanitation Mission Outcomes"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_health",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 128
+    },
+    {
+      "id": "health_insurance",
+      "label": {
+        "en": "Health Insurance Scheme Delivery",
+        "hi": "स्वास्थ्य बीमा योजना प्रदायगी"
+      },
+      "short_label": {
+        "en": "Health Insurance Scheme Delivery"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_health",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 129
+    },
+    {
+      "id": "medical_education",
+      "label": {
+        "en": "Medical Education Quality",
+        "hi": "चिकित्सा शिक्षा गुणवत्ता"
+      },
+      "short_label": {
+        "en": "Medical Education Quality"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_health",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 130
+    },
+    {
+      "id": "education_research",
+      "label": {
+        "en": "Education & Research",
+        "hi": "शिक्षा एवं अनुसंधान"
+      },
+      "short_label": {
+        "en": "Education & Research"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "school_education",
+        "higher_education",
+        "technical_training",
+        "research_institutions",
+        "scholarships",
+        "midday_meal",
+        "ugc_grants"
+      ],
+      "sort_order": 131
+    },
+    {
+      "id": "school_education",
+      "label": {
+        "en": "School Education Scheme Delivery",
+        "hi": "विद्यालय शिक्षा योजना प्रदायगी"
+      },
+      "short_label": {
+        "en": "School Education Scheme Delivery"
+      },
+      "level": "sub_topic",
+      "parent_id": "education_research",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 132
+    },
+    {
+      "id": "higher_education",
+      "label": {
+        "en": "Higher Education Institution Performance",
+        "hi": "उच्च शिक्षा संस्थान निष्पादन"
+      },
+      "short_label": {
+        "en": "Higher Education Institution Performance"
+      },
+      "level": "sub_topic",
+      "parent_id": "education_research",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 133
+    },
+    {
+      "id": "technical_training",
+      "label": {
+        "en": "Technical & Vocational Training",
+        "hi": "तकनीकी एवं व्यावसायिक प्रशिक्षण"
+      },
+      "short_label": {
+        "en": "Technical & Vocational Training"
+      },
+      "level": "sub_topic",
+      "parent_id": "education_research",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 134
+    },
+    {
+      "id": "research_institutions",
+      "label": {
+        "en": "Research Institution Output",
+        "hi": "अनुसंधान संस्थान उत्पादन"
+      },
+      "short_label": {
+        "en": "Research Institution Output"
+      },
+      "level": "sub_topic",
+      "parent_id": "education_research",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 135
+    },
+    {
+      "id": "scholarships",
+      "label": {
+        "en": "Student Scholarship Disbursement",
+        "hi": "छात्र छात्रवृत्ति वितरण"
+      },
+      "short_label": {
+        "en": "Student Scholarship Disbursement"
+      },
+      "level": "sub_topic",
+      "parent_id": "education_research",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 136
+    },
+    {
+      "id": "midday_meal",
+      "label": {
+        "en": "Mid-Day Meal Scheme",
+        "hi": "मध्याह्न भोजन योजना"
+      },
+      "short_label": {
+        "en": "Mid-Day Meal Scheme"
+      },
+      "level": "sub_topic",
+      "parent_id": "education_research",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 137
+    },
+    {
+      "id": "ugc_grants",
+      "label": {
+        "en": "University Grants Utilisation",
+        "hi": "विश्वविद्यालय अनुदान उपयोग"
+      },
+      "short_label": {
+        "en": "University Grants Utilisation"
+      },
+      "level": "sub_topic",
+      "parent_id": "education_research",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 138
+    },
+    {
+      "id": "labour_welfare",
+      "label": {
+        "en": "Labour & Social Welfare",
+        "hi": "श्रम एवं सामाजिक कल्याण"
+      },
+      "short_label": {
+        "en": "Labour & Social Welfare"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "mgnregs",
+        "epfo_pension",
+        "unorganised_workers",
+        "maternity_benefits",
+        "child_labour",
+        "construction_workers"
+      ],
+      "sort_order": 139
+    },
+    {
+      "id": "mgnregs",
+      "label": {
+        "en": "MGNREGS Implementation",
+        "hi": "मनरेगा क्रियान्वयन"
+      },
+      "short_label": {
+        "en": "MGNREGS Implementation"
+      },
+      "level": "sub_topic",
+      "parent_id": "labour_welfare",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 140
+    },
+    {
+      "id": "epfo_pension",
+      "label": {
+        "en": "EPFO & Pension Fund Management",
+        "hi": "ईपीएफओ एवं पेंशन निधि प्रबंधन"
+      },
+      "short_label": {
+        "en": "EPFO & Pension Fund"
+      },
+      "level": "sub_topic",
+      "parent_id": "labour_welfare",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 141
+    },
+    {
+      "id": "unorganised_workers",
+      "label": {
+        "en": "Social Security for Unorganised Workers",
+        "hi": "असंगठित कामगारों के लिए सामाजिक सुरक्षा"
+      },
+      "short_label": {
+        "en": "Social Security for Unorganised"
+      },
+      "level": "sub_topic",
+      "parent_id": "labour_welfare",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 142
+    },
+    {
+      "id": "maternity_benefits",
+      "label": {
+        "en": "Maternity Benefit Schemes",
+        "hi": "मातृत्व लाभ योजनाएं"
+      },
+      "short_label": {
+        "en": "Maternity Benefit Schemes"
+      },
+      "level": "sub_topic",
+      "parent_id": "labour_welfare",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 143
+    },
+    {
+      "id": "child_labour",
+      "label": {
+        "en": "Child Labour & Bonded Labour Elimination",
+        "hi": "बाल श्रम एवं बंधुआ श्रम उन्मूलन"
+      },
+      "short_label": {
+        "en": "Child Labour"
+      },
+      "level": "sub_topic",
+      "parent_id": "labour_welfare",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 144
+    },
+    {
+      "id": "construction_workers",
+      "label": {
+        "en": "Building & Construction Worker Welfare Fund",
+        "hi": "भवन एवं निर्माण कामगार कल्याण निधि"
+      },
+      "short_label": {
+        "en": "Building"
+      },
+      "level": "sub_topic",
+      "parent_id": "labour_welfare",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 145
+    },
+    {
+      "id": "land_housing",
+      "label": {
+        "en": "Land, Housing & Property",
+        "hi": "भूमि, आवास एवं संपत्ति"
+      },
+      "short_label": {
+        "en": "Land, Housing & Property"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "land_acquisition",
+        "pmay_housing",
+        "land_records",
+        "govt_land",
+        "slum_rehabilitation",
+        "rera"
+      ],
+      "sort_order": 146
+    },
+    {
+      "id": "land_acquisition",
+      "label": {
+        "en": "Land Acquisition Compensation Delivery",
+        "hi": "भूमि अधिग्रहण मुआवजा प्रदायगी"
+      },
+      "short_label": {
+        "en": "Land Acquisition Compensation Delivery"
+      },
+      "level": "sub_topic",
+      "parent_id": "land_housing",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 147
+    },
+    {
+      "id": "pmay_housing",
+      "label": {
+        "en": "PMAY Housing Construction & Quality",
+        "hi": "पीएमएवाई आवास निर्माण एवं गुणवत्ता"
+      },
+      "short_label": {
+        "en": "PMAY Housing Construction & Quality"
+      },
+      "level": "sub_topic",
+      "parent_id": "land_housing",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 148
+    },
+    {
+      "id": "land_records",
+      "label": {
+        "en": "Land Records Digitisation",
+        "hi": "भूमि अभिलेख डिजिटलीकरण"
+      },
+      "short_label": {
+        "en": "Land Records Digitisation"
+      },
+      "level": "sub_topic",
+      "parent_id": "land_housing",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 149
+    },
+    {
+      "id": "govt_land",
+      "label": {
+        "en": "Government Land Management",
+        "hi": "सरकारी भूमि प्रबंधन"
+      },
+      "short_label": {
+        "en": "Government Land Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "land_housing",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 150
+    },
+    {
+      "id": "slum_rehabilitation",
+      "label": {
+        "en": "Slum Rehabilitation Schemes",
+        "hi": "झुग्गी पुनर्वास योजनाएं"
+      },
+      "short_label": {
+        "en": "Slum Rehabilitation Schemes"
+      },
+      "level": "sub_topic",
+      "parent_id": "land_housing",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 151
+    },
+    {
+      "id": "rera",
+      "label": {
+        "en": "Real Estate Regulation (RERA)",
+        "hi": "रियल एस्टेट विनियमन (रेरा)"
+      },
+      "short_label": {
+        "en": "Real Estate Regulation (RERA)"
+      },
+      "level": "sub_topic",
+      "parent_id": "land_housing",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 152
+    },
+    {
+      "id": "law_justice",
+      "label": {
+        "en": "Law, Justice & Courts",
+        "hi": "विधि, न्याय एवं न्यायालय"
+      },
+      "short_label": {
+        "en": "Law, Justice & Courts"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "court_infrastructure",
+        "legal_aid",
+        "fast_track_courts",
+        "prison_management",
+        "forensic_labs",
+        "lok_adalat"
+      ],
+      "sort_order": 153
+    },
+    {
+      "id": "court_infrastructure",
+      "label": {
+        "en": "Court Infrastructure & e-Courts",
+        "hi": "न्यायालय अवसंरचना एवं ई-कोर्ट"
+      },
+      "short_label": {
+        "en": "Court Infrastructure & e-Courts"
+      },
+      "level": "sub_topic",
+      "parent_id": "law_justice",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 154
+    },
+    {
+      "id": "legal_aid",
+      "label": {
+        "en": "Legal Aid Scheme Delivery",
+        "hi": "विधिक सहायता योजना प्रदायगी"
+      },
+      "short_label": {
+        "en": "Legal Aid Scheme Delivery"
+      },
+      "level": "sub_topic",
+      "parent_id": "law_justice",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 155
+    },
+    {
+      "id": "fast_track_courts",
+      "label": {
+        "en": "Fast Track Court Programme",
+        "hi": "फास्ट ट्रैक न्यायालय कार्यक्रम"
+      },
+      "short_label": {
+        "en": "Fast Track Court Programme"
+      },
+      "level": "sub_topic",
+      "parent_id": "law_justice",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 156
+    },
+    {
+      "id": "prison_management",
+      "label": {
+        "en": "Prison Management & Reform",
+        "hi": "कारागार प्रबंधन एवं सुधार"
+      },
+      "short_label": {
+        "en": "Prison Management & Reform"
+      },
+      "level": "sub_topic",
+      "parent_id": "law_justice",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 157
+    },
+    {
+      "id": "forensic_labs",
+      "label": {
+        "en": "Forensic Science Laboratory Performance",
+        "hi": "फोरेंसिक विज्ञान प्रयोगशाला निष्पादन"
+      },
+      "short_label": {
+        "en": "Forensic Science Laboratory Performance"
+      },
+      "level": "sub_topic",
+      "parent_id": "law_justice",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 158
+    },
+    {
+      "id": "lok_adalat",
+      "label": {
+        "en": "Lok Adalat & Alternative Dispute Resolution",
+        "hi": "लोक अदालत एवं वैकल्पिक विवाद समाधान"
+      },
+      "short_label": {
+        "en": "Lok Adalat"
+      },
+      "level": "sub_topic",
+      "parent_id": "law_justice",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 159
+    },
+    {
+      "id": "public_finance",
+      "label": {
+        "en": "Public Finance, Debt & Audit",
+        "hi": "सार्वजनिक वित्त, ऋण एवं लेखापरीक्षा"
+      },
+      "short_label": {
+        "en": "Public Finance, Debt & Audit"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "consolidated_fund",
+        "public_debt",
+        "contingent_liabilities",
+        "off_budget_borrowings",
+        "internal_audit",
+        "finance_commission_grants",
+        "treasury_management",
+        "financial_management",
+        "contract_management"
+      ],
+      "sort_order": 160
+    },
+    {
+      "id": "consolidated_fund",
+      "label": {
+        "en": "Consolidated Fund Management",
+        "hi": "समेकित निधि प्रबंधन"
+      },
+      "short_label": {
+        "en": "Consolidated Fund Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 161
+    },
+    {
+      "id": "public_debt",
+      "label": {
+        "en": "Public Debt Sustainability",
+        "hi": "सार्वजनिक ऋण स्थिरता"
+      },
+      "short_label": {
+        "en": "Public Debt Sustainability"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 162
+    },
+    {
+      "id": "contingent_liabilities",
+      "label": {
+        "en": "Contingent Liabilities & Guarantees",
+        "hi": "आकस्मिक देनदारियाँ एवं गारंटियाँ"
+      },
+      "short_label": {
+        "en": "Contingent Liabilities & Guarantees"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 163
+    },
+    {
+      "id": "off_budget_borrowings",
+      "label": {
+        "en": "Off-Budget Borrowings",
+        "hi": "बजट-बाह्य उधारी"
+      },
+      "short_label": {
+        "en": "Off-Budget Borrowings"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 164
+    },
+    {
+      "id": "internal_audit",
+      "label": {
+        "en": "Internal Audit Effectiveness",
+        "hi": "आंतरिक लेखापरीक्षा प्रभावशीलता"
+      },
+      "short_label": {
+        "en": "Internal Audit Effectiveness"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 165
+    },
+    {
+      "id": "finance_commission_grants",
+      "label": {
+        "en": "Finance Commission Grant Utilisation",
+        "hi": "वित्त आयोग अनुदान उपयोग"
+      },
+      "short_label": {
+        "en": "Finance Commission Grant Utilisation"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 166
+    },
+    {
+      "id": "treasury_management",
+      "label": {
+        "en": "Treasury Single Account & Cash Management",
+        "hi": "एकल खाता कोषागार एवं नकद प्रबंधन"
+      },
+      "short_label": {
+        "en": "Treasury Single Account"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 167
+    },
+    {
+      "id": "financial_management",
+      "label": {
+        "en": "Financial Management & Accountability",
+        "hi": "वित्तीय प्रबंधन एवं जवाबदेही"
+      },
+      "short_label": {
+        "en": "Financial Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 168
+    },
+    {
+      "id": "contract_management",
+      "label": {
+        "en": "Contract Management",
+        "hi": "संविदा प्रबंधन"
+      },
+      "short_label": {
+        "en": "Contract Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "public_finance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 169
+    },
+    {
+      "id": "elections_democracy",
+      "label": {
+        "en": "Elections & Democratic Institutions",
+        "hi": "चुनाव एवं लोकतांत्रिक संस्थाएं"
+      },
+      "short_label": {
+        "en": "Elections & Democratic Institutions"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "election_commission",
+        "electoral_rolls",
+        "evm_vvpat",
+        "political_finance",
+        "delimitation"
+      ],
+      "sort_order": 170
+    },
+    {
+      "id": "election_commission",
+      "label": {
+        "en": "Election Commission Administration",
+        "hi": "चुनाव आयोग प्रशासन"
+      },
+      "short_label": {
+        "en": "Election Commission Administration"
+      },
+      "level": "sub_topic",
+      "parent_id": "elections_democracy",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 171
+    },
+    {
+      "id": "electoral_rolls",
+      "label": {
+        "en": "Electoral Roll Management",
+        "hi": "मतदाता सूची प्रबंधन"
+      },
+      "short_label": {
+        "en": "Electoral Roll Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "elections_democracy",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 172
+    },
+    {
+      "id": "evm_vvpat",
+      "label": {
+        "en": "EVM Systems & VVPAT",
+        "hi": "ईवीएम प्रणाली एवं वीवीपैट"
+      },
+      "short_label": {
+        "en": "EVM Systems & VVPAT"
+      },
+      "level": "sub_topic",
+      "parent_id": "elections_democracy",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 173
+    },
+    {
+      "id": "political_finance",
+      "label": {
+        "en": "Political Finance & Disclosure",
+        "hi": "राजनीतिक वित्त एवं प्रकटीकरण"
+      },
+      "short_label": {
+        "en": "Political Finance & Disclosure"
+      },
+      "level": "sub_topic",
+      "parent_id": "elections_democracy",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 174
+    },
+    {
+      "id": "delimitation",
+      "label": {
+        "en": "Delimitation Processes",
+        "hi": "परिसीमन प्रक्रियाएं"
+      },
+      "short_label": {
+        "en": "Delimitation Processes"
+      },
+      "level": "sub_topic",
+      "parent_id": "elections_democracy",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 175
+    },
+    {
+      "id": "rural_governance",
+      "label": {
+        "en": "Rural Governance — Panchayati Raj Institutions",
+        "hi": "ग्रामीण शासन — पंचायती राज संस्थाएं"
+      },
+      "short_label": {
+        "en": "Rural Governance"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "pri_devolution",
+        "gpdp",
+        "social_audit",
+        "gram_sabha",
+        "pri_own_revenue",
+        "sfc_devolution",
+        "dpc_functioning",
+        "pri_accounting",
+        "sc_st_subplan",
+        "shg_women",
+        "gram_nyayalaya",
+        "rti_grievance_rural"
+      ],
+      "sort_order": 176
+    },
+    {
+      "id": "pri_devolution",
+      "label": {
+        "en": "PRI Devolution — Funds, Functions & Functionaries",
+        "hi": "पीआरआई हस्तांतरण — निधि, कार्य एवं कार्यकर्ता"
+      },
+      "short_label": {
+        "en": "PRI Devolution"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 177
+    },
+    {
+      "id": "gpdp",
+      "label": {
+        "en": "Gram Panchayat Development Plan (GPDP)",
+        "hi": "ग्राम पंचायत विकास योजना (जीपीडीपी)"
+      },
+      "short_label": {
+        "en": "Gram Panchayat Development Plan"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 178
+    },
+    {
+      "id": "social_audit",
+      "label": {
+        "en": "Social Audit & Transparency",
+        "hi": "सामाजिक लेखापरीक्षा एवं पारदर्शिता"
+      },
+      "short_label": {
+        "en": "Social Audit & Transparency"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 179
+    },
+    {
+      "id": "gram_sabha",
+      "label": {
+        "en": "Gram Sabha Functioning & Direct Democracy",
+        "hi": "ग्राम सभा कार्यप्रणाली एवं प्रत्यक्ष लोकतंत्र"
+      },
+      "short_label": {
+        "en": "Gram Sabha Functioning"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 180
+    },
+    {
+      "id": "pri_own_revenue",
+      "label": {
+        "en": "Panchayat Own Revenue & Property Tax",
+        "hi": "पंचायत स्वयं राजस्व एवं संपत्ति कर"
+      },
+      "short_label": {
+        "en": "Panchayat Own Revenue"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 181
+    },
+    {
+      "id": "sfc_devolution",
+      "label": {
+        "en": "State Finance Commission Recommendations & Devolution",
+        "hi": "राज्य वित्त आयोग सिफारिशें एवं हस्तांतरण"
+      },
+      "short_label": {
+        "en": "State Finance Commission Recommendations"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 182
+    },
+    {
+      "id": "dpc_functioning",
+      "label": {
+        "en": "District Planning Committee Functioning",
+        "hi": "जिला योजना समिति कार्यप्रणाली"
+      },
+      "short_label": {
+        "en": "District Planning Committee Functioning"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 183
+    },
+    {
+      "id": "pri_accounting",
+      "label": {
+        "en": "PRI Audit, Accounting & Financial Systems",
+        "hi": "पीआरआई लेखापरीक्षा, लेखांकन एवं वित्तीय प्रणाली"
+      },
+      "short_label": {
+        "en": "PRI Audit, Accounting"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 184
+    },
+    {
+      "id": "sc_st_subplan",
+      "label": {
+        "en": "SC/ST Sub-Plan Implementation at PRI Level",
+        "hi": "पीआरआई स्तर पर अनुसूचित जाति/जनजाति उप-योजना क्रियान्वयन"
+      },
+      "short_label": {
+        "en": "SC/ST Sub-Plan Implementation at"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 185
+    },
+    {
+      "id": "shg_women",
+      "label": {
+        "en": "SHG & Women Empowerment Schemes",
+        "hi": "स्वयं सहायता समूह एवं महिला सशक्तिकरण"
+      },
+      "short_label": {
+        "en": "SHG & Women Empowerment"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 186
+    },
+    {
+      "id": "gram_nyayalaya",
+      "label": {
+        "en": "Gram Nyayalaya & Rural Dispute Resolution",
+        "hi": "ग्राम न्यायालय एवं ग्रामीण विवाद समाधान"
+      },
+      "short_label": {
+        "en": "Gram Nyayalaya"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 187
+    },
+    {
+      "id": "rti_grievance_rural",
+      "label": {
+        "en": "RTI & Grievance Redress at Village Level",
+        "hi": "ग्राम स्तर पर सूचना का अधिकार एवं शिकायत निवारण"
+      },
+      "short_label": {
+        "en": "RTI"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 188
+    },
+    {
+      "id": "rural_infrastructure",
+      "label": {
+        "en": "Rural Infrastructure & Basic Services",
+        "hi": "ग्रामीण अवसंरचना एवं बुनियादी सेवाएं"
+      },
+      "short_label": {
+        "en": "Rural Infrastructure"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "pmgsy",
+        "pmay_gramin",
+        "odf_sustainability",
+        "jjm_village",
+        "anganwadi",
+        "rural_health_centres",
+        "rural_storage",
+        "hamlet_electrification",
+        "rural_non_conventional",
+        "common_property"
+      ],
+      "sort_order": 189
+    },
+    {
+      "id": "pmgsy",
+      "label": {
+        "en": "Rural Roads — PMGSY Construction Quality & Connectivity",
+        "hi": "ग्रामीण सड़कें — पीएमजीएसवाई निर्माण गुणवत्ता एवं संपर्क"
+      },
+      "short_label": {
+        "en": "Rural Roads"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 190
+    },
+    {
+      "id": "pmay_gramin",
+      "label": {
+        "en": "PMAY Gramin — Housing Quality & Targeting",
+        "hi": "पीएमएवाई ग्रामीण — आवास गुणवत्ता एवं लक्ष्यीकरण"
+      },
+      "short_label": {
+        "en": "PMAY Gramin"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 191
+    },
+    {
+      "id": "odf_sustainability",
+      "label": {
+        "en": "Rural Sanitation — ODF Sustainability & Toilet Use",
+        "hi": "ग्रामीण स्वच्छता — ओडीएफ स्थिरता एवं शौचालय उपयोग"
+      },
+      "short_label": {
+        "en": "Rural Sanitation"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 192
+    },
+    {
+      "id": "jjm_village",
+      "label": {
+        "en": "Jal Jeevan Mission — Village Level Water Supply",
+        "hi": "जल जीवन मिशन — ग्राम स्तरीय जल आपूर्ति"
+      },
+      "short_label": {
+        "en": "Jal Jeevan Mission"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 193
+    },
+    {
+      "id": "anganwadi",
+      "label": {
+        "en": "Anganwadi Infrastructure & ICDS Delivery",
+        "hi": "आंगनवाड़ी अवसंरचना एवं आईसीडीएस प्रदायगी"
+      },
+      "short_label": {
+        "en": "Anganwadi Infrastructure"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 194
+    },
+    {
+      "id": "rural_health_centres",
+      "label": {
+        "en": "Rural Health Sub-Centre Functionality",
+        "hi": "ग्रामीण स्वास्थ्य उप-केंद्र कार्यक्षमता"
+      },
+      "short_label": {
+        "en": "Rural Health Sub-Centre Functionality"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 195
+    },
+    {
+      "id": "rural_storage",
+      "label": {
+        "en": "Storage & Godown Infrastructure for PDS",
+        "hi": "सार्वजनिक वितरण प्रणाली के लिए भंडारण एवं गोदाम अवसंरचना"
+      },
+      "short_label": {
+        "en": "Storage"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 196
+    },
+    {
+      "id": "hamlet_electrification",
+      "label": {
+        "en": "Electrification of Un-electrified Hamlets",
+        "hi": "बिना विद्युत के पड़ों का विद्युतीकरण"
+      },
+      "short_label": {
+        "en": "Electrification of Un-electrified Hamlets"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 197
+    },
+    {
+      "id": "rural_non_conventional",
+      "label": {
+        "en": "Non-Conventional Energy at Village Level",
+        "hi": "ग्राम स्तर पर गैर-परंपरागत ऊर्जा"
+      },
+      "short_label": {
+        "en": "Non-Conventional Energy at Village"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 198
+    },
+    {
+      "id": "common_property",
+      "label": {
+        "en": "Community Assets & Common Property Resource Management",
+        "hi": "सामुदायिक संपत्ति एवं सामान्य संपत्ति संसाधन प्रबंधन"
+      },
+      "short_label": {
+        "en": "Community Assets"
+      },
+      "level": "sub_topic",
+      "parent_id": "rural_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 199
+    },
+    {
+      "id": "agri_allied_district",
+      "label": {
+        "en": "Agricultural & Allied Sectors at District Level",
+        "hi": "जिला स्तर पर कृषि एवं संबद्ध क्षेत्र"
+      },
+      "short_label": {
+        "en": "Agricultural"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "district_agri_plan",
+        "soil_health",
+        "horticulture",
+        "fisheries_district",
+        "livestock_health",
+        "minor_irrigation",
+        "watershed_dev",
+        "kisan_credit"
+      ],
+      "sort_order": 200
+    },
+    {
+      "id": "district_agri_plan",
+      "label": {
+        "en": "District Agriculture Plan Implementation",
+        "hi": "जिला कृषि योजना क्रियान्वयन"
+      },
+      "short_label": {
+        "en": "District Agriculture Plan Implementation"
+      },
+      "level": "sub_topic",
+      "parent_id": "agri_allied_district",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 201
+    },
+    {
+      "id": "soil_health",
+      "label": {
+        "en": "Soil Health Card Scheme Delivery",
+        "hi": "मृदा स्वास्थ्य कार्ड योजना प्रदायगी"
+      },
+      "short_label": {
+        "en": "Soil Health Card Scheme"
+      },
+      "level": "sub_topic",
+      "parent_id": "agri_allied_district",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 202
+    },
+    {
+      "id": "horticulture",
+      "label": {
+        "en": "Crop Diversification & Horticulture Promotion",
+        "hi": "फसल विविधीकरण एवं बागवानी प्रोत्साहन"
+      },
+      "short_label": {
+        "en": "Crop Diversification"
+      },
+      "level": "sub_topic",
+      "parent_id": "agri_allied_district",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 203
+    },
+    {
+      "id": "fisheries_district",
+      "label": {
+        "en": "Fisheries Licensing & Revenue at District Level",
+        "hi": "जिला स्तर पर मत्स्य पालन लाइसेंसिंग एवं राजस्व"
+      },
+      "short_label": {
+        "en": "Fisheries Licensing"
+      },
+      "level": "sub_topic",
+      "parent_id": "agri_allied_district",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 204
+    },
+    {
+      "id": "livestock_health",
+      "label": {
+        "en": "Livestock Health & Vaccination Coverage",
+        "hi": "पशुधन स्वास्थ्य एवं टीकाकरण охват"
+      },
+      "short_label": {
+        "en": "Livestock Health"
+      },
+      "level": "sub_topic",
+      "parent_id": "agri_allied_district",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 205
+    },
+    {
+      "id": "minor_irrigation",
+      "label": {
+        "en": "Minor Irrigation Scheme Creation & Utilisation",
+        "hi": "लघु सिंचाई योजना सृजन एवं उपयोग"
+      },
+      "short_label": {
+        "en": "Minor Irrigation Scheme Creation"
+      },
+      "level": "sub_topic",
+      "parent_id": "agri_allied_district",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 206
+    },
+    {
+      "id": "watershed_dev",
+      "label": {
+        "en": "Watershed Development & Land Treatment",
+        "hi": "जलग्रहण विकास एवं भूमि उपचार"
+      },
+      "short_label": {
+        "en": "Watershed Development"
+      },
+      "level": "sub_topic",
+      "parent_id": "agri_allied_district",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 207
+    },
+    {
+      "id": "kisan_credit",
+      "label": {
+        "en": "Kisan Credit Card Penetration & NPA",
+        "hi": "किसान क्रेडिट कार्ड प्रसार एवं एनपीए"
+      },
+      "short_label": {
+        "en": "Kisan Credit Card Penetration"
+      },
+      "level": "sub_topic",
+      "parent_id": "agri_allied_district",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 208
+    },
+    {
+      "id": "urban_governance",
+      "label": {
+        "en": "Urban Governance — Urban Local Bodies",
+        "hi": "शहरी शासन — नगरीय स्थानीय निकाय"
+      },
+      "short_label": {
+        "en": "Urban Governance"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "ulb_devolution",
+        "municipal_finance",
+        "property_tax",
+        "urban_planning",
+        "building_regulation",
+        "urban_land_mgmt",
+        "ward_committee",
+        "ulb_accounting",
+        "sfc_ulb",
+        "municipal_bonds",
+        "urban_egov",
+        "heritage_conservation",
+        "urban_poverty",
+        "elected_rep_capacity"
+      ],
+      "sort_order": 209
+    },
+    {
+      "id": "ulb_devolution",
+      "label": {
+        "en": "ULB Devolution — Funds, Functions & Functionaries",
+        "hi": "नगरीय निकाय हस्तांतरण — निधि, कार्य एवं कार्यकर्ता"
+      },
+      "short_label": {
+        "en": "ULB Devolution"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 210
+    },
+    {
+      "id": "municipal_finance",
+      "label": {
+        "en": "Municipal Finance & Own Source Revenue",
+        "hi": "नगरपालिका वित्त एवं स्वयं स्रोत राजस्व"
+      },
+      "short_label": {
+        "en": "Municipal Finance"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 211
+    },
+    {
+      "id": "property_tax",
+      "label": {
+        "en": "Property Tax Collection & Assessment",
+        "hi": "संपत्ति कर संग्रह एवं निर्धारण"
+      },
+      "short_label": {
+        "en": "Property Tax Collection"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 212
+    },
+    {
+      "id": "urban_planning",
+      "label": {
+        "en": "Urban Planning — Master Plan & Development Control",
+        "hi": "शहरी योजना — मास्टर प्लान एवं विकास नियंत्रण"
+      },
+      "short_label": {
+        "en": "Urban Planning"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 213
+    },
+    {
+      "id": "building_regulation",
+      "label": {
+        "en": "Building Regulation & Construction Approvals",
+        "hi": "भवन विनियमन एवं निर्माण अनुमोदन"
+      },
+      "short_label": {
+        "en": "Building Regulation"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 214
+    },
+    {
+      "id": "urban_land_mgmt",
+      "label": {
+        "en": "Urban Land Management & Encroachment",
+        "hi": "शहरी भूमि प्रबंधन एवं अतिक्रमण"
+      },
+      "short_label": {
+        "en": "Urban Land Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 215
+    },
+    {
+      "id": "ward_committee",
+      "label": {
+        "en": "Ward Committee & Area Sabha Functioning",
+        "hi": "वार्ड समिति एवं क्षेत्र सभा कार्यप्रणाली"
+      },
+      "short_label": {
+        "en": "Ward Committee"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 216
+    },
+    {
+      "id": "ulb_accounting",
+      "label": {
+        "en": "ULB Audit, Accounting & Accrual Adoption",
+        "hi": "नगरीय निकाय लेखापरीक्षा, लेखांकन एवं उपार्जन अपनाव"
+      },
+      "short_label": {
+        "en": "ULB Audit, Accounting"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 217
+    },
+    {
+      "id": "sfc_ulb",
+      "label": {
+        "en": "State Finance Commission & 15th FC Urban Grant Utilisation",
+        "hi": "राज्य वित्त आयोग एवं 15वें वित्त आयोग शहरी अनुदान उपयोग"
+      },
+      "short_label": {
+        "en": "State Finance Commission"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 218
+    },
+    {
+      "id": "municipal_bonds",
+      "label": {
+        "en": "Municipal Bond Issuance & Creditworthiness",
+        "hi": "नगरपालिका बॉन्ड जारी करना एवं साख"
+      },
+      "short_label": {
+        "en": "Municipal Bond Issuance"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 219
+    },
+    {
+      "id": "urban_egov",
+      "label": {
+        "en": "e-Governance in ULBs — Portals & Digital Services",
+        "hi": "नगरीय निकायों में ई-शासन — पोर्टल एवं डिजिटल सेवाएं"
+      },
+      "short_label": {
+        "en": "e-Governance in ULBs"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 220
+    },
+    {
+      "id": "heritage_conservation",
+      "label": {
+        "en": "Heritage Zone Regulation & Conservation",
+        "hi": "विरासत क्षेत्र विनियमन एवं संरक्षण"
+      },
+      "short_label": {
+        "en": "Heritage Zone Regulation"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 221
+    },
+    {
+      "id": "urban_poverty",
+      "label": {
+        "en": "Urban Poverty Alleviation — NULM Delivery",
+        "hi": "शहरी गरीबी उन्मूलन — एनयूएलएम प्रदायगी"
+      },
+      "short_label": {
+        "en": "Urban Poverty Alleviation"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 222
+    },
+    {
+      "id": "elected_rep_capacity",
+      "label": {
+        "en": "Elected Representative Capacity & Training",
+        "hi": "निर्वाचित प्रतिनिधि क्षमता एवं प्रशिक्षण"
+      },
+      "short_label": {
+        "en": "Elected Representative Capacity"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 223
+    },
+    {
+      "id": "urban_infrastructure",
+      "label": {
+        "en": "Urban Infrastructure & Basic Services",
+        "hi": "शहरी अवसंरचना एवं बुनियादी सेवाएं"
+      },
+      "short_label": {
+        "en": "Urban Infrastructure"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "urban_roads_bridges",
+        "urban_public_transport",
+        "urban_water_supply",
+        "urban_sewerage",
+        "solid_waste_urban",
+        "stormwater_drainage",
+        "street_lighting",
+        "urban_green_spaces",
+        "fpz_management",
+        "smart_city",
+        "amrut",
+        "parking_traffic"
+      ],
+      "sort_order": 224
+    },
+    {
+      "id": "urban_roads_bridges",
+      "label": {
+        "en": "City Roads, Bridges & Flyovers",
+        "hi": "शहरी सड़कें, पुल एवं फ्लाईओवर"
+      },
+      "short_label": {
+        "en": "City Roads, Bridges & Flyovers"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 225
+    },
+    {
+      "id": "urban_public_transport",
+      "label": {
+        "en": "Urban Public Transport — BRTS, City Buses",
+        "hi": "शहरी सार्वजनिक परिवहन — बीआरटीएस, शहरी बसें"
+      },
+      "short_label": {
+        "en": "Urban Public Transport"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 226
+    },
+    {
+      "id": "urban_water_supply",
+      "label": {
+        "en": "Urban Water Supply — Production, Distribution, NRW Losses",
+        "hi": "शहरी जल आपूर्ति — उत्पादन, वितरण, एनआरडब्ल्यू हानि"
+      },
+      "short_label": {
+        "en": "Urban Water Supply"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 227
+    },
+    {
+      "id": "urban_sewerage",
+      "label": {
+        "en": "Urban Sewerage & Sewage Treatment Plants",
+        "hi": "शहरी सीवरेज एवं सीवेज उपचार संयंत्र"
+      },
+      "short_label": {
+        "en": "Urban Sewerage"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 228
+    },
+    {
+      "id": "solid_waste_urban",
+      "label": {
+        "en": "Solid Waste Management — Collection, Processing, Disposal",
+        "hi": "ठोस अपशिष्ट प्रबंधन — संग्रह, प्रसंस्करण, निपटान"
+      },
+      "short_label": {
+        "en": "Solid Waste Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 229
+    },
+    {
+      "id": "stormwater_drainage",
+      "label": {
+        "en": "Stormwater Drainage & Urban Flooding",
+        "hi": "वर्षा जल निकासी एवं शहरी बाढ़"
+      },
+      "short_label": {
+        "en": "Stormwater Drainage"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 230
+    },
+    {
+      "id": "street_lighting",
+      "label": {
+        "en": "Street Lighting — LED Conversion & Energy Efficiency",
+        "hi": "स्ट्रीट लाइटिंग — एलईडी रूपांतरण एवं ऊर्जा दक्षता"
+      },
+      "short_label": {
+        "en": "Street Lighting"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 231
+    },
+    {
+      "id": "urban_green_spaces",
+      "label": {
+        "en": "Urban Green Spaces, Parks & Urban Forests",
+        "hi": "शहरी हरित क्षेत्र, पार्क एवं शहरी वन"
+      },
+      "short_label": {
+        "en": "Urban Green Spaces, Parks"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 232
+    },
+    {
+      "id": "fpz_management",
+      "label": {
+        "en": "Flood Plain Zone Management & River Frontage",
+        "hi": "बाढ़ क्षेत्र प्रबंधन एवं नदी तट"
+      },
+      "short_label": {
+        "en": "Flood Plain Zone Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 233
+    },
+    {
+      "id": "smart_city",
+      "label": {
+        "en": "Smart City Mission — ICT Infrastructure & Outcomes",
+        "hi": "स्मार्ट सिटी मिशन — आईसीटी अवसंरचना एवं परिणाम"
+      },
+      "short_label": {
+        "en": "Smart City Mission"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 234
+    },
+    {
+      "id": "amrut",
+      "label": {
+        "en": "AMRUT Scheme Delivery",
+        "hi": "अमृत योजना प्रदायगी"
+      },
+      "short_label": {
+        "en": "AMRUT Scheme Delivery"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 235
+    },
+    {
+      "id": "parking_traffic",
+      "label": {
+        "en": "Parking & Traffic Management",
+        "hi": "पार्किंग एवं यातायात प्रबंधन"
+      },
+      "short_label": {
+        "en": "Parking & Traffic Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "urban_infrastructure",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 236
+    },
+    {
+      "id": "digital_governance",
+      "label": {
+        "en": "Digital Governance & Emerging Technology",
+        "hi": "डिजिटल शासन एवं उभरती प्रौद्योगिकी"
+      },
+      "short_label": {
+        "en": "Digital Governance"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "egov_dbt",
+        "cybersecurity",
+        "ai_public_services",
+        "it_procurement",
+        "dpi",
+        "govtech_delivery",
+        "data_governance",
+        "digital_divide",
+        "gati_shakti",
+        "drone_space",
+        "surveillance_oversight"
+      ],
+      "sort_order": 237
+    },
+    {
+      "id": "egov_dbt",
+      "label": {
+        "en": "e-Governance Infrastructure & Direct Benefit Transfer",
+        "hi": "ई-शासन अवसंरचना एवं प्रत्यक्ष लाभ हस्तांतरण"
+      },
+      "short_label": {
+        "en": "e-Governance Infrastructure"
+      },
+      "level": "sub_topic",
+      "parent_id": "digital_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 238
+    },
+    {
+      "id": "cybersecurity",
+      "label": {
+        "en": "Cybersecurity & Data Protection",
+        "hi": "साइबर सुरक्षा एवं डेटा संरक्षण"
+      },
+      "short_label": {
+        "en": "Cybersecurity & Data Protection"
+      },
+      "level": "sub_topic",
+      "parent_id": "digital_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 239
+    },
+    {
+      "id": "ai_public_services",
+      "label": {
+        "en": "AI Deployment in Public Services",
+        "hi": "सार्वजनिक सेवाओं में एआई तैनाती"
+      },
+      "short_label": {
+        "en": "AI Deployment in Public"
+      },
+      "level": "sub_topic",
+      "parent_id": "digital_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 240
+    },
+    {
+      "id": "it_procurement",
+      "label": {
+        "en": "IT Procurement & System Implementation",
+        "hi": "आईटी खरीद एवं प्रणाली क्रियान्वयन"
+      },
+      "short_label": {
+        "en": "IT Procurement"
+      },
+      "level": "sub_topic",
+      "parent_id": "digital_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 241
+    },
+    {
+      "id": "dpi",
+      "label": {
+        "en": "Digital Public Infrastructure — Aadhaar, UPI, ONDC, DigiLocker",
+        "hi": "डिजिटल सार्वजनिक अवसंरचना — आधार, यूपीआई, ओएनडीसी, डिजीलॉकर"
+      },
+      "short_label": {
+        "en": "Digital Public Infrastructure"
+      },
+      "level": "sub_topic",
+      "parent_id": "digital_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 242
+    },
+    {
+      "id": "govtech_delivery",
+      "label": {
+        "en": "GovTech Project Delivery & Outcome Measurement",
+        "hi": "गवटेक परियोजना प्रदायगी एवं परिणाम मापन"
+      },
+      "short_label": {
+        "en": "GovTech Project Delivery"
+      },
+      "level": "sub_topic",
+      "parent_id": "digital_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 243
+    },
+    {
+      "id": "data_governance",
+      "label": {
+        "en": "Open Data & Algorithmic Accountability",
+        "hi": "खुला डेटा एवं एल्गोरिदमिक जवाबदेही"
+      },
+      "short_label": {
+        "en": "Open Data"
+      },
+      "level": "sub_topic",
+      "parent_id": "digital_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 244
+    },
+    {
+      "id": "digital_divide",
+      "label": {
+        "en": "Digital Divide & Inclusion",
+        "hi": "डिजिटल विभाजन एवं समावेश"
+      },
+      "short_label": {
+        "en": "Digital Divide & Inclusion"
+      },
+      "level": "sub_topic",
+      "parent_id": "digital_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 245
+    },
+    {
+      "id": "gati_shakti",
+      "label": {
+        "en": "PM Gati Shakti & GIS-Based Planning",
+        "hi": "पीएम गति शक्ति एवं जीआईएस आधारित योजना"
+      },
+      "short_label": {
+        "en": "PM Gati Shakti & GIS-Based Planning"
+      },
+      "level": "sub_topic",
+      "parent_id": "digital_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 246
+    },
+    {
+      "id": "drone_space",
+      "label": {
+        "en": "Drone & Space Technology Regulation",
+        "hi": "ड्रोन एवं अंतरिक्ष प्रौद्योगिकी विनियमन"
+      },
+      "short_label": {
+        "en": "Drone & Space Technology"
+      },
+      "level": "sub_topic",
+      "parent_id": "digital_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 247
+    },
+    {
+      "id": "surveillance_oversight",
+      "label": {
+        "en": "Facial Recognition & Surveillance Oversight",
+        "hi": "चेहरा पहचान एवं निगरानी निरीक्षण"
+      },
+      "short_label": {
+        "en": "Facial Recognition"
+      },
+      "level": "sub_topic",
+      "parent_id": "digital_governance",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 248
+    },
+    {
+      "id": "climate_disaster",
+      "label": {
+        "en": "Climate, Disaster & Resilience Governance",
+        "hi": "जलवायु, आपदा एवं लचीलापन शासन"
+      },
+      "short_label": {
+        "en": "Climate, Disaster"
+      },
+      "level": "topic",
+      "parent_id": null,
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sub_topics": [
+        "ndma_sdma",
+        "ndrf_sdrf",
+        "early_warning",
+        "post_disaster_reconstruction",
+        "climate_finance",
+        "coastal_zone",
+        "urban_heat",
+        "carbon_emission"
+      ],
+      "sort_order": 249
+    },
+    {
+      "id": "ndma_sdma",
+      "label": {
+        "en": "National & State Disaster Management Plans",
+        "hi": "राष्ट्रीय एवं राज्य आपदा प्रबंधन योजनाएं"
+      },
+      "short_label": {
+        "en": "National"
+      },
+      "level": "sub_topic",
+      "parent_id": "climate_disaster",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 250
+    },
+    {
+      "id": "ndrf_sdrf",
+      "label": {
+        "en": "NDRF/SDRF Fund Utilisation & Response Effectiveness",
+        "hi": "एनडीआरएफ/एसडीआरएफ निधि उपयोग एवं प्रतिक्रिया प्रभावशीलता"
+      },
+      "short_label": {
+        "en": "NDRF/SDRF Fund Utilisation"
+      },
+      "level": "sub_topic",
+      "parent_id": "climate_disaster",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 251
+    },
+    {
+      "id": "early_warning",
+      "label": {
+        "en": "Early Warning Systems & Communication",
+        "hi": "पूर्व चेतावनी प्रणाली एवं संचार"
+      },
+      "short_label": {
+        "en": "Early Warning Systems"
+      },
+      "level": "sub_topic",
+      "parent_id": "climate_disaster",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 252
+    },
+    {
+      "id": "post_disaster_reconstruction",
+      "label": {
+        "en": "Post-Disaster Reconstruction Quality",
+        "hi": "आपदा-पश्चात पुनर्निर्माण गुणवत्ता"
+      },
+      "short_label": {
+        "en": "Post-Disaster Reconstruction Quality"
+      },
+      "level": "sub_topic",
+      "parent_id": "climate_disaster",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 253
+    },
+    {
+      "id": "climate_finance",
+      "label": {
+        "en": "Climate Finance & Green Climate Fund Outcomes",
+        "hi": "जलवायु वित्त एवं ग्रीन क्लाइमेट फंड परिणाम"
+      },
+      "short_label": {
+        "en": "Climate Finance"
+      },
+      "level": "sub_topic",
+      "parent_id": "climate_disaster",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 254
+    },
+    {
+      "id": "coastal_zone",
+      "label": {
+        "en": "Coastal Zone Management",
+        "hi": "तटीय क्षेत्र प्रबंधन"
+      },
+      "short_label": {
+        "en": "Coastal Zone Management"
+      },
+      "level": "sub_topic",
+      "parent_id": "climate_disaster",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 255
+    },
+    {
+      "id": "urban_heat",
+      "label": {
+        "en": "Urban Heat Island & Green Infrastructure",
+        "hi": "शहरी ताप द्वीप एवं हरित अवसंरचना"
+      },
+      "short_label": {
+        "en": "Urban Heat Island"
+      },
+      "level": "sub_topic",
+      "parent_id": "climate_disaster",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 256
+    },
+    {
+      "id": "carbon_emission",
+      "label": {
+        "en": "Carbon Emission Reduction Commitments",
+        "hi": "कार्बन उत्सर्जन कटौती प्रतिबद्धताएं"
+      },
+      "short_label": {
+        "en": "Carbon Emission Reduction Commitments"
+      },
+      "level": "sub_topic",
+      "parent_id": "climate_disaster",
+      "description": {
+        "en": ""
+      },
+      "deprecated": false,
+      "sort_order": 257
+    }
+  ],
+  "$schema": "./taxonomy_topics.schema.json",
+  "updated_at": "2025-01-01",
+  "description_policy": "description fields: empty string '' means pending — acceptable but flagged by corpus health check. Populate before marking an entry production-ready."
+}

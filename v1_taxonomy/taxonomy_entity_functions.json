@@ -1,0 +1,129 @@
+{
+  "$version": "1.0",
+  "$schema": "./taxonomy_entity_functions.schema.json",
+  "updated_at": "2025-01-01",
+  "description": "Controlled vocabulary of government functional domains. Links functionally equivalent entities across jurisdictions and name changes. A state rural development department in MP and its equivalent in Odisha share the same function_id. Referenced by registry_entities.json (function_ids[]) and registry_schemes.json (sector_function_id). Extracted from inline registry_entities.json function_vocabulary in v1.0 to allow independent versioning and referencing.",
+  "id_convention": "SCREAMING-KEBAB with FUNC- prefix. e.g. FUNC-RURAL-DEV. IDs permanently stable.",
+  "usage_notes": [
+    "Use function_ids[] on entity entries to tag all functional domains an entity covers.",
+    "Use sector_function_id on scheme entries for the primary functional domain of the scheme.",
+    "When adding a new function, add it here first, then reference it in the relevant registry entries.",
+    "Functions map to CAG audit wings approximately but are not the same as report_sector taxonomy — functions describe what an entity does, sectors describe what was audited."
+  ],
+  "entries": [
+    {
+      "id": "FUNC-RURAL-DEV",
+      "label": { "en": "Rural Development and Panchayati Raj", "hi": "ग्रामीण विकास एवं पंचायती राज" },
+      "description": { "en": "Rural employment, roads, housing, and panchayati raj governance." },
+      "sort_order": 1
+    },
+    {
+      "id": "FUNC-FINANCE",
+      "label": { "en": "Finance and Revenue", "hi": "वित्त एवं राजस्व" },
+      "description": { "en": "Public finance management, budget, treasury, and revenue administration." },
+      "sort_order": 2
+    },
+    {
+      "id": "FUNC-HOME",
+      "label": { "en": "Home and Internal Security", "hi": "गृह एवं आंतरिक सुरक्षा" },
+      "description": { "en": "Police, internal security, border management, and disaster management." },
+      "sort_order": 3
+    },
+    {
+      "id": "FUNC-HEALTH",
+      "label": { "en": "Health and Family Welfare", "hi": "स्वास्थ्य एवं परिवार कल्याण" },
+      "description": { "en": "Public health, hospitals, family welfare programmes, and medical education." },
+      "sort_order": 4
+    },
+    {
+      "id": "FUNC-EDUCATION",
+      "label": { "en": "School Education", "hi": "विद्यालय शिक्षा" },
+      "description": { "en": "Elementary and secondary school education, mid-day meals, and school infrastructure." },
+      "sort_order": 5
+    },
+    {
+      "id": "FUNC-HIGHER-EDU",
+      "label": { "en": "Higher and Technical Education", "hi": "उच्च एवं तकनीकी शिक्षा" },
+      "description": { "en": "Universities, colleges, technical institutes, IITs, IIMs, and NIT network." },
+      "sort_order": 6
+    },
+    {
+      "id": "FUNC-AGRICULTURE",
+      "label": { "en": "Agriculture and Allied Services", "hi": "कृषि एवं संबद्ध सेवाएं" },
+      "description": { "en": "Crop production, horticulture, animal husbandry, fisheries, and food processing." },
+      "sort_order": 7
+    },
+    {
+      "id": "FUNC-IRRIGATION",
+      "label": { "en": "Irrigation and Water Resources", "hi": "सिंचाई एवं जल संसाधन" },
+      "description": { "en": "Dams, canals, groundwater management, flood control, and drinking water supply." },
+      "sort_order": 8
+    },
+    {
+      "id": "FUNC-FORESTS",
+      "label": { "en": "Forests and Environment", "hi": "वन एवं पर्यावरण" },
+      "description": { "en": "Forest management, wildlife conservation, environment protection, and pollution control." },
+      "sort_order": 9
+    },
+    {
+      "id": "FUNC-PWD",
+      "label": { "en": "Public Works and Infrastructure", "hi": "लोक निर्माण एवं अवसंरचना" },
+      "description": { "en": "Roads, bridges, government buildings, and state infrastructure construction." },
+      "sort_order": 10
+    },
+    {
+      "id": "FUNC-URBAN-DEV",
+      "label": { "en": "Urban Development and Housing", "hi": "नगरीय विकास एवं आवास" },
+      "description": { "en": "Urban local bodies, housing schemes, slum development, and municipal services." },
+      "sort_order": 11
+    },
+    {
+      "id": "FUNC-SOCIAL-WELFARE",
+      "label": { "en": "Social Welfare and Tribal Affairs", "hi": "समाज कल्याण एवं आदिवासी मामले" },
+      "description": { "en": "SC/ST welfare, women and child development, labour welfare, and disability programmes." },
+      "sort_order": 12
+    },
+    {
+      "id": "FUNC-ENERGY",
+      "label": { "en": "Energy and Power", "hi": "ऊर्जा एवं विद्युत" },
+      "description": { "en": "Power generation, transmission, distribution, renewable energy, and petroleum." },
+      "sort_order": 13
+    },
+    {
+      "id": "FUNC-TRANSPORT",
+      "label": { "en": "Transport and Roads", "hi": "परिवहन एवं सड़कें" },
+      "description": { "en": "National and state highways, transport corporations, civil aviation, and shipping." },
+      "sort_order": 14
+    },
+    {
+      "id": "FUNC-REVENUE",
+      "label": { "en": "Revenue and Land Records", "hi": "राजस्व एवं भू-अभिलेख" },
+      "description": { "en": "Land revenue, stamp duty, registration, land records, and land acquisition." },
+      "sort_order": 15
+    },
+    {
+      "id": "FUNC-TELECOM",
+      "label": { "en": "Telecommunications and IT", "hi": "दूरसंचार एवं सूचना प्रौद्योगिकी" },
+      "description": { "en": "Telecom infrastructure, spectrum management, IT systems, and e-governance." },
+      "sort_order": 16
+    },
+    {
+      "id": "FUNC-PLANNING",
+      "label": { "en": "Planning and Programme Implementation", "hi": "योजना एवं कार्यक्रम कार्यान्वयन" },
+      "description": { "en": "National and state planning, policy formulation, programme monitoring, and evaluation." },
+      "sort_order": 17
+    },
+    {
+      "id": "FUNC-AUDIT",
+      "label": { "en": "Audit and Accounts", "hi": "लेखापरीक्षा एवं लेखा" },
+      "description": { "en": "Supreme audit institution functions, accounts keeping, and internal audit oversight." },
+      "sort_order": 18
+    },
+    {
+      "id": "FUNC-PETROLEUM",
+      "label": { "en": "Petroleum, Natural Gas and Minerals", "hi": "पेट्रोलियम, प्राकृतिक गैस एवं खनिज" },
+      "description": { "en": "Oil and gas exploration, refining, distribution, and mineral extraction." },
+      "sort_order": 19
+    }
+  ]
+}

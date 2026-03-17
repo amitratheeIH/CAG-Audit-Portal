@@ -1,0 +1,126 @@
+{
+  "$version": "1.0",
+  "$schema": "./taxonomy_audit_type.schema.json",
+  "updated_at": "2025-01-01",
+  "id_convention": "SCREAMING-KEBAB with ATYPE- prefix. e.g. ATYPE-COMPLIANCE. IDs are permanently stable — never rename. Add deprecated:true + superseded_by when retiring.",
+  "description": "Controlled vocabulary for audit_type field in inheritable_audit_metadata.schema. Describes primary audit methodology — not subject matter or sector. A report or chapter may carry multiple types when methodologies are genuinely mixed.",
+  "usage_notes": [
+    "Set at report level for the dominant methodology of the whole report.",
+    "Override at chapter level when a chapter uses a clearly different methodology.",
+    "Use ATYPE-COMBINED only when no single methodology dominates and separating by chapter is not possible.",
+    "ATYPE-HORIZONTAL describes scope not methodology — tag the underlying methodology alongside it.",
+    "ATYPE-IT-ASSISTED means data analytics/CAAT is the primary tool. Distinct from ATYPE-IT-AUDIT which examines IT systems themselves."
+  ],
+  "entries": [
+    {
+      "id": "ATYPE-COMPLIANCE",
+      "label": { "en": "Compliance Audit", "hi": "अनुपालन लेखापरीक्षा" },
+      "short_label": { "en": "Compliance" },
+      "description": { "en": "Examines whether transactions, procedures, sanctions, and decisions comply with applicable rules, regulations, orders, and legislative intent. The classic CAG test-check methodology. Most transaction-based state audit chapters fall here." },
+      "intosai_issai_ref": "ISSAI 400",
+      "sort_order": 1,
+      "deprecated": false,
+      "superseded_by": null
+    },
+    {
+      "id": "ATYPE-PERFORMANCE",
+      "label": { "en": "Performance Audit", "hi": "निष्पादन लेखापरीक्षा" },
+      "short_label": { "en": "Performance" },
+      "description": { "en": "Examines economy, efficiency, and effectiveness (the 3Es) of government programmes and schemes. Assesses whether resources were used optimally and whether programme objectives were achieved." },
+      "intosai_issai_ref": "ISSAI 300",
+      "sort_order": 2,
+      "deprecated": false,
+      "superseded_by": null
+    },
+    {
+      "id": "ATYPE-FINANCIAL",
+      "label": { "en": "Financial Audit", "hi": "वित्तीय लेखापरीक्षा" },
+      "short_label": { "en": "Financial" },
+      "description": { "en": "Examines whether financial statements and accounts present a true and fair view. Covers Finance Accounts, Appropriation Accounts, and accounts of funded bodies." },
+      "intosai_issai_ref": "ISSAI 200",
+      "sort_order": 3,
+      "deprecated": false,
+      "superseded_by": null
+    },
+    {
+      "id": "ATYPE-IT-AUDIT",
+      "label": { "en": "IT Audit", "hi": "आईटी लेखापरीक्षा" },
+      "short_label": { "en": "IT Audit" },
+      "description": { "en": "Examines IT systems, applications, and digital infrastructure — system controls, data integrity, access management, cybersecurity posture, and IT project implementation. The subject of the audit is the IT system itself." },
+      "intosai_issai_ref": "ISSAI 5300",
+      "sort_order": 4,
+      "deprecated": false,
+      "superseded_by": null
+    },
+    {
+      "id": "ATYPE-CERTIFICATION",
+      "label": { "en": "Certification Audit", "hi": "प्रमाणन लेखापरीक्षा" },
+      "short_label": { "en": "Certification" },
+      "description": { "en": "Attestation audit resulting in a formal audit certificate on accounts of an autonomous body, grant-in-aid institution, externally aided project, or specific fund." },
+      "intosai_issai_ref": "ISSAI 200",
+      "sort_order": 5,
+      "deprecated": false,
+      "superseded_by": null
+    },
+    {
+      "id": "ATYPE-ENVIRONMENTAL",
+      "label": { "en": "Environmental Audit", "hi": "पर्यावरण लेखापरीक्षा" },
+      "short_label": { "en": "Environmental" },
+      "description": { "en": "Examines compliance with environmental laws, adequacy of environmental impact assessments, ecological outcomes of government projects, and effectiveness of environmental protection measures." },
+      "intosai_issai_ref": "ISSAI 5130",
+      "sort_order": 6,
+      "deprecated": false,
+      "superseded_by": null
+    },
+    {
+      "id": "ATYPE-IT-ASSISTED",
+      "label": { "en": "IT-Assisted Audit", "hi": "आईटी-सहायता प्राप्त लेखापरीक्षा" },
+      "short_label": { "en": "IT-Assisted" },
+      "description": { "en": "Data analytics and Computer Assisted Audit Techniques (CAATs) are the primary audit methodology. Large datasets are mined to identify anomalies, duplicate payments, ghost beneficiaries, revenue leakages, or compliance deviations at scale. IT is the tool, not the subject." },
+      "intosai_issai_ref": "ISSAI 5400",
+      "sort_order": 7,
+      "deprecated": false,
+      "superseded_by": null
+    },
+    {
+      "id": "ATYPE-OUTCOME",
+      "label": { "en": "Outcome Audit", "hi": "परिणाम लेखापरीक्षा" },
+      "short_label": { "en": "Outcome" },
+      "description": { "en": "Examines long-term real-world development impact of government programmes beyond immediate outputs. Asks whether the programme actually changed conditions for the target population." },
+      "intosai_issai_ref": "ISSAI 300",
+      "sort_order": 8,
+      "deprecated": false,
+      "superseded_by": null
+    },
+    {
+      "id": "ATYPE-HORIZONTAL",
+      "label": { "en": "Horizontal Audit", "hi": "क्षैतिज लेखापरीक्षा" },
+      "short_label": { "en": "Horizontal" },
+      "description": { "en": "Cross-cutting audit examining the same theme, process, or vulnerability across multiple ministries or entities simultaneously. Tag the underlying methodology type alongside this value." },
+      "intosai_issai_ref": null,
+      "sort_order": 9,
+      "deprecated": false,
+      "superseded_by": null
+    },
+    {
+      "id": "ATYPE-COMBINED",
+      "label": { "en": "Combined Audit", "hi": "संयुक्त लेखापरीक्षा" },
+      "short_label": { "en": "Combined" },
+      "description": { "en": "Report or chapter combines two or more methodologies at the same level and they cannot be separated by chapter. Use as last resort — prefer setting specific types at chapter level." },
+      "intosai_issai_ref": null,
+      "sort_order": 10,
+      "deprecated": false,
+      "superseded_by": null
+    },
+    {
+      "id": "ATYPE-SPECIAL-PURPOSE",
+      "label": { "en": "Special Purpose Audit", "hi": "विशेष प्रयोजन लेखापरीक्षा" },
+      "short_label": { "en": "Special Purpose" },
+      "description": { "en": "One-off audit directed by Parliament, government request, constitutional mandate, or specific public interest circumstance. Does not fit standard methodology categories." },
+      "intosai_issai_ref": null,
+      "sort_order": 11,
+      "deprecated": false,
+      "superseded_by": null
+    }
+  ]
+}

@@ -1,0 +1,2567 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$version": "1.2.1",
+  "title": "Content Block Schema",
+  "description": "Content block schema. v3.2: para_type cleaned up — removed deviation (belongs inside audit_finding), added executive_summary, conclusion, recommendation_summary, best_practice. callout_type cleaned up — removed audit_observation, government_reply, recommendation (these have dedicated block types). annotations[] added at block level for non-destructive span annotation of paragraph text — supports ai, human, and rule_based sources with confidence scoring and review workflow. v3.5: executive_summary_block added — first-class block type for chapter/section-level executive summaries with title, paragraphs[], and bullets[] as structured fields. Complements the flat string content_unit.executive_summary metadata field in structure.schema and the para_type=executive_summary paragraph blocks; each serves a distinct purpose: unit metadata (machine summary for TOC/vector), in-flow paragraph (single prose chunk), executive_summary_block (full structured in-flow summary with mixed content). v3.6: collapsed boolean added to heading content — enables viewer-level section collapse/expand toggle. v3.7: executive_summary_block content restructured — paragraphs[] and bullets[] replaced by single body[] array with typed items (type: paragraph | bullets) to preserve exact interleaved reading order. v1.1: cross_reference added to annotation_type enum; target and target_label fields added to annotation item for inline span navigation links to appendices, sections, datasets, and external URLs. v1.2: executive_summary_block renamed to richbox — unified rich content box supporting heading, paragraph, bullets, ordered_list, image, and table_ref body items. box_type field replaces display_style as the semantic classifier. sidebar block retained for backward compatibility but deprecated in favour of richbox. executive_summary_block alias retained in enum for backward compatibility. v1.2.1: footnote_markers added to all richbox and executive_summary_block body item types (heading, paragraph, bullets, ordered_list, image, table_ref).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "block_id",
+    "block_type",
+    "content"
+  ],
+  "properties": {
+    "block_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+      "description": "Stable unique ID. Recommended pattern: {unit_id}-{type_prefix}{N}. e.g. AR01-CAG-2025-UT-JK-CH02-SEC03-P001"
+    },
+    "block_type": {
+      "type": "string",
+      "enum": [
+        "paragraph",
+        "heading",
+        "list",
+        "table",
+        "image",
+        "image_gallery",
+        "figure",
+        "map",
+        "chart",
+        "live_chart",
+        "formula",
+        "callout",
+        "audit_finding",
+        "recommendation",
+        "signature_block",
+        "quote",
+        "pullquote",
+        "sidebar",
+        "code",
+        "richbox",
+        "executive_summary_block",
+        "divider"
+      ],
+      "description": " richbox: merged replacement for executive_summary_block and sidebar — use for any self-contained content box (executive summaries, case studies, background boxes, methodology insets, etc.). executive_summary_block retained as alias for backward compatibility."
+    },
+    "unit_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+      "description": "unit_id of the containing section or chapter this block belongs to. Together with seq gives the full positional address: unit_id + seq. Set by ingestion pipeline."
+    },
+    "seq": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Display order within the containing unit (unit_id-scoped, not report-level). Use decimal spacing: 10, 20, 30... A block inserted between 20 and 30 gets seq 25. Allows insertion without full renumbering. Set and maintained by ingestion pipeline. Enables correct ORDER BY unit_id, seq in database queries and vector store positional filtering."
+    },
+    "toc_include": {
+      "type": "boolean",
+      "default": false,
+      "description": "True for heading blocks that should appear as TOC sub-entries beneath their parent unit. Only meaningful on block_type=heading. False for all other block types."
+    },
+    "para_number": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)*$",
+      "description": "Official audit paragraph number. e.g. '2.3', '3.1.2'. Critical for ATN and PAC back-referencing."
+    },
+    "lang": {
+      "type": "string",
+      "pattern": "^[a-z]{2,3}$"
+    },
+    "translation_status": {
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[a-z]{2,3}$": {
+          "type": "string",
+          "enum": [
+            "original",
+            "human_translated",
+            "machine_translated",
+            "pending",
+            "not_applicable"
+          ]
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "description": "Block content. Structure governed by block_type via allOf if/then rules below."
+    },
+    "block_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Scoped block-level metadata override. Intentionally limited to the three fields with genuine paragraph-level editorial value. Does NOT include audit_type, regions, pac_status, main_audited_entities — those are unit-level concerns. All other inheritable metadata is inherited from the containing unit.",
+      "properties": {
+        "audit_findings_categories": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "description": "Finding categories for this specific block. Overrides unit-level value for this block only. IDs from taxonomy_audit_subjects.json."
+        },
+        "key_findings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "description": "Key finding taxonomy IDs applicable to this specific block. IDs from taxonomy_key_findings.json."
+        },
+        "referenced_entities": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          },
+          "description": "Entity IDs cited in this specific block but not audited. Additive with unit-level referenced_entities."
+        }
+      }
+    },
+    "impact": {
+      "type": "array",
+      "description": "Universal impact array — financial, social, environmental, regulatory, etc. Can be set on any block. Cascades upward for aggregation into unit-level impact[].",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "impact_type",
+          "description"
+        ],
+        "properties": {
+          "impact_type": {
+            "type": "string",
+            "enum": [
+              "financial",
+              "social",
+              "environmental",
+              "regulatory",
+              "health",
+              "infrastructure",
+              "governance",
+              "reputational",
+              "other"
+            ]
+          },
+          "description": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "amount": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "approximate": {
+            "type": "boolean",
+            "default": false
+          },
+          "entity_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "period": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "group_id": {
+      "type": "string",
+      "description": "Assign same group_id to consecutive blocks (e.g. government_reply + audit_comment) to enable collapsible rendering."
+    },
+    "group_role": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "member"
+      ]
+    },
+    "footnote_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "vector_embedding_id": {
+      "type": "string",
+      "description": "ID of the vector record in the external vector store for this block. The vector store owns all embedding metadata (model version, chunk strategy, index version). This field is a stable pointer only."
+    },
+    "embedding_model": {
+      "type": "string",
+      "enum": [
+        "text-embedding-3-large",
+        "text-embedding-3-small",
+        "text-embedding-ada-002"
+      ],
+      "description": "Embedding model used to generate the vector for this block. Must match the vector store record. Update enum when new models are adopted. Set by pipeline."
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "$ref": "./reference.schema"
+      }
+    },
+    "annotations": {
+      "type": "array",
+      "description": "Span annotations on this block's text content. Applicable to paragraph blocks only — do not use on table, figure, or other block types. Each annotation marks a character-offset span within a specific language's text, assigning it a semantic type (audit_criteria, audit_observation, etc.). Annotations are non-destructive — the original text is never modified. AI annotations carry a confidence score and a reviewed flag for human validation. Multiple overlapping annotations from different sources are permitted.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "annotation_id",
+          "lang",
+          "start",
+          "end",
+          "annotation_type",
+          "source"
+        ],
+        "properties": {
+          "annotation_id": {
+            "type": "string",
+            "pattern": "^ANN-[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+            "description": "Stable unique ID for this annotation. e.g. ANN-AR06-CH02-P001-001"
+          },
+          "lang": {
+            "type": "string",
+            "pattern": "^[a-z]{2,3}$",
+            "description": "ISO-639 language code identifying which language key in content.text this annotation applies to. e.g. 'en' or 'hi'."
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Zero-based character offset of the start of the annotated span within content.text[lang]."
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Zero-based character offset of the end of the annotated span (exclusive) within content.text[lang]. Must be greater than start."
+          },
+          "annotation_type": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "background",
+              "scope",
+              "methodology",
+              "legal_basis",
+              "audit_criteria",
+              "audit_observation",
+              "effect",
+              "cause",
+              "data_analysis",
+              "conclusion",
+              "executive_summary",
+              "recommendation_summary",
+              "best_practice",
+              "scope_for_improvement",
+              "cross_reference"
+            ],
+            "description": "Semantic type of this span. Uses the same controlled vocabulary as para_type so annotated regions align with paragraph classification. cross_reference: the span is an inline navigation link to another unit, block, dataset, or external resource — the target field carries the destination. All other values match para_type semantics."
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "ai",
+              "human",
+              "rule_based"
+            ],
+            "description": "Origin of this annotation. ai=generated by an AI model. human=manually created by an editor or analyst. rule_based=generated by a deterministic rule or regex pipeline."
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Confidence score 0-1. Required for source=ai. Omit for source=human (human annotations are always treated as authoritative). Optional for source=rule_based."
+          },
+          "model": {
+            "type": "string",
+            "description": "Model identifier for source=ai. e.g. 'claude-sonnet-4-20250514'. Omit for human and rule_based sources."
+          },
+          "rule_id": {
+            "type": "string",
+            "description": "Rule identifier for source=rule_based. References the rule in the annotation pipeline that produced this span. e.g. 'RULE-CRITERIA-KEYWORD-01'."
+          },
+          "annotated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO-8601 timestamp when this annotation was created."
+          },
+          "reviewed": {
+            "type": "boolean",
+            "description": "Whether a human has reviewed and confirmed this annotation. Relevant primarily for source=ai and source=rule_based. Always true for source=human."
+          },
+          "reviewed_by": {
+            "type": "string",
+            "description": "User ID of the human reviewer who confirmed or corrected this annotation."
+          },
+          "reviewed_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when this annotation was reviewed."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Free-text note from the reviewer or rule engine. e.g. 'Span trimmed to exclude introductory clause'."
+          },
+          "supersedes": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^ANN-[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+            },
+            "description": "annotation_ids of earlier annotations that this annotation replaces. Set by human annotators when correcting or expanding an AI or rule_based span. The pipeline marks superseded annotations as inactive and the frontend ignores them. e.g. a human re-annotates a span more precisely and lists the original AI annotation_id here."
+          },
+          "superseded_by": {
+            "type": "string",
+            "pattern": "^ANN-[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+            "description": "annotation_id of the annotation that supersedes this one. Set by the ingestion pipeline when it detects this annotation_id appears in another annotation's supersedes[]. Frontend filters out annotations where superseded_by is present. Never set manually."
+          },
+          "target": {
+            "type": "string",
+            "description": "Navigation target for cross_reference annotations. Format matches reference.schema target_format conventions: unit_id for intra-report unit links (e.g. 'AR01-CAG-2025-STATE-MP-APP01'), product_id/unit_id for cross-report unit links, product_id/block_id for block-level links, product_id/dataset_id for dataset links, a full URI for external URLs. Required when annotation_type = cross_reference. Must be null or absent for all other annotation_type values."
+          },
+          "target_label": {
+            "type": "object",
+            "description": "Optional multilingual display label for the cross_reference link. When present the portal renders this text as the hyperlink label instead of the annotated span text. e.g. { 'en': 'Appendix A', 'hi': 'परिशिष्ट क' }. Omit when the annotated span text is itself the intended link label.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "annotation_type": {
+                  "const": "cross_reference"
+                }
+              },
+              "required": [
+                "annotation_type"
+              ]
+            },
+            "then": {
+              "required": [
+                "target"
+              ],
+              "$comment": "cross_reference annotations must carry a target. The annotated span is the visible link text; target is the destination."
+            }
+          }
+        ]
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "paragraph"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "style": {
+                "type": "string",
+                "enum": [
+                  "normal",
+                  "lead",
+                  "indent",
+                  "emphasis",
+                  "legal"
+                ]
+              },
+              "para_type": {
+                "type": "string",
+                "enum": [
+                  "normal",
+                  "background",
+                  "scope",
+                  "methodology",
+                  "legal_basis",
+                  "audit_criteria",
+                  "audit_observation",
+                  "effect",
+                  "cause",
+                  "data_analysis",
+                  "conclusion",
+                  "executive_summary",
+                  "recommendation_summary",
+                  "best_practice",
+                  "scope_for_improvement"
+                ],
+                "default": "normal",
+                "description": "Semantic role of this paragraph within the audit narrative. normal=general paragraph with no specific audit role. background=contextual information before the finding. scope=coverage and limitations of the audit. methodology=how the audit was conducted. legal_basis=statutory or regulatory basis for the audit criteria. audit_criteria=the standard, norm, or rule against which audit was conducted. audit_observation=the core finding — what the audit found. effect=consequence of the deviation or irregularity. cause=root cause of the deviation. data_analysis=paragraph presenting quantitative or statistical analysis. conclusion=closing paragraph summarising the audit outcome. executive_summary=summary paragraph at report or chapter level. recommendation_summary=paragraph summarising all recommendations. best_practice=paragraph highlighting a good practice observed. scope_for_improvement=paragraph identifying an area where processes, systems, or compliance could be improved even where no formal irregularity exists."
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "heading"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "text",
+              "level"
+            ],
+            "properties": {
+              "text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "level": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 6
+              },
+              "numbered": {
+                "type": "boolean"
+              },
+              "collapsed": {
+                "type": "boolean",
+                "default": false,
+                "description": "If true, the section content beneath this heading renders collapsed by default with an expand toggle. Viewer collapses all blocks until the next heading of equal or higher level. Default false."
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "list"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "items"
+            ],
+            "properties": {
+              "list_type": {
+                "type": "string",
+                "enum": [
+                  "ordered",
+                  "unordered",
+                  "alpha",
+                  "roman"
+                ]
+              },
+              "items": {
+                "type": "array",
+                "minItems": 1,
+                "description": "List items. Each must have a multilingual text object.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "text"
+                  ],
+                  "properties": {
+                    "text": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "Multilingual item text."
+                    },
+                    "sub_items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "text"
+                        ],
+                        "properties": {
+                          "text": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "para_number": {
+                      "type": "string"
+                    },
+                    "footnote_markers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "table"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "caption": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "table_number": {
+                "type": "string"
+              },
+              "unit_note": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "dataset_ref": {
+                "type": "string",
+                "description": "dataset_id of dataset file. Authoritative for all non-trivial tables."
+              },
+              "headers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "array"
+                }
+              },
+              "source": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "notes": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "display_mode": {
+                "type": "string",
+                "enum": [
+                  "full",
+                  "summary",
+                  "collapsed"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "image"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "asset_ref"
+            ],
+            "properties": {
+              "asset_ref": {
+                "type": "string"
+              },
+              "caption": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "alt_text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "image_type": {
+                "type": "string",
+                "enum": [
+                  "photograph",
+                  "scanned_document",
+                  "stamp",
+                  "seal",
+                  "signature",
+                  "screenshot",
+                  "diagram",
+                  "chart_image",
+                  "map_image",
+                  "qr_code",
+                  "other"
+                ]
+              },
+              "location_ref": {
+                "type": "string"
+              },
+              "date_taken": {
+                "type": "string"
+              },
+              "credit": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "width_hint": {
+                "type": "string",
+                "enum": [
+                  "full",
+                  "half",
+                  "quarter",
+                  "inline"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "image_gallery"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "images"
+            ],
+            "properties": {
+              "gallery_caption": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "gallery_label": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "plate_number": {
+                "type": "string"
+              },
+              "layout": {
+                "type": "string",
+                "enum": [
+                  "grid_2x2",
+                  "grid_2x3",
+                  "grid_3x2",
+                  "grid_1x2",
+                  "grid_2x1",
+                  "grid_3x1",
+                  "grid_1x3",
+                  "horizontal_strip",
+                  "vertical_strip",
+                  "freeform"
+                ]
+              },
+              "images": {
+                "type": "array",
+                "minItems": 2,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "image_id",
+                    "asset_ref"
+                  ],
+                  "properties": {
+                    "image_id": {
+                      "type": "string"
+                    },
+                    "image_number": {
+                      "type": "string"
+                    },
+                    "asset_ref": {
+                      "type": "string"
+                    },
+                    "caption": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "alt_text": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "image_type": {
+                      "type": "string",
+                      "enum": [
+                        "photograph",
+                        "scanned_document",
+                        "stamp",
+                        "seal",
+                        "signature",
+                        "screenshot",
+                        "diagram",
+                        "chart_image",
+                        "map_image",
+                        "qr_code",
+                        "other"
+                      ]
+                    },
+                    "location_ref": {
+                      "type": "string"
+                    },
+                    "date_taken": {
+                      "type": "string"
+                    },
+                    "credit": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "before_after": {
+                      "type": "string",
+                      "enum": [
+                        "before",
+                        "after",
+                        "na"
+                      ]
+                    },
+                    "grid_position": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "source": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "figure"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "asset_ref"
+            ],
+            "properties": {
+              "figure_number": {
+                "type": "string"
+              },
+              "asset_ref": {
+                "type": "string"
+              },
+              "caption": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "alt_text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "source": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "dataset_ref": {
+                "type": "string"
+              },
+              "figure_type": {
+                "type": "string",
+                "enum": [
+                  "bar_chart",
+                  "line_chart",
+                  "pie_chart",
+                  "donut_chart",
+                  "area_chart",
+                  "scatter_plot",
+                  "flowchart",
+                  "org_chart",
+                  "fishbone_diagram",
+                  "infographic",
+                  "diagram",
+                  "other"
+                ]
+              },
+              "credit": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "map"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "asset_ref"
+            ],
+            "properties": {
+              "asset_ref": {
+                "type": "string"
+              },
+              "caption": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "alt_text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "map_type": {
+                "type": "string",
+                "enum": [
+                  "administrative",
+                  "district",
+                  "location_pin",
+                  "choropleth",
+                  "route",
+                  "satellite",
+                  "schematic",
+                  "watershed"
+                ]
+              },
+              "coverage_region": {
+                "type": "string"
+              },
+              "highlighted_regions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "credit": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "chart"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "chart_type"
+            ],
+            "properties": {
+              "chart_type": {
+                "type": "string",
+                "enum": [
+                  "bar",
+                  "grouped_bar",
+                  "stacked_bar",
+                  "line",
+                  "multi_line",
+                  "area",
+                  "pie",
+                  "donut",
+                  "scatter",
+                  "bubble",
+                  "histogram",
+                  "waterfall",
+                  "treemap",
+                  "funnel",
+                  "gauge"
+                ]
+              },
+              "figure_number": {
+                "type": "string"
+              },
+              "caption": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "alt_text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "asset_ref": {
+                "type": "string"
+              },
+              "dataset_ref": {
+                "type": "string"
+              },
+              "x_axis_col": {
+                "type": "string"
+              },
+              "y_axis_cols": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "series_col": {
+                "type": "string"
+              },
+              "source": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "live_chart"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "embed_type",
+              "embed_url"
+            ],
+            "properties": {
+              "embed_type": {
+                "type": "string",
+                "enum": [
+                  "tableau",
+                  "powerbi",
+                  "knime",
+                  "datawrapper",
+                  "flourish",
+                  "superset",
+                  "looker",
+                  "metabase",
+                  "google_datastudio",
+                  "observable",
+                  "vega_lite",
+                  "custom_iframe"
+                ]
+              },
+              "embed_url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "embed_id": {
+                "type": "string"
+              },
+              "workspace": {
+                "type": "string"
+              },
+              "figure_number": {
+                "type": "string"
+              },
+              "caption": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "alt_text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "fallback_asset_ref": {
+                "type": "string"
+              },
+              "dataset_ref": {
+                "type": "string"
+              },
+              "height_px": {
+                "type": "integer",
+                "minimum": 100,
+                "default": 500
+              },
+              "allow_fullscreen": {
+                "type": "boolean",
+                "default": true
+              },
+              "auth_required": {
+                "type": "boolean",
+                "default": false
+              },
+              "source": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "formula"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "expression"
+            ],
+            "properties": {
+              "expression": {
+                "type": "string"
+              },
+              "plain_text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "variables": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "symbol",
+                    "definition"
+                  ],
+                  "properties": {
+                    "symbol": {
+                      "type": "string"
+                    },
+                    "definition": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "callout"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "callout_type",
+              "text"
+            ],
+            "properties": {
+              "callout_type": {
+                "type": "string",
+                "enum": [
+                  "key_finding",
+                  "note",
+                  "warning",
+                  "definition",
+                  "legal_provision",
+                  "audit_comment",
+                  "conclusion",
+                  "best_practice",
+                  "good_practice",
+                  "adverse_finding"
+                ],
+                "description": "Type of callout box. key_finding=highlighted key finding for the reader. note=informational note. warning=caution or alert. definition=definition of a term or concept. legal_provision=highlighted legal or regulatory provision. audit_comment=audit office comment on a specific point. conclusion=concluding observation. best_practice=good practice observed worth highlighting. good_practice=alias for best_practice for editorial flexibility. adverse_finding=serious irregularity warranting special attention. Note: government_reply, audit_observation, and recommendation callout types have been removed — use the dedicated audit_finding and recommendation block types instead."
+              },
+              "title": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "icon": {
+                "type": "string",
+                "enum": [
+                  "alert",
+                  "check",
+                  "info",
+                  "shield",
+                  "flag",
+                  "star",
+                  "document",
+                  "none"
+                ]
+              },
+              "dept": {
+                "type": "string"
+              },
+              "reply_date": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "reply_source": {
+                "type": "string"
+              },
+              "reply_awaited": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "audit_finding"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "finding_id",
+              "observation"
+            ],
+            "properties": {
+              "finding_id": {
+                "type": "string",
+                "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+              },
+              "finding_type": {
+                "type": "string",
+                "enum": [
+                  "performance",
+                  "compliance",
+                  "financial",
+                  "propriety"
+                ]
+              },
+              "title": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "criteria": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "observation": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "effect": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "cause": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "impact": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "recommendation": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "government_reply": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "dept": {
+                    "type": "string"
+                  },
+                  "reply_date": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "reply_source": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  },
+                  "awaited": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "audit_comment": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "open",
+                  "partially_settled",
+                  "settled",
+                  "pending_atn",
+                  "discussed_in_pac"
+                ]
+              },
+              "ir_ref": {
+                "type": "string"
+              },
+              "related_dataset_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "recommendation"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "recommendation_id": {
+                "type": "string",
+                "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+              },
+              "text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "addressed_to": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "finding_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "priority": {
+                "type": "string",
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ]
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "open",
+                  "in_progress",
+                  "implemented",
+                  "not_implemented",
+                  "partially_implemented",
+                  "not_accepted"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "signature_block"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "signatories"
+            ],
+            "properties": {
+              "signatories": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "role"
+                  ],
+                  "properties": {
+                    "role": {
+                      "type": "string",
+                      "enum": [
+                        "signed_by",
+                        "countersigned_by",
+                        "verified_by",
+                        "witnessed_by",
+                        "approved_by"
+                      ]
+                    },
+                    "name": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "designation": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "place": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "date": {
+                      "type": "string"
+                    },
+                    "signature_asset": {
+                      "type": "string"
+                    },
+                    "seal_asset": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "quote"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "attribution": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "quote_type": {
+                "type": "string",
+                "enum": [
+                  "statutory",
+                  "regulatory",
+                  "government_order",
+                  "court_order",
+                  "circular",
+                  "policy",
+                  "report_extract",
+                  "other"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "pullquote"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "source_block_id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "sidebar"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "title": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "sidebar_type": {
+                "type": "string",
+                "enum": [
+                  "background",
+                  "definition",
+                  "case_study",
+                  "context",
+                  "example",
+                  "methodology",
+                  "textbox",
+                  "other"
+                ]
+              },
+              "position": {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "right",
+                  "full_width",
+                  "inline"
+                ]
+              }
+            },
+            "description": "SOFT-DEPRECATED. Use richbox block_type instead — it supports the same use cases with a richer body[] array (heading, paragraph, bullets, ordered_list, image, table_ref). sidebar is retained for backward compatibility. sidebar_type values map to richbox box_type as follows: background→background, definition→definition, case_study→case_study, context→context, example→example, methodology→methodology, other→other."
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "code"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "text"
+            ],
+            "properties": {
+              "text": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "language": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "divider"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "style": {
+                "type": "string",
+                "enum": [
+                  "line",
+                  "thick_line",
+                  "dotted",
+                  "decorative",
+                  "page_break"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "richbox"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "body"
+            ],
+            "description": "Unified rich content box. body[] is an ordered sequence of heading, paragraph, bullets, ordered_list, image, and table_ref items — preserving exact source reading order. box_type classifies the semantic purpose; the viewer uses box_type to apply the correct visual style (colour, border, icon). title is a short display label shown above the box. position controls layout placement.",
+            "properties": {
+              "box_type": {
+                "type": "string",
+                "enum": [
+                  "executive_summary",
+                  "case_study",
+                  "background",
+                  "definition",
+                  "example",
+                  "methodology",
+                  "legal_provision",
+                  "key_data",
+                  "context",
+                  "note",
+                  "other"
+                ],
+                "default": "other",
+                "description": "Semantic type of this content box. Controls the visual style applied by the portal viewer. executive_summary=chapter or report level summary box. case_study=self-contained case study. background=contextual background. definition=term definition. example=worked example. methodology=methodology inset. legal_provision=highlighted law or rule box. key_data=key statistics or data box. context=general context. note=informational note. other=uncategorised."
+              },
+              "title": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Optional multilingual display title shown above the box. e.g. {'en': 'Case Study: Bhopal District'} or {'en': 'Executive Summary'}. Omit if the box has no heading label."
+              },
+              "position": {
+                "type": "string",
+                "enum": [
+                  "full_width",
+                  "inline",
+                  "left",
+                  "right"
+                ],
+                "default": "full_width",
+                "description": "Layout position of the box. full_width=spans full column (default). inline=flows with paragraph text, no float. left/right=floated to the side (use for narrower inset boxes)."
+              },
+              "body": {
+                "type": "array",
+                "minItems": 1,
+                "description": "Ordered content items inside the box. Mix heading, paragraph, bullets, ordered_list, image, and table_ref items in any order to match the source document layout exactly.",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "type",
+                        "text"
+                      ],
+                      "description": "A heading inside the richbox.",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "heading"
+                        },
+                        "text": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Multilingual heading text."
+                        },
+                        "level": {
+                          "type": "integer",
+                          "minimum": 2,
+                          "maximum": 6,
+                          "default": 3,
+                          "description": "Heading level. Use 2-6 — level 1 is reserved for document titles."
+                        },
+                        "footnote_markers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Superscript footnote marker symbols appearing in this item. e.g. ['*', '1']. Must match marker values in the footnotes file for this unit."
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "type",
+                        "text"
+                      ],
+                      "description": "A prose paragraph inside the richbox.",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "paragraph"
+                        },
+                        "text": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Multilingual paragraph text."
+                        },
+                        "para_type": {
+                          "type": "string",
+                          "enum": [
+                            "normal",
+                            "background",
+                            "scope",
+                            "methodology",
+                            "legal_basis",
+                            "audit_criteria",
+                            "audit_observation",
+                            "effect",
+                            "cause",
+                            "data_analysis",
+                            "conclusion",
+                            "recommendation_summary",
+                            "best_practice",
+                            "scope_for_improvement"
+                          ],
+                          "default": "normal"
+                        },
+                        "footnote_markers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Superscript footnote marker symbols appearing in this item. e.g. ['*', '1']. Must match marker values in the footnotes file for this unit."
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "type",
+                        "items"
+                      ],
+                      "description": "An unordered bullet list inside the richbox.",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "bullets"
+                        },
+                        "items": {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "text"
+                            ],
+                            "properties": {
+                              "text": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string"
+                                }
+                              },
+                              "sub_items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "required": [
+                                    "text"
+                                  ],
+                                  "properties": {
+                                    "text": {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "footnote_markers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "footnote_markers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Superscript footnote marker symbols appearing in this item. e.g. ['*', '1']. Must match marker values in the footnotes file for this unit."
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "type",
+                        "items"
+                      ],
+                      "description": "A numbered (ordered) list inside the richbox. list_type controls numbering style.",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "ordered_list"
+                        },
+                        "list_type": {
+                          "type": "string",
+                          "enum": [
+                            "decimal",
+                            "alpha",
+                            "roman"
+                          ],
+                          "default": "decimal"
+                        },
+                        "items": {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "text"
+                            ],
+                            "properties": {
+                              "text": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string"
+                                }
+                              },
+                              "sub_items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "required": [
+                                    "text"
+                                  ],
+                                  "properties": {
+                                    "text": {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "footnote_markers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "footnote_markers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Superscript footnote marker symbols appearing in this item. e.g. ['*', '1']. Must match marker values in the footnotes file for this unit."
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "type",
+                        "asset_ref"
+                      ],
+                      "description": "An image inside the richbox — photograph, diagram, chart image, etc.",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "image"
+                        },
+                        "asset_ref": {
+                          "type": "string",
+                          "description": "Relative path to the image asset. e.g. assets/images/site-photo-01.jpg"
+                        },
+                        "caption": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Multilingual image caption."
+                        },
+                        "alt_text": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Multilingual alt text for accessibility."
+                        },
+                        "image_type": {
+                          "type": "string",
+                          "enum": [
+                            "photograph",
+                            "scanned_document",
+                            "diagram",
+                            "chart_image",
+                            "map_image",
+                            "screenshot",
+                            "other"
+                          ]
+                        },
+                        "width_hint": {
+                          "type": "string",
+                          "enum": [
+                            "full",
+                            "half",
+                            "quarter",
+                            "inline"
+                          ],
+                          "default": "full"
+                        },
+                        "footnote_markers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Superscript footnote marker symbols appearing in this item. e.g. ['*', '1']. Must match marker values in the footnotes file for this unit."
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "type",
+                        "dataset_ref"
+                      ],
+                      "description": "A lightweight reference to a dataset table inside the richbox.",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "table_ref"
+                        },
+                        "dataset_ref": {
+                          "type": "string",
+                          "description": "dataset_id of the dataset to render at this position."
+                        },
+                        "caption": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "display_mode": {
+                          "type": "string",
+                          "enum": [
+                            "full",
+                            "summary",
+                            "collapsed"
+                          ],
+                          "default": "full"
+                        },
+                        "footnote_markers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Superscript footnote marker symbols appearing in this item. e.g. ['*', '1']. Must match marker values in the footnotes file for this unit."
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "block_type": {
+            "const": "executive_summary_block"
+          }
+        },
+        "required": [
+          "block_type"
+        ]
+      },
+      "then": {
+        "$comment": "Backward compatibility alias for richbox with box_type=executive_summary. Use richbox for new content.",
+        "properties": {
+          "content": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "body"
+            ],
+            "description": "DEPRECATED alias — use richbox block_type with box_type=executive_summary instead.",
+            "properties": {
+              "title": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "display_style": {
+                "type": "string",
+                "enum": [
+                  "box",
+                  "inline",
+                  "banner"
+                ],
+                "default": "box",
+                "description": "DEPRECATED. Use richbox.box_type and richbox.position instead."
+              },
+              "body": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "type",
+                        "text"
+                      ],
+                      "description": "A heading inside the richbox.",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "heading"
+                        },
+                        "text": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Multilingual heading text."
+                        },
+                        "level": {
+                          "type": "integer",
+                          "minimum": 2,
+                          "maximum": 6,
+                          "default": 3,
+                          "description": "Heading level. Use 2-6 — level 1 is reserved for document titles."
+                        },
+                        "footnote_markers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Superscript footnote marker symbols appearing in this item. e.g. ['*', '1']. Must match marker values in the footnotes file for this unit."
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "type",
+                        "text"
+                      ],
+                      "description": "A prose paragraph inside the richbox.",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "paragraph"
+                        },
+                        "text": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Multilingual paragraph text."
+                        },
+                        "para_type": {
+                          "type": "string",
+                          "enum": [
+                            "normal",
+                            "background",
+                            "scope",
+                            "methodology",
+                            "legal_basis",
+                            "audit_criteria",
+                            "audit_observation",
+                            "effect",
+                            "cause",
+                            "data_analysis",
+                            "conclusion",
+                            "recommendation_summary",
+                            "best_practice",
+                            "scope_for_improvement"
+                          ],
+                          "default": "normal"
+                        },
+                        "footnote_markers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Superscript footnote marker symbols appearing in this item. e.g. ['*', '1']. Must match marker values in the footnotes file for this unit."
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "type",
+                        "items"
+                      ],
+                      "description": "An unordered bullet list inside the richbox.",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "bullets"
+                        },
+                        "items": {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "text"
+                            ],
+                            "properties": {
+                              "text": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string"
+                                }
+                              },
+                              "sub_items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "required": [
+                                    "text"
+                                  ],
+                                  "properties": {
+                                    "text": {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "footnote_markers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "footnote_markers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Superscript footnote marker symbols appearing in this item. e.g. ['*', '1']. Must match marker values in the footnotes file for this unit."
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "type",
+                        "items"
+                      ],
+                      "description": "A numbered (ordered) list inside the richbox. list_type controls numbering style.",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "ordered_list"
+                        },
+                        "list_type": {
+                          "type": "string",
+                          "enum": [
+                            "decimal",
+                            "alpha",
+                            "roman"
+                          ],
+                          "default": "decimal"
+                        },
+                        "items": {
+                          "type": "array",
+                          "minItems": 1,
+                          "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "text"
+                            ],
+                            "properties": {
+                              "text": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string"
+                                }
+                              },
+                              "sub_items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "additionalProperties": false,
+                                  "required": [
+                                    "text"
+                                  ],
+                                  "properties": {
+                                    "text": {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "footnote_markers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "footnote_markers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Superscript footnote marker symbols appearing in this item. e.g. ['*', '1']. Must match marker values in the footnotes file for this unit."
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "type",
+                        "asset_ref"
+                      ],
+                      "description": "An image inside the richbox — photograph, diagram, chart image, etc.",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "image"
+                        },
+                        "asset_ref": {
+                          "type": "string",
+                          "description": "Relative path to the image asset. e.g. assets/images/site-photo-01.jpg"
+                        },
+                        "caption": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Multilingual image caption."
+                        },
+                        "alt_text": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "description": "Multilingual alt text for accessibility."
+                        },
+                        "image_type": {
+                          "type": "string",
+                          "enum": [
+                            "photograph",
+                            "scanned_document",
+                            "diagram",
+                            "chart_image",
+                            "map_image",
+                            "screenshot",
+                            "other"
+                          ]
+                        },
+                        "width_hint": {
+                          "type": "string",
+                          "enum": [
+                            "full",
+                            "half",
+                            "quarter",
+                            "inline"
+                          ],
+                          "default": "full"
+                        },
+                        "footnote_markers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Superscript footnote marker symbols appearing in this item. e.g. ['*', '1']. Must match marker values in the footnotes file for this unit."
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "type",
+                        "dataset_ref"
+                      ],
+                      "description": "A lightweight reference to a dataset table inside the richbox.",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "table_ref"
+                        },
+                        "dataset_ref": {
+                          "type": "string",
+                          "description": "dataset_id of the dataset to render at this position."
+                        },
+                        "caption": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "display_mode": {
+                          "type": "string",
+                          "enum": [
+                            "full",
+                            "summary",
+                            "collapsed"
+                          ],
+                          "default": "full"
+                        },
+                        "footnote_markers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Superscript footnote marker symbols appearing in this item. e.g. ['*', '1']. Must match marker values in the footnotes file for this unit."
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+name: Ingest Reports
+# v1.0
+
+on:
+  workflow_dispatch:
+    inputs:
+      product_ids:
+        description: >
+          Comma-separated product_ids to ingest.
+          Leave blank to auto-detect from changed files in this push.
+        required: false
+        default: ""
+      force_reingest:
+        description: "Force re-ingest even if file checksums are unchanged"
+        type: boolean
+        default: false
+      skip_embeddings:
+        description: "Skip embedding generation (metadata-only changes)"
+        type: boolean
+        default: false
+      dry_run:
+        description: "Dry run — validate and log without writing to Atlas or Redis"
+        type: boolean
+        default: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # needed to detect changed files via git diff
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ── Validation gate (same checks as validate.yml) ──────────────────────
+      - name: Sync product_type enum (check)
+        run: python scripts/sync_product_type_enum.py --check
+
+      - name: Check registry integrity
+        run: python scripts/check_registry_integrity.py
+
+      - name: Validate registry references
+        run: python scripts/validate_registry_refs.py
+
+      - name: Validate all report manifests
+        run: python scripts/validate_report.py --all
+
+      # ── Resolve which product_ids to ingest ────────────────────────────────
+      - name: Resolve product IDs
+        id: resolve
+        run: |
+          if [ -n "${{ github.event.inputs.product_ids }}" ]; then
+            echo "ids=${{ github.event.inputs.product_ids }}" >> $GITHUB_OUTPUT
+          else
+            git diff --name-only HEAD~1 HEAD | grep '^reports/' > /tmp/changed_files.txt || true
+            python3 scripts/resolve_product_ids.py /tmp/changed_files.txt >> $GITHUB_OUTPUT
+          fi
+
+      - name: Show resolved IDs
+        run: echo "Ingesting product_ids = ${{ steps.resolve.outputs.ids }}"
+
+      # ── Generate embeddings ────────────────────────────────────────────────
+      - name: Generate embeddings
+        if: ${{ github.event.inputs.skip_embeddings != 'true' && steps.resolve.outputs.ids != '' }}
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python scripts/generate_embeddings.py \
+            --product-ids "${{ steps.resolve.outputs.ids }}" \
+            ${{ github.event.inputs.force_reingest == 'true' && '--force' || '' }}
+
+      # ── Write to Atlas ─────────────────────────────────────────────────────
+      - name: Write to Atlas
+        if: ${{ steps.resolve.outputs.ids != '' }}
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: |
+          python scripts/write_to_atlas.py \
+            --product-ids "${{ steps.resolve.outputs.ids }}" \
+            ${{ github.event.inputs.force_reingest == 'true' && '--force' || '' }} \
+            ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }}
+
+      # ── Invalidate Redis cache ─────────────────────────────────────────────
+      - name: Invalidate Redis cache
+        if: ${{ github.event.inputs.dry_run != 'true' && steps.resolve.outputs.ids != '' }}
+        env:
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+        run: |
+          python scripts/invalidate_cache.py \
+            --product-ids "${{ steps.resolve.outputs.ids }}"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Ingest summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Product IDs: \`${{ steps.resolve.outputs.ids }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Force: ${{ github.event.inputs.force_reingest }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Skip embeddings: ${{ github.event.inputs.skip_embeddings }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Dry run: ${{ github.event.inputs.dry_run }}" >> $GITHUB_STEP_SUMMARY

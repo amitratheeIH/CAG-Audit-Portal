@@ -1,0 +1,230 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$version": "1.0",
+  "title": "Action Taken Note (ATN) Schema",
+  "description": "ATN records stored in the atn/ folder of each report. v1.0: canonical baseline. settled_date now enforced via if/then — required when current_status=settled, forbidden otherwise. department fields at record and round level now enforce entity_id pattern. follow_up_report_id replaced by follow_up_ref ($ref reference.schema) for consistency with cross-report linking convention.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["report_id", "atn_records"],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+      "description": "product_id of the parent report."
+    },
+    "chapter_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+      "description": "unit_id of the chapter this ATN file covers. Omit for report-level ATN files."
+    },
+    "chapter_ref": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Multilingual human-readable chapter reference as printed."
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "atn_records": {
+      "type": "array",
+      "description": "ATN records for this chapter or report.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["atn_id", "scope", "current_status"],
+        "properties": {
+          "atn_id": {
+            "type": "string",
+            "pattern": "^ATN-[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+          },
+          "scope": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["level", "report_id"],
+            "properties": {
+              "level": {
+                "type": "string",
+                "enum": ["report", "chapter", "section", "paragraph", "multi_paragraph"]
+              },
+              "report_id": {
+                "type": "string",
+                "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+              },
+              "chapter_id": {
+                "type": "string",
+                "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+              },
+              "unit_id": {
+                "type": "string",
+                "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+              },
+              "block_id": {
+                "type": "string",
+                "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+              },
+              "block_ids": {
+                "type": "array",
+                "minItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+                }
+              },
+              "recommendation_block_id": {
+                "type": "string",
+                "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+              },
+              "recommendation_block_ids": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+                }
+              },
+              "para_ref": {
+                "type": "string",
+                "pattern": "^[0-9]+(\\.[0-9]+)*$"
+              },
+              "para_refs": {
+                "type": "array",
+                "minItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[0-9]+(\\.[0-9]+)*$"
+                }
+              },
+              "section_ref": {
+                "type": "object",
+                "additionalProperties": { "type": "string" }
+              }
+            },
+            "allOf": [
+              {
+                "if": { "properties": { "level": { "const": "chapter" } }, "required": ["level"] },
+                "then": { "required": ["chapter_id"] }
+              },
+              {
+                "if": { "properties": { "level": { "const": "section" } }, "required": ["level"] },
+                "then": { "required": ["chapter_id", "unit_id"] }
+              },
+              {
+                "if": { "properties": { "level": { "const": "paragraph" } }, "required": ["level"] },
+                "then": { "required": ["chapter_id", "unit_id", "block_id", "para_ref"] }
+              },
+              {
+                "if": { "properties": { "level": { "const": "multi_paragraph" } }, "required": ["level"] },
+                "then": { "required": ["chapter_id", "unit_id", "block_ids", "para_refs"] }
+              }
+            ]
+          },
+          "department": {
+            "type": "string",
+            "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+            "description": "entity_id of the primary department responsible for this ATN. Must exist in registry_entities.json."
+          },
+          "current_status": {
+            "type": "string",
+            "enum": [
+              "pending", "received", "under_review",
+              "partially_implemented", "implemented",
+              "not_implemented", "not_accepted", "settled"
+            ]
+          },
+          "current_round": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Round number of the latest exchange. Always equals length of rounds[]. Set by pipeline."
+          },
+          "settled_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Date formally settled. Only valid when current_status=settled. Set only by pipeline."
+          },
+          "pac_reference": { "type": "string" },
+          "follow_up_ref": {
+            "$ref": "./reference.schema",
+            "description": "Reference to a follow-up audit report that revisited this finding. Use type=report, relationship_type=follows_up."
+          },
+          "rounds": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["round_number", "round_type", "atn_date", "atn_reference", "atn_text", "status_after_round"],
+              "properties": {
+                "round_number": { "type": "integer", "minimum": 1 },
+                "round_type": {
+                  "type": "string",
+                  "enum": ["initial", "follow_up", "pac_directed", "revised", "final"]
+                },
+                "department": {
+                  "type": "string",
+                  "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+                  "description": "entity_id of the department submitting this round. Must exist in registry_entities.json."
+                },
+                "atn_date": { "type": "string", "format": "date" },
+                "atn_reference": { "type": "string" },
+                "atn_text": {
+                  "type": "object",
+                  "additionalProperties": { "type": "string" }
+                },
+                "audit_office_assessment": {
+                  "type": "object",
+                  "additionalProperties": { "type": "string" }
+                },
+                "assessed_by": { "type": "string" },
+                "assessment_date": { "type": "string", "format": "date" },
+                "status_after_round": {
+                  "type": "string",
+                  "enum": [
+                    "pending", "received", "under_review",
+                    "partially_implemented", "implemented",
+                    "not_implemented", "not_accepted", "settled"
+                  ]
+                },
+                "pac_sitting_reference": { "type": "string" },
+                "notes": {
+                  "type": "object",
+                  "additionalProperties": { "type": "string" }
+                }
+              }
+            }
+          },
+          "notes": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          },
+          "references": {
+            "type": "array",
+            "items": { "$ref": "./reference.schema" }
+          }
+        },
+        "allOf": [
+          {
+            "description": "settled_date required when current_status=settled.",
+            "if": {
+              "properties": { "current_status": { "const": "settled" } },
+              "required": ["current_status"]
+            },
+            "then": { "required": ["settled_date"] }
+          },
+          {
+            "description": "settled_date must not be present when current_status is not settled.",
+            "if": {
+              "not": {
+                "properties": { "current_status": { "const": "settled" } }
+              }
+            },
+            "then": {
+              "not": { "required": ["settled_date"] }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

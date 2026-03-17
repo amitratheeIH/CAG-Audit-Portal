@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CAG Citation Builder</title>
+<style>
+:root{
+  --bg:#0c0f1a;--sur:#131825;--sur2:#192033;--sur3:#1e2840;
+  --bdr:#273050;--bdr2:#3a4870;
+  --acc:#6875f5;--grn:#1fcc9e;--amb:#f5c842;--red:#f56060;--pur:#a78bfa;--cyn:#38bdf8;
+  --txt:#d8dff0;--txt2:#7e8db5;--txt3:#404e78;
+  --r:5px;--mono:'Cascadia Code','Fira Code','Consolas',monospace;
+  --sans:-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--sans);background:var(--bg);color:var(--txt);font-size:12px}
+
+.hdr{display:flex;align-items:center;gap:10px;padding:10px 18px;background:var(--sur);border-bottom:1px solid var(--bdr);flex-wrap:wrap}
+.logo{width:26px;height:26px;background:var(--cyn);border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:#0c0f1a;flex-shrink:0}
+.hdr-title{font-size:13px;font-weight:500}
+.hdr-sub{font-size:11px;color:var(--txt2)}
+
+.tabs{display:flex;background:var(--sur);border-bottom:1px solid var(--bdr)}
+.tab{padding:9px 18px;font-size:11px;font-weight:500;color:var(--txt3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;user-select:none;white-space:nowrap}
+.tab:hover{color:var(--txt2)}.tab.on{color:var(--acc);border-bottom-color:var(--acc)}
+.tpnl{display:none}.tpnl.on{display:block}
+
+.main{max-width:820px;margin:0 auto;padding:22px 18px 60px}
+
+.sec{background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:16px;margin-bottom:12px}
+.sec-ttl{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--txt3);margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid var(--bdr)}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:580px){.g2,.g3{grid-template-columns:1fr}}
+
+.fld{margin-bottom:0}
+.lbl{font-size:11px;font-weight:500;color:var(--txt2);margin-bottom:3px}
+.req{color:var(--red);font-size:10px}
+.hint{font-size:10px;color:var(--txt3);margin-top:2px;line-height:1.4}
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);color:var(--txt);font-family:var(--sans);font-size:11px;padding:5px 8px;outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--acc)}
+input::placeholder,textarea::placeholder{color:var(--txt3)}
+textarea{resize:vertical;min-height:120px;line-height:1.6}
+select option{background:var(--sur2)}
+.mono{font-family:var(--mono)!important}
+
+/* CITATION CARDS */
+.cit-card{background:var(--sur2);border:1px solid var(--bdr2);border-radius:6px;padding:14px 16px;margin-bottom:10px}
+.cit-style{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--txt3);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.cit-style-name{color:var(--acc)}
+.cit-text{font-size:12px;color:var(--txt);line-height:1.9;font-family:Georgia,serif}
+.cit-text .au{font-style:normal}
+.cit-text .ti{font-style:italic}
+.cit-text .rn{font-weight:600}
+.cit-text .yr{color:var(--txt2)}
+
+.copy-btn{background:rgba(104,117,245,.1);border:1px solid rgba(104,117,245,.2);color:var(--acc);border-radius:3px;font-size:9px;font-weight:600;padding:2px 8px;cursor:pointer;transition:all .15s;font-family:var(--sans)}
+.copy-btn:hover{background:rgba(104,117,245,.2)}
+.copy-btn.copied{color:var(--grn);border-color:rgba(31,204,158,.3);background:rgba(31,204,158,.1)}
+
+/* METADATA OUTPUT */
+.json-sec{background:var(--sur2);border:1px solid var(--bdr2);border-radius:var(--r);padding:13px;font-family:var(--mono);font-size:11px;color:var(--txt2);line-height:1.8;word-break:break-all}
+.jk{color:var(--acc)}.js{color:var(--grn)}.jc{color:var(--txt3)}
+
+.btn{padding:5px 14px;border-radius:var(--r);font-size:11px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all .15s;font-family:var(--sans);outline:none}
+.bga{background:var(--acc);color:#fff}.bga:hover{background:#5565e8}
+.bgg{background:rgba(31,204,158,.12);border-color:rgba(31,204,158,.3);color:var(--grn);font-weight:600}.bgg:hover{background:rgba(31,204,158,.2)}
+.bg{background:transparent;border-color:var(--bdr);color:var(--txt2)}.bg:hover{border-color:var(--txt2);color:var(--txt)}
+
+.info{padding:8px 12px;background:var(--sur2);border-left:2px solid var(--acc);border-radius:var(--r);font-size:10px;color:var(--txt2);line-height:1.6;margin-bottom:14px}
+
+/* LEVEL PILLS */
+.level-row{display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap}
+.lpill{padding:5px 14px;border-radius:12px;border:1px solid var(--bdr);font-size:10px;font-weight:500;color:var(--txt3);cursor:pointer;transition:all .12s;user-select:none}
+.lpill:hover{border-color:var(--bdr2);color:var(--txt2)}
+.lpill.on{border-color:var(--acc);color:var(--acc);background:rgba(104,117,245,.08)}
+
+.field-group{display:none}.field-group.on{display:block}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo">CT</div>
+  <div class="hdr-title">Citation Builder</div>
+  <span class="hdr-sub">— CAG Audit Report Portal</span>
+</div>
+
+<div class="tabs">
+  <div class="tab on" id="tab-builder" onclick="swTab('builder')">Build citation</div>
+  <div class="tab" id="tab-formats" onclick="swTab('formats')">Format guide</div>
+</div>
+
+<!-- ═══════════════════════════════════ BUILDER ═══════════════════════════════ -->
+<div class="tpnl on" id="tp-builder">
+<div class="main">
+
+<div class="info">Generates citations in four styles for report, chapter, section, and paragraph levels. The <code>citation</code> field from the output goes into <code>metadata.json → common.citation</code>.</div>
+
+<!-- CITATION LEVEL -->
+<div class="sec">
+  <div class="sec-ttl">Citation level</div>
+  <div class="level-row">
+    <div class="lpill on" id="lp-report"  onclick="setLevel('report')">Report</div>
+    <div class="lpill"    id="lp-chapter" onclick="setLevel('chapter')">Chapter</div>
+    <div class="lpill"    id="lp-section" onclick="setLevel('section')">Section</div>
+    <div class="lpill"    id="lp-para"    onclick="setLevel('para')">Paragraph / Finding</div>
+  </div>
+</div>
+
+<!-- REPORT FIELDS -->
+<div class="sec">
+  <div class="sec-ttl">Report details</div>
+  <div class="g2" style="margin-bottom:10px">
+    <div class="fld">
+      <div class="lbl">Report title (English) <span class="req">*</span></div>
+      <textarea id="title_en" placeholder="Report of the Comptroller and Auditor General of India on Degradation of Kshipra River, Madhya Pradesh" oninput="rebuild()" rows="5"></textarea>
+    </div>
+    <div class="fld">
+      <div class="lbl">Report title (Hindi)</div>
+      <textarea id="title_hi" placeholder="कुसिपरा नदी के क्षरण पर भारत के नियंत्रक एवं महालेखापरीक्षक की रिपोर्ट" oninput="rebuild()" rows="5"></textarea>
+    </div>
+  </div>
+
+  <div class="g3" style="margin-bottom:10px">
+    <div class="fld">
+      <div class="lbl">Year <span class="req">*</span></div>
+      <input type="number" id="year" placeholder="2023" min="1860" max="2100" oninput="rebuild()">
+    </div>
+    <div class="fld">
+      <div class="lbl">Report number</div>
+      <input type="number" id="report_no" placeholder="6" min="1" oninput="rebuild()">
+      <div class="hint">Sequential report number within the year</div>
+    </div>
+    <div class="fld">
+      <div class="lbl">Jurisdiction</div>
+      <select id="jurisdiction" onchange="onJurChange()">
+        <option value="">— select —</option>
+        <option value="UNION">Union</option>
+        <option value="STATE">State</option>
+        <option value="UT">UT</option>
+        <option value="LG">Local Government</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-bottom:10px">
+    <div class="fld" id="state-fld" style="display:none">
+      <div class="lbl">State / UT</div>
+      <select id="state_name" onchange="rebuild()">
+        <option value="">— select —</option>
+        <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option><option value="Andhra Pradesh">Andhra Pradesh</option><option value="Arunachal Pradesh">Arunachal Pradesh</option><option value="Assam">Assam</option><option value="Bihar">Bihar</option><option value="Chandigarh">Chandigarh</option><option value="Chhattisgarh">Chhattisgarh</option><option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option><option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option><option value="Delhi">Delhi</option><option value="Goa">Goa</option><option value="Gujarat">Gujarat</option><option value="Haryana">Haryana</option><option value="Himachal Pradesh">Himachal Pradesh</option><option value="Jammu and Kashmir">Jammu and Kashmir</option><option value="Jharkhand">Jharkhand</option><option value="Karnataka">Karnataka</option><option value="Kerala">Kerala</option><option value="Ladakh">Ladakh</option><option value="Lakshadweep">Lakshadweep</option><option value="Madhya Pradesh">Madhya Pradesh</option><option value="Maharashtra">Maharashtra</option><option value="Manipur">Manipur</option><option value="Meghalaya">Meghalaya</option><option value="Mizoram">Mizoram</option><option value="Nagaland">Nagaland</option><option value="Odisha">Odisha</option><option value="Puducherry">Puducherry</option><option value="Punjab">Punjab</option><option value="Rajasthan">Rajasthan</option><option value="Sikkim">Sikkim</option><option value="Tamil Nadu">Tamil Nadu</option><option value="Telangana">Telangana</option><option value="Tripura">Tripura</option><option value="Uttar Pradesh">Uttar Pradesh</option><option value="Uttarakhand">Uttarakhand</option><option value="West Bengal">West Bengal</option>
+      </select>
+    </div>
+    <div class="fld">
+      <div class="lbl">product_id</div>
+      <input type="text" id="product_id" class="mono" placeholder="AR06-CAG-2023-STATE-MP" oninput="rebuild()">
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="fld">
+      <div class="lbl">Tabling date (lower house)</div>
+      <input type="text" id="tabling_date" placeholder="12 August 2023" oninput="rebuild()">
+    </div>
+    <div class="fld">
+      <div class="lbl">Publisher (leave blank for default)</div>
+      <input type="text" id="publisher" placeholder="Office of the Comptroller and Auditor General of India" oninput="rebuild()">
+    </div>
+  </div>
+</div>
+
+<!-- CHAPTER / SECTION FIELDS -->
+<div class="sec field-group" id="fg-chapter">
+  <div class="sec-ttl">Chapter / Section details</div>
+  <div class="g2" style="margin-bottom:10px">
+    <div class="fld">
+      <div class="lbl">Chapter / Section title <span class="req">*</span></div>
+      <input type="text" id="chapter_title" placeholder="Chapter 2 — Stamp Duty Collection" oninput="rebuild()">
+    </div>
+    <div class="fld">
+      <div class="lbl">Chapter number / Section ref</div>
+      <input type="text" id="chapter_no" placeholder="2" oninput="rebuild()">
+      <div class="hint">e.g. 2 or 2.1 or Chapter 2</div>
+    </div>
+  </div>
+</div>
+
+<!-- PARAGRAPH FIELDS -->
+<div class="sec field-group" id="fg-para">
+  <div class="sec-ttl">Paragraph / Finding details</div>
+  <div class="g3">
+    <div class="fld">
+      <div class="lbl">Para number <span class="req">*</span></div>
+      <input type="text" id="para_no" placeholder="2.3" oninput="rebuild()">
+    </div>
+    <div class="fld">
+      <div class="lbl">Para title / subject</div>
+      <input type="text" id="para_title" placeholder="Short collection of stamp duty" oninput="rebuild()">
+    </div>
+    <div class="fld">
+      <div class="lbl">Page number</div>
+      <input type="text" id="page_no" placeholder="45" oninput="rebuild()">
+    </div>
+  </div>
+</div>
+
+<!-- OPTIONAL FIELDS -->
+<div class="sec">
+  <div class="sec-ttl">Optional fields</div>
+  <div class="g3">
+    <div class="fld">
+      <div class="lbl">URL / DOI</div>
+      <input type="text" id="url" placeholder="https://cag.gov.in/..." oninput="rebuild()">
+    </div>
+    <div class="fld">
+      <div class="lbl">Accessed date</div>
+      <input type="text" id="accessed" placeholder="15 March 2026" oninput="rebuild()">
+    </div>
+    <div class="fld">
+      <div class="lbl">Legislature tabled in</div>
+      <input type="text" id="legislature" placeholder="Madhya Pradesh Vidhan Sabha" oninput="rebuild()">
+    </div>
+  </div>
+</div>
+
+<!-- CITATIONS OUTPUT -->
+<div class="sec">
+  <div class="sec-ttl">Generated citations</div>
+  <div id="citations-out"></div>
+</div>
+
+<!-- METADATA JSON OUTPUT -->
+<div class="sec">
+  <div class="sec-ttl">metadata.json → common.citation snippet</div>
+  <div class="hint" style="margin-bottom:8px">Paste this into the <code>citation</code> field of your report's <code>metadata.json common</code> section. This stores the recommended citation string permanently with the report.</div>
+  <div class="json-sec" id="json-out"></div>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button class="btn bgg" onclick="copyJSON()">↓ Copy JSON snippet</button>
+    <button class="btn bg" onclick="resetAll()">↺ Reset</button>
+  </div>
+</div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════ FORMAT GUIDE ═════════════════════════ -->
+<div class="tpnl" id="tp-formats">
+<div class="main">
+  <div class="sec">
+    <div class="sec-ttl">Citation formats explained</div>
+
+    <p style="color:var(--txt2);font-size:11px;line-height:1.8;margin-bottom:14px">Four styles are generated. Use whichever matches the context — academic papers, legal documents, web references, or court pleadings.</p>
+
+    <div style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:600;color:var(--acc);margin-bottom:6px">1. Formal / Legal style</div>
+      <div style="background:var(--sur2);border-radius:var(--r);padding:10px 14px;font-family:Georgia,serif;font-size:12px;color:var(--txt);line-height:1.9">
+        Report of the Comptroller and Auditor General of India on <em>Degradation of Kshipra River, Madhya Pradesh</em>, Report No. 6 of 2023, Laid on the Table of Madhya Pradesh Vidhan Sabha on 12 August 2023.
+      </div>
+      <div style="font-size:10px;color:var(--txt3);margin-top:5px">Used in court pleadings, official documents, and legal references. Full formal title. No abbreviation.</div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:600;color:var(--pur);margin-bottom:6px">2. Academic / APA style</div>
+      <div style="background:var(--sur2);border-radius:var(--r);padding:10px 14px;font-family:Georgia,serif;font-size:12px;color:var(--txt);line-height:1.9">
+        Comptroller and Auditor General of India. (2023). <em>Degradation of Kshipra River, Madhya Pradesh</em> (Report No. 6 of 2023). CAG of India.
+      </div>
+      <div style="font-size:10px;color:var(--txt3);margin-top:5px">Follows APA 7th edition pattern for government reports. Used in academic papers and research.</div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:600;color:var(--grn);margin-bottom:6px">3. Short / Footnote style</div>
+      <div style="background:var(--sur2);border-radius:var(--r);padding:10px 14px;font-family:Georgia,serif;font-size:12px;color:var(--txt);line-height:1.9">
+        CAG Report No. 6/2023 (Madhya Pradesh) — <em>Kshipra River Degradation</em>, Para 2.3, p.45.
+      </div>
+      <div style="font-size:10px;color:var(--txt3);margin-top:5px">Compact form for footnotes and in-text references. Includes para and page for paragraph-level citations.</div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:600;color:var(--amb);margin-bottom:6px">4. Hindi / Bilingual style</div>
+      <div style="background:var(--sur2);border-radius:var(--r);padding:10px 14px;font-family:Georgia,serif;font-size:12px;color:var(--txt);line-height:1.9">
+        भारत के नियंत्रक एवं महालेखापरीक्षक (2023)। <em>कुसिपरा नदी के क्षरण पर रिपोर्ट, मध्य प्रदेश</em>। रिपोर्ट संख्या 6, 2023।
+      </div>
+      <div style="font-size:10px;color:var(--txt3);margin-top:5px">Hindi citation for Hindi-language documents and bilingual portals. Uses Devanagari punctuation (। instead of .).</div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:600;color:var(--cyn);margin-bottom:6px">Chapter level — additional elements</div>
+      <div style="background:var(--sur2);border-radius:var(--r);padding:10px 14px;font-family:Georgia,serif;font-size:12px;color:var(--txt);line-height:1.9">
+        CAG of India. (2023). Chapter 2: Stamp Duty Collection. In <em>Report No. 6 of 2023 on Kshipra River Degradation</em>. CAG of India.
+      </div>
+      <div style="font-size:10px;color:var(--txt3);margin-top:5px">"In [Report]" format used for chapter-level citation — same as citing a chapter in an edited book.</div>
+    </div>
+
+    <div>
+      <div style="font-size:11px;font-weight:600;color:var(--red);margin-bottom:6px">Paragraph level — most granular</div>
+      <div style="background:var(--sur2);border-radius:var(--r);padding:10px 14px;font-family:Georgia,serif;font-size:12px;color:var(--txt);line-height:1.9">
+        CAG of India, Report No. 6 of 2023 (Madhya Pradesh), Para 2.3 — Short collection of stamp duty, p.45.
+      </div>
+      <div style="font-size:10px;color:var(--txt3);margin-top:5px">Used for ATN references, PAC documents, court petitions citing specific audit findings.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+var LEVEL = 'report';
+var STATES_DATA = [{"id":"IN-AN","en":"Andaman and Nicobar Islands"},{"id":"IN-AP","en":"Andhra Pradesh"},{"id":"IN-AR","en":"Arunachal Pradesh"},{"id":"IN-AS","en":"Assam"},{"id":"IN-BR","en":"Bihar"},{"id":"IN-CH","en":"Chandigarh"},{"id":"IN-CT","en":"Chhattisgarh"},{"id":"IN-DN","en":"Dadra and Nagar Haveli"},{"id":"IN-DD","en":"Dadra and Nagar Haveli and Daman and Diu"},{"id":"IN-DL","en":"Delhi"},{"id":"IN-GA","en":"Goa"},{"id":"IN-GJ","en":"Gujarat"},{"id":"IN-HR","en":"Haryana"},{"id":"IN-HP","en":"Himachal Pradesh"},{"id":"IN-JK","en":"Jammu and Kashmir"},{"id":"IN-JH","en":"Jharkhand"},{"id":"IN-KA","en":"Karnataka"},{"id":"IN-KL","en":"Kerala"},{"id":"IN-LA","en":"Ladakh"},{"id":"IN-LD","en":"Lakshadweep"},{"id":"IN-MP","en":"Madhya Pradesh"},{"id":"IN-MH","en":"Maharashtra"},{"id":"IN-MN","en":"Manipur"},{"id":"IN-ML","en":"Meghalaya"},{"id":"IN-MZ","en":"Mizoram"},{"id":"IN-NL","en":"Nagaland"},{"id":"IN-OD","en":"Odisha"},{"id":"IN-PY","en":"Puducherry"},{"id":"IN-PB","en":"Punjab"},{"id":"IN-RJ","en":"Rajasthan"},{"id":"IN-SK","en":"Sikkim"},{"id":"IN-TN","en":"Tamil Nadu"},{"id":"IN-TG","en":"Telangana"},{"id":"IN-TR","en":"Tripura"},{"id":"IN-UP","en":"Uttar Pradesh"},{"id":"IN-UK","en":"Uttarakhand"},{"id":"IN-WB","en":"West Bengal"}];
+
+// ── TAB / LEVEL ───────────────────────────────────────────────────────────────
+function swTab(id){
+  document.querySelectorAll('.tpnl').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  document.getElementById('tp-'+id).classList.add('on');
+  document.getElementById('tab-'+id).classList.add('on');
+}
+function setLevel(lv){
+  LEVEL = lv;
+  document.querySelectorAll('.lpill').forEach(function(p){p.classList.remove('on');});
+  document.getElementById('lp-'+lv).classList.add('on');
+  // Show/hide field groups
+  document.getElementById('fg-chapter').classList.toggle('on', lv==='chapter'||lv==='section'||lv==='para');
+  document.getElementById('fg-para').classList.toggle('on', lv==='para');
+  rebuild();
+}
+function onJurChange(){
+  var jur = gv('jurisdiction');
+  var sf = document.getElementById('state-fld');
+  sf.style.display = (jur==='STATE'||jur==='UT'||jur==='LG') ? '' : 'none';
+  rebuild();
+}
+
+// ── BUILD CITATION STRINGS ────────────────────────────────────────────────────
+function buildCitations(){
+  var title    = gv('title_en').trim();
+  var titleHi  = gv('title_hi').trim();
+  var year     = gv('year').trim();
+  var reportNo = gv('report_no').trim();
+  var jur      = gv('jurisdiction');
+  var state    = gv('state_name').trim();
+  var tabDate  = gv('tabling_date').trim();
+  var legis    = gv('legislature').trim();
+  var pub      = gv('publisher').trim() || 'Office of the Comptroller and Auditor General of India';
+  var pubShort = 'CAG of India';
+  var url      = gv('url').trim();
+  var accessed = gv('accessed').trim();
+  var chTitle  = gv('chapter_title').trim();
+  var chNo     = gv('chapter_no').trim();
+  var paraNo   = gv('para_no').trim();
+  var paraTitle= gv('para_title').trim();
+  var pageNo   = gv('page_no').trim();
+
+  if(!title || !year) return null;
+
+  // Short title (strip "Report of the CAG of India on" prefix if present)
+  var shortTitle = title
+    .replace(/^Report of the (Comptroller and Auditor General|CAG) of India on\s*/i,'')
+    .replace(/^Report on\s*/i,'')
+    .trim();
+  if(!shortTitle) shortTitle = title;
+
+  // Report reference string
+  var reportRef = reportNo ? 'Report No. ' + reportNo + ' of ' + year : 'Report of ' + year;
+  var reportRefShort = reportNo ? reportNo + '/' + year : year;
+  var locationStr = state ? state : (jur==='UNION'?'Union Government':'');
+  if(locationStr) reportRef += ' (' + locationStr + ')';
+
+  // Tabling string
+  var tabStr = '';
+  if(tabDate && legis) tabStr = 'Laid on the Table of the ' + legis + ' on ' + tabDate;
+  else if(tabDate)     tabStr = 'Tabled ' + tabDate;
+
+  // URL access string
+  var urlStr = '';
+  if(url) urlStr = ' Available at: ' + url + (accessed ? ' [Accessed ' + accessed + ']' : '');
+
+  var cits = {};
+
+  // ── 1. FORMAL / LEGAL ────────────────────────────────────────────────────────
+  var formal = 'Report of the Comptroller and Auditor General of India';
+  if(shortTitle) formal += ' on <i>' + shortTitle + '</i>';
+  if(title !== shortTitle && !title.toLowerCase().includes('report of the')) {
+    formal = pub.replace('Office of the ','') + ', <i>' + shortTitle + '</i>';
+  } else {
+    formal = 'Report of the Comptroller and Auditor General of India on <i>' + shortTitle + '</i>';
+  }
+  if(reportNo) formal += ', Report No. ' + reportNo + ' of ' + year;
+  else formal += ', ' + year;
+  if(locationStr) formal += ', ' + locationStr;
+  if(tabStr) formal += '. ' + tabStr;
+  else formal += '.';
+  if(LEVEL==='chapter' && chNo) formal += ' Chapter ' + chNo + (chTitle?': '+chTitle:'') + '.';
+  if(LEVEL==='section' && chNo) formal += ' Section ' + chNo + (chTitle?': '+chTitle:'') + '.';
+  if(LEVEL==='para' && paraNo)  formal += ' Para ' + paraNo + (paraTitle?', '+paraTitle:'') + (pageNo?', p.'+pageNo:'') + '.';
+  if(urlStr) formal += urlStr + '.';
+  cits.formal = formal;
+
+  // ── 2. ACADEMIC / APA ────────────────────────────────────────────────────────
+  var apa = pub.replace('Office of the ','') + '. (' + year + '). ';
+  if(LEVEL==='chapter'||LEVEL==='section'){
+    var chapLabel = LEVEL==='chapter'?'Chapter ':'Section ';
+    apa += (chNo?chapLabel+chNo+': ':'') + (chTitle||'') + '. ';
+    apa += 'In <i>' + (reportRef) + ': ' + shortTitle + '</i>. ' + pubShort + '.';
+  } else if(LEVEL==='para'){
+    apa += 'Para ' + paraNo + (paraTitle?': '+paraTitle:'') + '. ';
+    apa += 'In <i>' + reportRef + ': ' + shortTitle + '</i>';
+    if(pageNo) apa += ' (p. ' + pageNo + ')';
+    apa += '. ' + pubShort + '.';
+  } else {
+    apa += '<i>' + shortTitle + '</i>';
+    if(reportNo) apa += ' (' + reportRef + ')';
+    apa += '. ' + pubShort + '.';
+  }
+  if(urlStr) apa += ' ' + url;
+  cits.apa = apa;
+
+  // ── 3. SHORT / FOOTNOTE ──────────────────────────────────────────────────────
+  var loc = locationStr ? ' (' + locationStr + ')' : '';
+  var rn  = reportNo ? 'Report No. ' + reportNo + '/' + year + loc : 'CAG Report ' + year + loc;
+  var sh  = 'CAG of India, ' + rn + ' — <i>' + shortTitle + '</i>';
+  if(LEVEL==='chapter'||LEVEL==='section'){
+    sh += ', ' + (LEVEL==='chapter'?'Ch. ':'Sec. ') + (chNo||chTitle||'');
+  }
+  if(LEVEL==='para'){
+    sh += ', Para ' + paraNo;
+    if(paraTitle) sh += ' — ' + paraTitle;
+    if(pageNo) sh += ', p.' + pageNo;
+  }
+  sh += '.';
+  if(url) sh += ' ' + url;
+  cits.short = sh;
+
+  // ── 4. HINDI ─────────────────────────────────────────────────────────────────
+  var hiAuthor = 'भारत के नियंत्रक एवं महालेखापरीक्षक';
+  var hiTitle  = titleHi || shortTitle;
+  var hiYear   = year;
+  var hiRn     = reportNo ? 'रिपोर्ट संख्या ' + reportNo + ', ' + hiYear : hiYear;
+  var hi = hiAuthor + ' (' + hiYear + ')। ';
+  if(LEVEL==='chapter'||LEVEL==='section'){
+    hi += (chTitle||chNo||'अध्याय') + '। ';
+    hi += '<i>' + hiTitle + '</i>, ' + hiRn + '।';
+  } else if(LEVEL==='para'){
+    hi += 'पैरा ' + paraNo + (paraTitle?' — '+paraTitle:'') + '। ';
+    hi += '<i>' + hiTitle + '</i>, ' + hiRn + '।';
+  } else {
+    hi += '<i>' + hiTitle + '</i>। ' + hiRn + '।';
+  }
+  cits.hindi = hi;
+
+  // ── 5. MACHINE-READABLE (metadata field) ─────────────────────────────────────
+  // Plain text version of formal citation for the citation field in metadata.json
+  var plain = formal.replace(/<i>/g,'').replace(/<\/i>/g,'');
+  cits.plain_en = plain;
+
+  var hiPlain = hi.replace(/<i>/g,'').replace(/<\/i>/g,'');
+  cits.plain_hi = titleHi ? hiPlain : null;
+
+  return cits;
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────────
+function rebuild(){
+  var cits = buildCitations();
+  var citOut = document.getElementById('citations-out');
+  var jsonOut = document.getElementById('json-out');
+
+  if(!cits){
+    citOut.innerHTML = '<div style="padding:16px;text-align:center;color:var(--txt3)">Fill Report title and Year to generate citations</div>';
+    jsonOut.innerHTML = '<span style="color:var(--txt3)">Fill required fields above</span>';
+    return;
+  }
+
+  var STYLES = [
+    {key:'formal', label:'Formal / Legal',  color:'var(--acc)'},
+    {key:'apa',    label:'Academic (APA)',   color:'var(--pur)'},
+    {key:'short',  label:'Short / Footnote', color:'var(--grn)'},
+    {key:'hindi',  label:'Hindi / Bilingual',color:'var(--amb)'},
+  ];
+
+  var html = '';
+  STYLES.forEach(function(s){
+    if(s.key==='hindi' && !gv('title_hi') && !gv('title_en')) return;
+    var text = cits[s.key]||'';
+    if(!text) return;
+    html += '<div class="cit-card">'
+      + '<div class="cit-style"><span class="cit-style-name" style="color:'+s.color+'">'+s.label+'</span>'
+      + '<button class="copy-btn" onclick="copyCit(this)">Copy</button></div>'
+      + '<div class="cit-text" data-plain="'+esc(text.replace(/<i>/g,'').replace(/<\/i>/g,''))+'">'+text+'</div>'
+      + '</div>';
+  });
+
+  citOut.innerHTML = html || '<div style="color:var(--txt3);padding:12px">No citations generated</div>';
+
+  // JSON snippet for metadata.json
+  var lines = [];
+  if(cits.plain_en){
+    lines.push('<span class="jk">"citation"</span>: {');
+    lines.push('  <span class="jk">"en"</span>: <span class="js">"' + escJ(cits.plain_en) + '"</span>' + (cits.plain_hi ? ',' : ''));
+    if(cits.plain_hi) lines.push('  <span class="jk">"hi"</span>: <span class="js">"' + escJ(cits.plain_hi) + '"</span>');
+    lines.push('}');
+  }
+  jsonOut.innerHTML = lines.join('\n') || '<span style="color:var(--txt3)">—</span>';
+}
+
+function copyCit(btn){
+  var text = btn.closest('.cit-card').querySelector('.cit-text').getAttribute('data-plain');
+  if(!text) return;
+  navigator.clipboard.writeText(text).then(function(){
+    btn.textContent='Copied!'; btn.classList.add('copied');
+    setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied');},2000);
+  });
+}
+
+function copyJSON(){
+  var el = document.getElementById('json-out');
+  var text = el.textContent || el.innerText;
+  navigator.clipboard.writeText(text).then(function(){
+    event.target.textContent='Copied!';
+    setTimeout(function(){event.target.textContent='↓ Copy JSON snippet';},2000);
+  });
+}
+
+function resetAll(){
+  ['title_en','title_hi','year','report_no','tabling_date','publisher','url','accessed',
+   'chapter_title','chapter_no','para_no','para_title','page_no','legislature'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('jurisdiction').value='';
+  document.getElementById('state_name').value='';
+  document.getElementById('state-fld').style.display='none';
+  setLevel('report');
+  rebuild();
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function gv(id){var e=document.getElementById(id);return e?e.value.trim():'';}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function escJ(s){return (s||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"');}
+
+rebuild();
+</script>
+</body>
+</html>

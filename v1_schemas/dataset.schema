@@ -1,0 +1,445 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$version": "1.0",
+  "title": "Dataset Schema",
+  "description": "Structured tabular dataset. v3.0: data_ref escape hatch for large datasets (NDJSON companion file); oneOf enforces data[] OR data_ref, never both; summary field added for vector embedding of tabular content; inline dataset footnotes confirmed with cell-level footnote_markers support. v3.1: vector_embedding_id and embedding_model added — stable pointer to external vector store record for the dataset's summary embedding.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "dataset_id",
+    "columns"
+  ],
+  "oneOf": [
+    {
+      "required": [
+        "data"
+      ]
+    },
+    {
+      "required": [
+        "data_ref"
+      ]
+    }
+  ],
+  "properties": {
+    "dataset_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+      "description": "Stable unique identifier. e.g. CH02-DS03, AR01-DS01"
+    },
+    "title": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Multilingual dataset title matching the table caption."
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Multilingual natural language description of what this table shows — its subject, period, key figures, and significance. Pipeline-generated or human-authored. This is the primary text used for vector embedding of tabular data. e.g. { 'en': 'District-wise stamp duty collection in MP for 2018-19 to 2022-23 showing shortfall of ₹142 crore against target.' }"
+    },
+    "vector_embedding_id": {
+      "type": "string",
+      "description": "ID of the vector record in the external vector store for this dataset. Points to the embedding generated from the summary field (default_language value). The vector store owns all embedding metadata — model version, chunk strategy, index version. This field is a stable pointer only. Set by ingestion pipeline after embedding. Null/absent if summary is not set for this dataset."
+    },
+    "embedding_model": {
+      "type": "string",
+      "enum": [
+        "text-embedding-3-large",
+        "text-embedding-3-small",
+        "text-embedding-ada-002"
+      ],
+      "description": "Embedding model used to generate the vector for this dataset's summary. Must match the model recorded in the vector store. Update this enum when new models are adopted by the pipeline. Set by ingestion pipeline."
+    },
+    "source_block": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+      "description": "block_id of the table block this dataset was extracted from."
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Multilingual. Human-readable data source citation."
+    },
+    "related_datasets": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      },
+      "description": "dataset_ids of related datasets — e.g. prior-year versions of the same table."
+    },
+    "cross_report_ref": {
+      "type": "string",
+      "description": "product_id/dataset_id of a dataset in another report this one continues or extends. e.g. 'AR05-CAG-2022-STATE-MP/CH02-DS03'"
+    },
+    "unit": {
+      "type": "string",
+      "description": "Default unit for all numeric values. e.g. '₹ in crore', 'Number', '%'. Overridden at column level."
+    },
+    "dataset_type": {
+      "type": "string",
+      "enum": [
+        "flat",
+        "hierarchical",
+        "time_series",
+        "pivot",
+        "cross_tab"
+      ],
+      "default": "flat",
+      "description": "Structural type. flat=simple rows. hierarchical=indent-level parent/child rows. time_series=multiple period columns. pivot=both axes carry meaning. cross_tab=full matrix."
+    },
+    "columns": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Column definitions — one entry per logical column.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Machine key for this column. Referenced in data row cell objects."
+          },
+          "label": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Multilingual column header label."
+          },
+          "unit": {
+            "type": "string",
+            "description": "Column-level unit override. e.g. '%', 'Nos.', '₹ in lakh'"
+          },
+          "data_type": {
+            "type": "string",
+            "enum": [
+              "string",
+              "integer",
+              "decimal",
+              "percentage",
+              "currency",
+              "date",
+              "boolean",
+              "asset_ref"
+            ],
+            "description": "'asset_ref' means the cell value is a path to an image embedded in that cell."
+          },
+          "currency": {
+            "type": "string",
+            "description": "ISO 4217 code. e.g. 'INR'"
+          },
+          "is_stub": {
+            "type": "boolean",
+            "description": "True for the row-label column — not a data column."
+          },
+          "is_computed": {
+            "type": "boolean",
+            "description": "True if values are derived from other columns."
+          },
+          "formula": {
+            "type": "string",
+            "description": "Formula for computed columns. e.g. 'col_a + col_b', '(col_c / col_d) * 100'"
+          },
+          "period": {
+            "type": "string",
+            "description": "For time_series: the period this column represents. e.g. '2020-21'"
+          },
+          "group": {
+            "type": "string",
+            "description": "Column group name for multi-level headers."
+          },
+          "group_order": {
+            "type": "integer",
+            "description": "Position within the group."
+          },
+          "align": {
+            "type": "string",
+            "enum": [
+              "left",
+              "right",
+              "center"
+            ],
+            "description": "Alignment hint. Default: stub/string=left, numeric=right."
+          },
+          "width_hint": {
+            "type": "string",
+            "description": "e.g. '120px', '15%'"
+          }
+        }
+      }
+    },
+    "header_rows": {
+      "type": "array",
+      "description": "Explicit multi-row merged header structure. Each element is one header row; each cell carries its label, colspan, rowspan, and the column IDs it covers.",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label"
+          ],
+          "properties": {
+            "label": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "colspan": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "rowspan": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "col_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Column IDs covered by this header cell."
+            },
+            "style": {
+              "type": "string",
+              "enum": [
+                "normal",
+                "group",
+                "subgroup"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "data": {
+      "type": "array",
+      "description": "Inline row data. Use for datasets under ~150 rows with no cell-level asset refs and no cross_report_ref. For larger datasets use data_ref instead. All rows including data, subtotals, totals, grand totals, spacers, mid-table headers, and notes.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "cells"
+        ],
+        "properties": {
+          "row_id": {
+            "type": "string",
+            "description": "Stable row identifier. Required when this dataset has a data_ref companion or when rows are referenced by footnotes."
+          },
+          "row_type": {
+            "type": "string",
+            "enum": [
+              "data",
+              "subtotal",
+              "total",
+              "grand_total",
+              "header",
+              "unit_row",
+              "spacer",
+              "note"
+            ],
+            "default": "data"
+          },
+          "group_id": {
+            "type": "string",
+            "description": "Named group this row belongs to."
+          },
+          "indent_level": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Indentation depth for hierarchical datasets. 0=top level."
+          },
+          "row_span_group": {
+            "type": "string"
+          },
+          "is_first_in_span": {
+            "type": "boolean"
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "bold",
+              "italic",
+              "highlight",
+              "muted",
+              "strikethrough"
+            ]
+          },
+          "row_colour": {
+            "type": "string",
+            "enum": [
+              "positive",
+              "negative",
+              "warning",
+              "neutral",
+              "highlight"
+            ]
+          },
+          "cells": {
+            "type": "object",
+            "description": "Cell values keyed by column id.",
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "type": [
+                    "string",
+                    "number",
+                    "null"
+                  ],
+                  "description": "Simple value."
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "description": "Rich cell for annotated, spanning, or asset-containing cells.",
+                  "properties": {
+                    "value": {
+                      "type": [
+                        "string",
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "display": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "colspan": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "rowspan": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "footnote_markers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "nil_marker": {
+                      "type": "boolean"
+                    },
+                    "na_marker": {
+                      "type": "boolean"
+                    },
+                    "is_negative": {
+                      "type": "boolean"
+                    },
+                    "style": {
+                      "type": "string",
+                      "enum": [
+                        "normal",
+                        "bold",
+                        "italic",
+                        "highlight",
+                        "muted"
+                      ]
+                    },
+                    "asset_ref": {
+                      "type": "string"
+                    },
+                    "asset_alt": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "cross_ref": {
+                      "$ref": "./reference.schema"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "row_footnotes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "data_ref": {
+      "type": "string",
+      "description": "Relative path to NDJSON companion file containing row data for large datasets. One JSON row object per line — same structure as items in data[]. Use when dataset exceeds ~150 rows, contains cell-level asset refs, or has cross_report_ref set. Set this OR data[], enforced by oneOf. e.g. 'datasets/ndjson/CH02-DS03.ndjson'. Git diffs on NDJSON files are naturally row-level and human-readable."
+    },
+    "footnotes": {
+      "type": "array",
+      "description": "Inline footnotes for this dataset. Keyed by marker symbol.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "marker",
+          "text"
+        ],
+        "properties": {
+          "marker": {
+            "type": "string",
+            "description": "e.g. '*', '#', '1', '†'"
+          },
+          "text": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "anchor_row_id": {
+            "type": "string",
+            "description": "row_id of the cell where this footnote marker appears. If absent, marker appears in the table caption or header."
+          },
+          "anchor_col_id": {
+            "type": "string",
+            "description": "col_id of the cell where this footnote marker appears. Required when anchor_row_id is set."
+          },
+          "footnote_type": {
+            "type": "string",
+            "enum": [
+              "data_note",
+              "statistical_source",
+              "explanatory",
+              "general"
+            ],
+            "default": "data_note",
+            "description": "Type of dataset footnote. data_note explains a cell value. statistical_source cites the source."
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "General multilingual notes displayed below the table."
+    },
+    "column_group_borders": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Column IDs after which a thick vertical border is drawn."
+    }
+  }
+}

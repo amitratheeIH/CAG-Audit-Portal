@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$version": "1.0",
+  "title": "Registry Schemes Governance Schema",
+  "description": "Validates registry_schemes.json. sector_function_id must use FUNC-* from registry_entities function_vocabulary. administering_entity_id must match entity_id pattern — pipeline validates it exists in registry_entities. legislation_code must match ACT-*/ORD-*/RULE-* pattern when present.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$version", "updated_at", "scheme_type_values", "status_values", "entries"],
+  "properties": {
+    "$version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "$schema": { "type": "string" },
+    "updated_at": { "type": "string", "format": "date" },
+    "description": { "type": "string" },
+    "id_convention": { "type": "object" },
+    "scheme_type_values": { "type": "array", "items": { "type": "string" } },
+    "status_values": { "type": "array", "items": { "type": "string" } },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "scheme_type", "sector_function_id", "administering_entity_id", "jurisdiction", "launched", "current_status", "active", "archived"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$" },
+          "name": {
+            "type": "object",
+            "required": ["en"],
+            "properties": { "en": { "type": "string", "minLength": 1 } },
+            "additionalProperties": { "type": "string" }
+          },
+          "short_name": { "type": "object", "additionalProperties": { "type": "string" } },
+          "acronym": { "type": ["string", "null"] },
+          "scheme_type": { "type": "string" },
+          "sector_function_id": {
+            "type": "string",
+            "pattern": "^FUNC-[A-Z][A-Z0-9\\-]+$",
+            "description": "FUNC-* ID from registry_entities.json function_vocabulary. Replaces free-text sector field."
+          },
+          "administering_entity_id": {
+            "type": "string",
+            "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+            "description": "entity_id from registry_entities.json. Pipeline validates existence on ingest."
+          },
+          "jurisdiction": { "type": "string", "enum": ["UNION", "STATE", "UT"] },
+          "state_ut_id": { "type": ["string", "null"], "pattern": "^IN-[A-Z]{2,3}$" },
+          "launched": { "type": ["string", "null"], "format": "date" },
+          "current_status": { "type": "string" },
+          "active": { "type": "boolean" },
+          "archived": { "type": "boolean" },
+          "dissolution_reason": { "type": ["string", "null"] },
+          "dissolved_on": { "type": ["string", "null"], "format": "date" },
+          "name_history": { "type": "array" },
+          "predecessor_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$" }
+          },
+          "successor_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$" }
+          },
+          "related_ids": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$" }
+          },
+          "legislation_code": {
+            "type": ["string", "null"],
+            "pattern": "^(ACT|ORD|RULE|NOTIF|CONST)-[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+            "description": "Legislation code in machine-resolvable format. e.g. ACT-NREGA-2005. Null when no enabling legislation."
+          },
+          "notes": { "type": "object", "additionalProperties": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

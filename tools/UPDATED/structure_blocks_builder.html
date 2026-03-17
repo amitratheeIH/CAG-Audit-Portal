@@ -1,0 +1,3020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CAG Structure &amp; Blocks Builder</title>
+<style>
+:root{
+  --bg:#0c0f1a;--sur:#131825;--sur2:#192033;--sur3:#1e2840;
+  --bdr:#273050;--bdr2:#3a4870;
+  --acc:#6875f5;--grn:#1fcc9e;--amb:#f5c842;--red:#f56060;--pur:#a78bfa;
+  --txt:#d8dff0;--txt2:#7e8db5;--txt3:#404e78;
+  --r:5px;--mono:'Cascadia Code','Fira Code','Consolas',monospace;
+  --sans:-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--sans);background:var(--bg);color:var(--txt);font-size:12px;overflow:hidden}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;gap:12px;padding:8px 16px;background:var(--sur);border-bottom:1px solid var(--bdr);flex-shrink:0;flex-wrap:wrap}
+.logo{width:24px;height:24px;background:var(--acc);border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:#fff;flex-shrink:0}
+.hdr-title{font-size:13px;font-weight:500;white-space:nowrap}
+.hdr-pid{display:flex;align-items:center;gap:6px;flex:1;min-width:220px}
+.hdr-pid label{font-size:10px;color:var(--txt2);white-space:nowrap;font-weight:500}
+.hdr-pid input{flex:1;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);color:var(--txt);font-family:var(--mono);font-size:11px;padding:4px 8px;outline:none}
+.hdr-pid input:focus{border-color:var(--acc)}
+.hdr-langs{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.hdr-langs label{font-size:10px;color:var(--txt2);font-weight:500}
+.hdr-btns{display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap}
+.btn{padding:4px 11px;border-radius:var(--r);font-family:var(--sans);font-size:11px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all .15s;outline:none;white-space:nowrap}
+.bg{background:transparent;border-color:var(--bdr);color:var(--txt2)}.bg:hover{border-color:var(--txt2);color:var(--txt)}
+.bgg{background:rgba(31,204,158,.12);border-color:rgba(31,204,158,.3);color:var(--grn)}.bgg:hover{background:rgba(31,204,158,.2)}
+.bga{background:var(--acc);color:#fff;border-color:var(--acc)}.bga:hover{background:#5565e8}
+
+/* MAIN 3-PANE */
+.layout{display:grid;grid-template-columns:220px 260px 1fr;height:calc(100vh - 45px);grid-template-rows:1fr}
+.pane{display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--bdr)}
+.pane:last-child{border-right:none}
+
+/* PANE HEADERS */
+.pane-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--sur);border-bottom:1px solid var(--bdr);flex-shrink:0}
+.pane-ttl{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--txt3)}
+.pane-ttl span{color:var(--acc);margin-left:5px}
+
+/* SCROLLABLE PANE BODY */
+.pane-body{overflow-y:auto;flex:1}
+.pane-body::-webkit-scrollbar{width:3px}.pane-body::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+
+/* SECTION HEADERS IN TREE */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:var(--sur);border-bottom:1px solid var(--bdr);cursor:pointer;user-select:none}
+.sec-hdr-lbl{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:600;color:var(--txt2)}
+.sec-hdr-cnt{font-size:9px;color:var(--txt3);background:var(--sur2);border-radius:3px;padding:1px 5px}
+.sec-add{font-size:14px;color:var(--txt3);background:none;border:none;cursor:pointer;padding:0 2px;transition:color .15s}
+.sec-add:hover{color:var(--acc)}
+
+/* UNIT ROWS */
+.unit-row{display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid rgba(39,48,80,.4);cursor:pointer;transition:background .12s;user-select:none}
+.unit-row:hover{background:var(--sur2)}
+.unit-row.sel{background:rgba(104,117,245,.12);border-left:2px solid var(--acc)}
+.unit-row .indent{flex-shrink:0}
+.unit-type-badge{flex-shrink:0;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:600;letter-spacing:.3px}
+.ut-chapter{background:rgba(104,117,245,.15);color:var(--acc)}
+.ut-section{background:rgba(31,204,158,.12);color:var(--grn)}
+.ut-subsection{background:rgba(167,139,250,.12);color:var(--pur)}
+.ut-sub_subsection{background:rgba(167,139,250,.08);color:var(--pur)}
+.ut-preface,.ut-executive_summary{background:rgba(245,200,66,.1);color:var(--amb)}
+.ut-appendix,.ut-annexure,.ut-statement,.ut-schedule{background:rgba(245,96,96,.1);color:var(--red)}
+.unit-id-short{font-family:var(--mono);font-size:10px;color:var(--txt2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+.unit-title-prev{font-size:11px;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unit-row-actions{display:none;gap:3px}
+.unit-row:hover .unit-row-actions{display:flex}
+.icon-btn{padding:2px 5px;border-radius:3px;background:none;border:none;cursor:pointer;font-size:11px;color:var(--txt3);transition:all .15s}
+.icon-btn:hover{color:var(--red);background:rgba(245,96,96,.1)}
+.icon-btn.edit:hover{color:var(--acc);background:rgba(104,117,245,.1)}
+/* TAXONOMY */
+.tax-bar{display:flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(31,204,158,.06);border-top:1px solid rgba(31,204,158,.15);font-size:10px;flex-shrink:0;flex-wrap:wrap}
+.tax-status{color:var(--txt3);flex:1}
+.tax-status.loaded{color:var(--grn)}
+.tax-status.none{color:var(--amb)}
+/* TYPEAHEAD */
+.ta-wrap{position:relative}
+.ta-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--sur);border:1px solid var(--bdr2);border-radius:var(--r);box-shadow:0 6px 20px rgba(0,0,0,.4);z-index:200;max-height:220px;overflow-y:auto;display:none}
+.ta-dropdown.on{display:block}
+.ta-dropdown::-webkit-scrollbar{width:3px}.ta-dropdown::-webkit-scrollbar-thumb{background:var(--bdr)}
+.ta-item{padding:5px 10px;font-size:11px;cursor:pointer;color:var(--txt2);display:flex;flex-direction:column;gap:1px;transition:background .1s;border-bottom:1px solid rgba(39,48,80,.3)}
+.ta-item:last-child{border-bottom:none}
+.ta-item:hover,.ta-item.sel{background:rgba(104,117,245,.1);color:var(--txt)}
+.ta-item-id{font-family:var(--mono);font-size:9px;color:var(--txt3)}
+.ta-item.sel .ta-item-id{color:var(--acc)}
+.ta-group{padding:3px 10px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--txt3);background:var(--sur2);border-bottom:1px solid var(--bdr);position:sticky;top:0}
+/* ENTITY DROPDOWN */
+.ent-sel{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);color:var(--txt);font-family:var(--mono);font-size:11px;padding:4px 7px;width:100%;outline:none;transition:border-color .15s}
+.ent-sel:focus{border-color:var(--acc)}
+
+/* BLOCK ROWS */
+.block-row{display:flex;align-items:center;gap:6px;padding:5px 10px;border-bottom:1px solid rgba(39,48,80,.3);cursor:pointer;transition:background .12s;user-select:none}
+.block-row:hover{background:var(--sur2)}
+.block-row.sel{background:rgba(104,117,245,.1);border-left:2px solid var(--acc)}
+.seq-num{font-family:var(--mono);font-size:9px;color:var(--txt3);min-width:28px;text-align:right}
+.bt-badge{flex-shrink:0;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:600}
+.bt-p{background:rgba(104,117,245,.12);color:var(--acc)}
+.bt-h{background:rgba(245,200,66,.1);color:var(--amb)}
+.bt-l{background:rgba(31,204,158,.1);color:var(--grn)}
+.bt-t{background:rgba(167,139,250,.1);color:var(--pur)}
+.bt-vis{background:rgba(245,96,96,.1);color:var(--red)}
+.bt-call{background:rgba(245,160,66,.1);color:#f59642}
+.bt-af{background:rgba(245,96,96,.15);color:var(--red)}
+.bt-rec{background:rgba(31,204,158,.15);color:var(--grn)}
+.bt-other{background:rgba(127,127,127,.1);color:var(--txt2)}
+.block-preview{font-size:11px;color:var(--txt2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.block-row-actions{display:none;gap:3px;flex-shrink:0}
+.block-row:hover .block-row-actions{display:flex}
+
+/* DRAG HANDLE */
+.drag-handle{cursor:grab;color:var(--txt3);font-size:11px;padding:0 2px}
+.drag-handle:active{cursor:grabbing}
+
+/* PLACEHOLDER */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:8px;color:var(--txt3);font-size:11px;padding:20px;text-align:center}
+.empty-state .esc{font-size:28px;opacity:.3}
+
+/* EDIT FORM PANE */
+.edit-pane{display:flex;flex-direction:column;overflow:hidden;background:var(--bg);min-height:0}
+
+/* FORM TABS */
+.form-tabs{display:flex;background:var(--sur);border-bottom:1px solid var(--bdr);padding:0 12px;flex-shrink:0;overflow-x:auto}
+.form-tab{padding:8px 12px;font-size:11px;font-weight:500;color:var(--txt3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;user-select:none}
+.form-tab:hover{color:var(--txt2)}.form-tab.on{color:var(--acc);border-bottom-color:var(--acc)}
+
+/* FORM SCROLL */
+.form-scr{overflow-y:auto;flex:1;padding:16px}
+.form-scr::-webkit-scrollbar{width:3px}.form-scr::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:2px}
+.fpnl{display:none}.fpnl.on{display:block;overflow-y:auto;max-height:100%}
+
+/* FORM ELEMENTS */
+.sec{margin-bottom:18px}
+.slbl{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--txt3);padding-bottom:6px;border-bottom:1px solid var(--bdr);margin-bottom:10px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.fld{margin-bottom:9px}
+.lbl{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:var(--txt2);margin-bottom:3px;flex-wrap:wrap}
+.req{color:var(--red);font-size:10px}
+.hint{font-size:10px;color:var(--txt3);margin-top:2px;line-height:1.4}
+input[type=text],input[type=number],input[type=date],input[type=url],select,textarea{
+  width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);
+  color:var(--txt);font-family:var(--sans);font-size:11px;padding:5px 8px;outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--acc)}
+input::placeholder,textarea::placeholder{color:var(--txt3)}
+select option{background:var(--sur2)}
+textarea{resize:vertical;min-height:50px;line-height:1.5}
+.mono{font-family:var(--mono);font-size:11px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+
+/* ML rows */
+.ml-row{display:grid;grid-template-columns:36px 1fr;gap:5px;margin-bottom:4px;align-items:start}
+.ml-lbl{padding:5px 3px;background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);font-family:var(--mono);font-size:9px;color:var(--txt3);text-align:center}
+
+/* BADGES */
+.bdb{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;background:rgba(104,117,245,.12);color:var(--acc);border:1px solid rgba(104,117,245,.2)}
+.bdg{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;background:rgba(31,204,158,.1);color:var(--grn);border:1px solid rgba(31,204,158,.2)}
+.bda{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;background:rgba(245,200,66,.1);color:var(--amb);border:1px solid rgba(245,200,66,.2)}
+.bdr2{font-size:9px;padding:1px 5px;border-radius:3px;font-weight:500;background:rgba(245,96,96,.1);color:var(--red);border:1px solid rgba(245,96,96,.2)}
+
+/* TOGGLE */
+.togrow{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:6px}
+.toglbl{font-size:11px;color:var(--txt2)}
+.tog{position:relative;width:32px;height:18px;cursor:pointer;flex-shrink:0}
+.tog input{display:none}
+.tog-t{position:absolute;inset:0;background:var(--bdr);border-radius:9px;transition:background .2s}
+.tog input:checked+.tog-t{background:var(--acc)}
+.tog-k{position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:transform .2s;pointer-events:none}
+.tog input:checked~.tog-k{transform:translateX(14px)}
+
+/* TAG INPUT */
+.tw{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);padding:4px 6px;display:flex;flex-wrap:wrap;gap:3px;min-height:30px;cursor:text;transition:border-color .15s}
+.tw:focus-within{border-color:var(--acc)}
+.tag{display:inline-flex;align-items:center;gap:2px;background:rgba(104,117,245,.15);border:1px solid rgba(104,117,245,.25);color:var(--acc);border-radius:3px;font-size:9px;font-family:var(--mono);padding:1px 5px}
+.tag-x{cursor:pointer;color:var(--txt3);font-size:11px;line-height:1}.tag-x:hover{color:var(--red)}
+.ti{border:none!important;outline:none!important;background:transparent!important;color:var(--txt)!important;font-family:var(--mono)!important;font-size:10px!important;width:90px!important;min-width:50px;padding:1px 3px!important}
+
+/* CHECK PILLS */
+.cg{display:flex;flex-wrap:wrap;gap:4px}
+.cp{display:flex;align-items:center;gap:4px;padding:3px 8px;border:1px solid var(--bdr);border-radius:12px;font-size:10px;color:var(--txt3);cursor:pointer;transition:all .15s;user-select:none}
+.cp input{display:none}.cp .dot{width:7px;height:7px;border-radius:2px;border:1px solid var(--bdr);flex-shrink:0;transition:all .15s}
+.cp.on{border-color:var(--acc);color:var(--acc);background:rgba(104,117,245,.08)}.cp.on .dot{background:var(--acc);border-color:var(--acc)}
+
+/* ARRAY CARD */
+.acard{background:var(--sur);border:1px solid var(--bdr);border-radius:var(--r);padding:8px;margin-bottom:7px}
+.acard-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.acard-ttl{font-size:10px;font-weight:600;color:var(--txt2)}
+.brm{padding:2px 6px;border-radius:3px;background:transparent;border:1px solid var(--bdr);color:var(--txt3);cursor:pointer;font-size:10px;transition:all .15s}.brm:hover{border-color:var(--red);color:var(--red)}
+.badd{width:100%;padding:5px;border-radius:var(--r);background:transparent;border:1px dashed var(--bdr);color:var(--txt3);cursor:pointer;font-size:10px;font-family:var(--sans);transition:all .15s;margin-top:3px}.badd:hover{border-color:var(--acc);color:var(--acc)}
+
+/* SAVE BANNER */
+.save-banner{padding:6px 16px;background:rgba(31,204,158,.08);border-bottom:1px solid rgba(31,204,158,.2);font-size:11px;color:var(--grn);display:none;flex-shrink:0}
+.save-banner.on{display:block}
+
+/* STATUS BAR */
+.sbar{display:flex;align-items:center;justify-content:space-between;padding:4px 16px;background:var(--sur);border-top:1px solid var(--bdr);font-size:10px;color:var(--txt3);flex-shrink:0}
+.sok{color:var(--grn)}.swrn{color:var(--amb)}
+
+/* ADD UNIT MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:center;justify-content:center}
+.overlay.on{display:flex}
+.modal{background:var(--sur);border:1px solid var(--bdr2);border-radius:8px;padding:20px;width:420px;max-width:90vw}
+.modal h2{font-size:14px;font-weight:600;margin-bottom:14px;color:var(--txt)}
+.modal-btns{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="logo">CAG</div>
+  <div class="hdr-title">Structure &amp; Blocks Builder</div>
+  <div class="hdr-pid">
+    <label>PRODUCT ID</label>
+    <input class="mono" type="text" id="G_pid" placeholder="AR01-CAG-2025-STATE-MP" oninput="onPidChange()">
+  </div>
+  <div class="hdr-langs">
+    <label>LANGS</label>
+    <div id="lang-pills" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+  </div>
+  <div class="hdr-btns">
+    <input type="file" id="load-session" accept=".json" style="display:none" onchange="handleLoadSession(this)">
+    <button class="btn" style="background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.4);color:#a78bfa;font-weight:600" onclick="document.getElementById('load-session').click()" title="Load a previously saved session — restores all units and blocks">↑ Load session</button>
+    <button class="btn" style="background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.4);color:#a78bfa;font-weight:600" onclick="saveSession()" title="Save current state to a .session.json file — use to continue later">↓ Save session</button>
+    <input type="file" id="load-structure" accept=".json" style="display:none" onchange="handleLoadStructure(this)">
+    <button class="btn bg" onclick="document.getElementById('load-structure').click()" title="Load existing structure.json">↑ Load structure</button>
+    <input type="file" id="load-blocks" accept=".ndjson" style="display:none" onchange="handleLoadBlocks(this)">
+    <button class="btn bg" onclick="document.getElementById('load-blocks').click()" title="Load existing NDJSON blocks file">↑ Load blocks</button>
+    <button class="btn bgg" onclick="downloadStructure()">↓ structure.json</button>
+    <button class="btn bgg" onclick="downloadAllUnits()" title="Download one units/{unit_id}.json file per unit">↓ units/ (all)</button>
+    <button class="btn bgg" onclick="showBlocksDownload()">↓ blocks NDJSON</button>
+    <button class="btn bg" onclick="downloadAllFootnotes()" title="Download footnotes_*.json for all units that have footnotes">↓ footnotes</button>
+  </div>
+</div>
+
+<!-- TAXONOMY BAR -->
+<div class="tax-bar" id="tax-bar">
+  <span class="tax-status none" id="tax-status">No taxonomy loaded — dropdowns will be plain text inputs</span>
+  <button class="btn bg" style="font-size:10px;padding:2px 8px" onclick="loadTaxonomyFolder()" id="btn-load-tax" title="Pick your v1_taxonomy + v1_registry folder">📂 Load taxonomy &amp; registry</button>
+  <button class="btn bg" style="font-size:10px;padding:2px 8px;display:none" onclick="reloadTaxonomy()" id="btn-reload-tax" title="Re-read files from disk (after updating taxonomy files)">↺ Reload</button>
+  <button class="btn bg" style="font-size:10px;padding:2px 8px;color:var(--red);display:none" onclick="clearTaxonomy()" id="btn-clear-tax">✕ Clear</button>
+  <input type="file" id="tax-file-fallback" accept=".json" multiple style="display:none" onchange="handleTaxFiles(this.files)">
+  <span id="tax-fallback-btn" style="display:none">
+    <button class="btn bg" style="font-size:10px;padding:2px 8px" onclick="document.getElementById('tax-file-fallback').click()">📂 Load JSON files (Firefox fallback)</button>
+  </span>
+</div>
+
+<!-- MAIN 3-PANE -->
+<div class="layout">
+
+  <!-- PANE 1: UNIT TREE -->
+  <div class="pane" id="tree-pane">
+    <div class="pane-hdr">
+      <span class="pane-ttl">Units <span id="unit-count">0</span></span>
+    </div>
+    <div class="pane-body" id="unit-tree"></div>
+  </div>
+
+  <!-- PANE 2: BLOCK LIST -->
+  <div class="pane" id="block-pane">
+    <div class="pane-hdr">
+      <span class="pane-ttl" id="block-pane-ttl">Blocks</span>
+      <select id="new-block-type" style="background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);color:var(--txt);font-size:10px;padding:3px 6px;outline:none;max-width:120px" disabled id="new-block-type-sel"><option value="paragraph">paragraph</option><option value="heading">heading</option><option value="list">list</option><option value="table">table</option><option value="image">image</option><option value="figure">figure</option><option value="chart">chart</option><option value="callout">callout</option><option value="audit_finding">audit_finding</option><option value="recommendation">recommendation</option><option value="richbox">richbox ★</option><option value="executive_summary_block">exec summary (old)</option><option value="quote">quote</option><option value="sidebar">sidebar</option><option value="map">map</option><option value="image_gallery">image_gallery</option><option value="live_chart">live_chart</option><option value="formula">formula</option><option value="signature_block">signature_block</option><option value="pullquote">pullquote</option><option value="code">code</option><option value="divider">divider</option></select><button class="btn bg" style="font-size:10px;padding:3px 8px" onclick="addBlock(document.getElementById('new-block-type').value)" id="add-block-btn" disabled>+ Add</button>
+    </div>
+    <div class="pane-body" id="block-list"></div>
+  </div>
+
+  <!-- PANE 3: EDIT FORM -->
+  <div class="edit-pane">
+    <div class="save-banner" id="save-banner">Changes auto-saved to memory. Use download buttons to export files.</div>
+    <div class="form-tabs" id="form-tabs">
+      <div class="form-tab on" onclick="switchFormTab('ft1',this)" id="ftab1">Unit</div>
+      <div class="form-tab" onclick="switchFormTab('ft2',this)" id="ftab2">Content</div>
+      <div class="form-tab" onclick="switchFormTab('ft3',this)" id="ftab3">Metadata</div>
+      <div class="form-tab" onclick="switchFormTab('ft4',this)" id="ftab4">Annotations</div>
+      <div class="form-tab" onclick="switchFormTab('ft5',this)" id="ftab5">Footnotes</div>
+    </div>
+    <div class="form-scr">
+      <div class="fpnl on" id="ft1"><div class="empty-state"><div class="esc">⬅</div><div>Select a unit to edit,<br>or add a new one</div></div></div>
+      <div class="fpnl" id="ft2"><div class="empty-state"><div class="esc">⬆</div><div>Select or add a block<br>to edit its content</div></div></div>
+      <div class="fpnl" id="ft3"><div class="empty-state"><div class="esc">📋</div><div>Inheritable metadata<br>for the selected unit</div></div></div>
+      <div class="fpnl" id="ft4"><div class="empty-state"><div class="esc">🏷</div><div>Block annotations<br>(select a block first)</div></div></div>
+    </div>
+    <div class="fpnl" id="ft5"><div class="empty-state"><div class="esc">📝</div><div>Select a unit<br>to edit its footnotes</div></div></div>
+    <div class="sbar"><span id="sbar-msg" class="sok">Ready</span><span id="sbar-info"></span></div>
+  </div>
+</div>
+
+<!-- ADD UNIT MODAL -->
+<div class="overlay" id="add-unit-modal">
+  <div class="modal">
+    <h2>Add unit</h2>
+    <div class="g2" style="margin-bottom:8px">
+      <div class="fld">
+        <div class="lbl">Section</div>
+        <select id="mu_section">
+          <option value="front_matter">Front matter</option>
+          <option value="content_units" selected>Content units</option>
+          <option value="back_matter">Back matter</option>
+        </select>
+      </div>
+      <div class="fld">
+        <div class="lbl">unit_type</div>
+        <select id="mu_type" onchange="autoGenUnitId()">
+          <option value="chapter">chapter</option>
+          <option value="section">section</option>
+          <option value="subsection">subsection</option>
+          <option value="sub_subsection">sub_subsection</option>
+          <option value="preface">preface</option>
+          <option value="executive_summary">executive_summary</option>
+          <option value="appendix">appendix</option>
+          <option value="annexure">annexure</option>
+          <option value="statement">statement</option>
+          <option value="schedule">schedule</option>
+        </select>
+      </div>
+    </div>
+    <div class="fld">
+      <div class="lbl">Parent unit <span style="color:var(--txt3);font-weight:400">(optional — leave blank for top-level)</span></div>
+      <select id="mu_parent"><option value="">— none —</option></select>
+    </div>
+    <div class="fld">
+      <div class="lbl">unit_id <span class="req">*</span> <span class="bdb">auto-generated</span></div>
+      <input class="mono" type="text" id="mu_id" placeholder="e.g. AR01-CAG-2025-STATE-MP-CH01">
+      <div class="hint">Auto-generated from product ID. Edit to override.</div>
+    </div>
+    <div class="fld">
+      <div class="lbl">Title (en) <span class="req">*</span></div>
+      <input type="text" id="mu_title_en" placeholder="Chapter 1: Stamp Duty">
+    </div>
+    <div class="fld">
+      <div class="lbl">seq</div>
+      <input type="number" id="mu_seq" placeholder="10" min="0">
+    </div>
+    <div class="modal-btns">
+      <button class="btn bg" onclick="closeModal('add-unit-modal')">Cancel</button>
+      <button class="btn bga" onclick="confirmAddUnit()">Add unit</button>
+    </div>
+  </div>
+</div>
+
+<!-- DOWNLOAD BLOCKS MODAL -->
+<div class="overlay" id="dl-blocks-modal">
+  <div class="modal">
+    <h2>Download blocks NDJSON</h2>
+    <p style="font-size:11px;color:var(--txt2);margin-bottom:12px">Blocks are grouped by chapter. Select a chapter to download all its blocks (including blocks belonging to its sections and subsections).</p>
+    <div class="fld">
+      <div class="lbl">Chapter</div>
+      <select id="dl_chapter"></select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn bg" onclick="closeModal('dl-blocks-modal')">Cancel</button>
+      <button class="btn bgg" onclick="confirmDownloadBlocks()">↓ Download NDJSON</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// GLOBAL STATE
+// ══════════════════════════════════════════════════════
+var LANGS = ['en'];
+var ALL_LANGS = [['en','English'],['hi','Hindi'],['ta','Tamil'],['te','Telugu'],
+  ['ur','Urdu'],['kn','Kannada'],['ml','Malayalam'],['mr','Marathi'],
+  ['gu','Gujarati'],['pa','Punjabi'],['bn','Bengali'],['or','Odia']];
+
+// structure: each section is array of unit objects
+var STRUCT = { front_matter: [], content_units: [], back_matter: [] };
+
+// blocks[unit_id] = [ ...block objects ]
+var BLOCKS = {};
+var FOOTNOTES = {};  // FOOTNOTES[unit_id] = [{footnote_id,marker,text,anchor...}]
+
+// Selection
+var SEL_UNIT = null;   // unit object ref
+var SEL_BLOCK = null;  // block object ref
+var SEL_SECTION = 'content_units';
+
+// Type prefix maps
+var UNIT_PREFIX = {
+  preface:'PRE', executive_summary:'ES', chapter:'CH', section:'SEC',
+  subsection:'SS', sub_subsection:'SSS', appendix:'APP', annexure:'ANN',
+  statement:'STMT', schedule:'SCHED'
+};
+var BLOCK_PREFIX = {
+  paragraph:'P', heading:'H', list:'L', table:'T', image:'IMG',
+  image_gallery:'GAL', figure:'FIG', map:'MAP', chart:'CHT', live_chart:'LCH',
+  formula:'FRM', callout:'CALL', audit_finding:'AF', recommendation:'REC',
+  signature_block:'SIG', quote:'Q', pullquote:'PQ', sidebar:'SB',
+  code:'CODE', divider:'DIV', richbox:'RBX', executive_summary_block:'ESBLK'
+};
+
+// ══════════════════════════════════════════════════════
+// LANGUAGE PILLS
+// ══════════════════════════════════════════════════════
+function initLangPills(){
+  var wrap=document.getElementById('lang-pills');
+  wrap.innerHTML=ALL_LANGS.map(function(l){
+    var code=l[0], sel=LANGS.indexOf(code)>=0;
+    return '<label class="cp'+(sel?' on':'')+'" id="lp-'+code+'" style="font-size:9px;padding:2px 7px">'
+      +'<input type="checkbox" value="'+code+'" '+(sel?'checked':'')
+      +' onchange="toggleLang(\''+code+'\',this.checked)">'
+      +'<div class="dot"></div>'+code+'</label>';
+  }).join('');
+}
+function toggleLang(code,add){
+  if(add){if(LANGS.indexOf(code)<0)LANGS.push(code);}
+  else LANGS=LANGS.filter(function(l){return l!==code;});
+  var p=document.getElementById('lp-'+code);
+  if(p) p.classList.toggle('on',add);
+  if(SEL_UNIT) renderUnitForm(SEL_UNIT);
+  if(SEL_BLOCK) renderBlockForm(SEL_BLOCK);
+}
+
+// ══════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════
+function pid(){ return document.getElementById('G_pid').value.trim(); }
+function gv(id){ var e=document.getElementById(id); return e?(e.value||'').trim():''; }
+function gn(id){ var v=parseFloat(gv(id)); return isNaN(v)?null:v; }
+function gc(id){ var e=document.getElementById(id); return e?e.checked:false; }
+function sv(id,val){ var e=document.getElementById(id); if(e&&val!=null&&val!='') e.value=val; }
+function sc(id,val){ var e=document.getElementById(id); if(e) e.checked=!!val; }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function mlRow(field, lang, val, isTA){
+  var v=(val||'').replace(/"/g,'&quot;');
+  var inp=isTA
+    ? '<textarea rows="2" oninput="setFieldML(\''+field+'\',\''+lang+'\',this.value)">' + (val||'') + '</textarea>'
+    : '<input type="text" value="'+v+'" oninput="setFieldML(\''+field+'\',\''+lang+'\',this.value)">';
+  return '<div class="ml-row"><div class="ml-lbl">'+lang+'</div>'+inp+'</div>';
+}
+function mlBlock(field, vals, isTA){
+  return LANGS.map(function(l){return mlRow(field,l,vals?vals[l]:'',isTA);}).join('');
+}
+
+function allUnits(){
+  var all=[];
+  ['front_matter','content_units','back_matter'].forEach(function(sec){
+    STRUCT[sec].forEach(function(u){all.push(u);});
+  });
+  return all;
+}
+function findUnit(uid){
+  return allUnits().filter(function(u){return u.unit_id===uid;})[0]||null;
+}
+function sectionOf(uid){
+  var sec=null;
+  ['front_matter','content_units','back_matter'].forEach(function(s){
+    if(STRUCT[s].some(function(u){return u.unit_id===uid;})) sec=s;
+  });
+  return sec;
+}
+
+// ══════════════════════════════════════════════════════
+// ID GENERATION
+// ══════════════════════════════════════════════════════
+function onPidChange(){
+  sbar('Product ID updated');
+  renderUnitTree();
+}
+
+function genUnitId(type, parentId, section){
+  var p=pid(); if(!p) return '';
+  var prefix=UNIT_PREFIX[type]||type.toUpperCase();
+  var base=parentId||p;
+  // count existing units of same prefix under same parent
+  var siblings=allUnits().filter(function(u){
+    return u.unit_id.startsWith(base+'-'+prefix) && u.parent_id===(parentId||null);
+  });
+  var n=siblings.length+1;
+  return base+'-'+prefix+pad2(n);
+}
+function pad2(n){ return n<10?'0'+n:''+n; }
+function pad3(n){ return n<10?'00'+n:n<100?'0'+n:''+n; }
+
+function autoGenUnitId(){
+  var type=gv('mu_type'), parent=gv('mu_parent');
+  var gen=genUnitId(type, parent||null, gv('mu_section'));
+  sv('mu_id', gen);
+  // auto seq
+  var parentBlocks=parent?allUnits().filter(function(u){return u.parent_id===parent;})
+    :(STRUCT[gv('mu_section')]||[]);
+  sv('mu_seq', (parentBlocks.length+1)*10);
+}
+
+function genBlockId(unitId, blockType){
+  var prefix=BLOCK_PREFIX[blockType]||blockType.toUpperCase();
+  var existing=(BLOCKS[unitId]||[]).filter(function(b){
+    return b.block_id&&b.block_id.startsWith(unitId+'-'+prefix);
+  });
+  return unitId+'-'+prefix+pad3(existing.length+1);
+}
+
+// ══════════════════════════════════════════════════════
+// UNIT TREE RENDERING
+// ══════════════════════════════════════════════════════
+var SECTION_COLORS={'front_matter':var_amb,'content_units':var_acc,'back_matter':var_pur};
+var var_amb='#f5c842',var_acc='#6875f5',var_pur='#a78bfa';
+
+function renderUnitTree(){
+  var container=document.getElementById('unit-tree');
+  var total=allUnits().length;
+  document.getElementById('unit-count').textContent=total;
+  var html='';
+  ['front_matter','content_units','back_matter'].forEach(function(sec){
+    var label=sec==='front_matter'?'Front Matter':sec==='content_units'?'Content Units':'Back Matter';
+    var cnt=STRUCT[sec].length;
+    html+='<div class="sec-hdr">'
+      +'<span class="sec-hdr-lbl">'+label+' <span class="sec-hdr-cnt">'+cnt+'</span></span>'
+      +'<button class="sec-add" title="Add unit to '+label+'" onclick="openAddUnit(\''+sec+'\')" >+</button>'
+      +'</div>';
+    // render tree for this section (topological order)
+    html+=renderUnitBranch(sec, null, 0);
+  });
+  container.innerHTML=html;
+}
+
+function renderUnitBranch(sec, parentId, depth){
+  var html='';
+  STRUCT[sec].filter(function(u){
+    return (parentId===null?!u.parent_id:u.parent_id===parentId);
+  }).forEach(function(u){
+    var sel=SEL_UNIT&&SEL_UNIT.unit_id===u.unit_id;
+    var typeClass='ut-'+u.unit_type;
+    var titlePrev=(u.title&&(u.title[LANGS[0]]||u.title.en))||u.unit_id;
+    var idShort=u.unit_id.replace(pid()+'-','');
+    html+='<div class="unit-row'+(sel?' sel':'')+'" onclick="selectUnit(\''+u.unit_id+'\')" data-uid="'+u.unit_id+'">'
+      +'<div class="indent" style="width:'+((depth*12)+4)+'px"></div>'
+      +'<span class="unit-type-badge '+typeClass+'">'+u.unit_type.replace('_','\u2009').toUpperCase().slice(0,4)+'</span>'
+      +'<span class="unit-id-short mono">'+esc(idShort)+'</span>'
+      +'<span class="unit-title-prev">'+esc(titlePrev)+'</span>'
+      +'<span class="unit-row-actions">'
+      +'<button class="icon-btn" title="Move up" onclick="event.stopPropagation();moveUnit(\''+u.unit_id+'\',-1)">↑</button>'
+      +'<button class="icon-btn" title="Move down" onclick="event.stopPropagation();moveUnit(\''+u.unit_id+'\'  , 1)">↓</button>'
+      +'<button class="icon-btn edit" title="Edit unit" onclick="event.stopPropagation();selectUnit(\''+u.unit_id+'\')">✎</button>'
+      +'<button class="icon-btn" style="color:var(--grn)" title="Download unit JSON" onclick="event.stopPropagation();downloadUnitJSON(\''+u.unit_id+'\')">↓</button>'
+      +'<button class="icon-btn" title="Delete" onclick="event.stopPropagation();deleteUnit(\''+u.unit_id+'\')">✕</button>'
+      +'</span>'     +'</div>';
+    // children
+    html+=renderUnitBranch(sec, u.unit_id, depth+1);
+  });
+  return html;
+}
+
+// ══════════════════════════════════════════════════════
+// UNIT CRUD
+// ══════════════════════════════════════════════════════
+function openAddUnit(sec){
+  SEL_SECTION=sec||'content_units';
+  document.getElementById('mu_section').value=SEL_SECTION;
+  // populate parent dropdown
+  var pd=document.getElementById('mu_parent');
+  pd.innerHTML='<option value="">— none (top level) —</option>';
+  allUnits().forEach(function(u){
+    pd.innerHTML+='<option value="'+u.unit_id+'">'+esc(u.unit_id)+'</option>';
+  });
+  autoGenUnitId();
+  document.getElementById('mu_title_en').value='';
+  document.getElementById('add-unit-modal').classList.add('on');
+}
+
+function closeModal(id){ document.getElementById(id).classList.remove('on'); }
+
+function confirmAddUnit(){
+  var uid=gv('mu_id'); if(!uid){alert('unit_id is required');return;}
+  if(findUnit(uid)){alert('unit_id already exists');return;}
+  var title_en=gv('mu_title_en');
+  var unit={
+    unit_id: uid,
+    unit_type: gv('mu_type'),
+    seq: gn('mu_seq')||10,
+    title: {},
+    executive_summary: {},
+    citation: {},
+    page_range: {},
+    slug: '',
+    para_number: '',
+    toc_include: true,
+    taggable: false,
+    collapsible: true,
+    default_collapsed: false,
+    metadata_override_mode: 'merge',
+    metadata: {},
+    translation_status: {},
+    children: [],
+    parent_id: gv('mu_parent')||null
+  };
+  if(title_en) unit.title[LANGS[0]||'en']=title_en;
+  var sec=gv('mu_section')||'content_units';
+  STRUCT[sec].push(unit);
+  closeModal('add-unit-modal');
+  renderUnitTree();
+  selectUnit(uid);
+  sbar('Unit '+uid+' added');
+}
+
+function deleteUnit(uid){
+  if(!confirm('Delete unit '+uid+' and all its blocks?')) return;
+  ['front_matter','content_units','back_matter'].forEach(function(sec){
+    STRUCT[sec]=STRUCT[sec].filter(function(u){return u.unit_id!==uid;});
+  });
+  delete BLOCKS[uid];
+  if(SEL_UNIT&&SEL_UNIT.unit_id===uid){SEL_UNIT=null;SEL_BLOCK=null;renderUnitForm(null);}
+  renderUnitTree();
+  renderBlockList();
+}
+
+function moveUnit(uid, dir){
+  var found=false;
+  ['front_matter','content_units','back_matter'].forEach(function(sec){
+    if(found) return;
+    var arr=STRUCT[sec];
+    var u=arr.find(function(x){return x.unit_id===uid;});
+    if(!u) return;
+    var pid2=u.parent_id||null;
+    var siblings=arr.filter(function(x){return (x.parent_id||null)===pid2;});
+    var si=siblings.indexOf(u);
+    var ni=si+dir;
+    if(ni<0||ni>=siblings.length) return;
+    var ai=arr.indexOf(u);
+    var ani=arr.indexOf(siblings[ni]);
+    var tmp=arr[ai]; arr[ai]=arr[ani]; arr[ani]=tmp;
+    arr.forEach(function(x,k){x.seq=k+1;});
+    found=true;
+  });
+  renderUnitTree();
+}
+
+function selectUnit(uid){
+  var u=findUnit(uid);
+  if(!u) return;
+  SEL_UNIT=u;
+  SEL_BLOCK=null;
+  renderUnitTree();
+  renderBlockList();
+  renderUnitForm(u);
+  document.getElementById('add-block-btn').disabled=false; var sel=document.getElementById('new-block-type'); if(sel) sel.disabled=false;
+  document.getElementById('block-pane-ttl').innerHTML='Blocks <span style="color:var(--txt2);font-size:9px">'+esc(uid.replace(pid()+'-',''))+'</span>';
+  switchFormTab('ft1',document.getElementById('ftab1'));
+  sbar('Editing unit: '+uid);
+}
+
+// ══════════════════════════════════════════════════════
+// UNIT FORM
+// ══════════════════════════════════════════════════════
+var UNIT_FIELD_STATE = {}; // temp storage keyed by unit_id
+
+function setFieldML(field, lang, val){
+  if(!SEL_UNIT) return;
+  if(!SEL_UNIT[field]) SEL_UNIT[field]={};
+  SEL_UNIT[field][lang]=val;
+}
+function setBlockFieldML(field, lang, val){
+  if(!SEL_BLOCK) return;
+  if(!SEL_BLOCK.content[field]) SEL_BLOCK.content[field]={};
+  SEL_BLOCK.content[field][lang]=val;
+}
+function setBlockML(field, lang, val){
+  if(!SEL_BLOCK) return;
+  if(!SEL_BLOCK[field]) SEL_BLOCK[field]={};
+  SEL_BLOCK[field][lang]=val;
+}
+
+function renderUnitForm(u){
+  var ft1=document.getElementById('ft1');
+  var ft3=document.getElementById('ft3');
+  if(!u){
+    ft1.innerHTML='<div class="empty-state"><div class="esc">⬅</div><div>Select a unit to edit</div></div>';
+    ft3.innerHTML='<div class="empty-state"><div class="esc">📋</div><div>Select a unit first</div></div>';
+    return;
+  }
+  // ── TAB 1: UNIT FIELDS ──
+  var h='';
+  h+='<div class="sec"><div class="slbl">Identity</div>';
+  h+='<div class="fld"><div class="lbl">unit_id <span class="req">*</span></div>';
+  h+='<input class="mono" type="text" value="'+esc(u.unit_id)+'" onchange="SEL_UNIT.unit_id=this.value;renderUnitTree();sbar(\'unit_id updated\')"></div>';
+  h+='<div class="g3">';
+  h+='<div class="fld"><div class="lbl">unit_type <span class="req">*</span></div>';
+  h+='<select onchange="SEL_UNIT.unit_type=this.value;renderUnitTree()">';
+  ['preface','executive_summary','chapter','section','subsection','sub_subsection','appendix','annexure','statement','schedule'].forEach(function(t){
+    h+='<option value="'+t+'"'+(u.unit_type===t?' selected':'')+'>'+t+'</option>';
+  });
+  h+='</select></div>';
+  h+='<div class="fld"><div class="lbl">seq</div><input type="number" value="'+(u.seq||'')+'" oninput="SEL_UNIT.seq=parseFloat(this.value)||0"></div>';
+  h+='<div class="fld"><div class="lbl">para_number</div><input type="text" value="'+esc(u.para_number||'')+'" oninput="SEL_UNIT.para_number=this.value"></div>';
+  h+='</div>';
+  h+='<div class="fld"><div class="lbl">slug</div><input class="mono" type="text" value="'+esc(u.slug||'')+'" placeholder="chapter-1-stamp-duty" oninput="SEL_UNIT.slug=this.value"><div class="hint">^[a-z0-9\\-]+$</div></div>';
+  h+='<div class="fld"><div class="lbl">parent_id</div>';
+  h+='<select onchange="SEL_UNIT.parent_id=this.value||null;renderUnitTree()">';
+  h+='<option value="">— none (top level) —</option>';
+  allUnits().forEach(function(au){
+    if(au.unit_id!==u.unit_id) h+='<option value="'+au.unit_id+'"'+(u.parent_id===au.unit_id?' selected':'')+'>'+esc(au.unit_id)+'</option>';
+  });
+  h+='</select></div>';
+  h+='</div>';
+
+  h+='<div class="sec"><div class="slbl">Title <span class="req">*</span> <span class="bdb">multilingual</span></div>';
+  h+=mlBlock('title',u.title,false);
+  h+='</div>';
+
+  h+='<div class="sec"><div class="slbl">Executive summary <span class="bdb">multilingual — used for TOC preview &amp; unit embedding</span></div>';
+  h+=mlBlock('executive_summary',u.executive_summary,true);
+  h+='</div>';
+
+  h+='<div class="sec"><div class="slbl">Citation <span class="bdb">multilingual — recommended citation string for this unit</span></div>';
+  h+='<div class="hint" style="margin-bottom:8px">Optional. Fill if this chapter/section is likely to be cited independently in PAC reports, research papers, or legal documents. Use the Citation Builder tool to generate the string.</div>';
+  h+=mlBlock('citation',u.citation,true);
+  h+='</div>';
+
+  h+='<div class="sec"><div class="slbl">Page range <span style="font-size:9px;color:var(--txt3)">(in printed report — for citations)</span></div>';
+  var pr=u.page_range||{};
+  h+='<div class="g2"><div class="fld"><div class="lbl">start page</div><input type="number" min="1" value="'+(pr.start||'')+'" placeholder="23" oninput="if(!SEL_UNIT.page_range)SEL_UNIT.page_range={};SEL_UNIT.page_range.start=parseInt(this.value)||null"></div>';
+  h+='<div class="fld"><div class="lbl">end page</div><input type="number" min="1" value="'+(pr.end||'')+'" placeholder="45" oninput="if(!SEL_UNIT.page_range)SEL_UNIT.page_range={};SEL_UNIT.page_range.end=parseInt(this.value)||null"></div></div>';
+  h+='</div>';
+
+  h+='<div class="sec"><div class="slbl">Display settings</div>';
+  h+=togRow('toc_include','toc_include',u.toc_include!==false,'SEL_UNIT.toc_include=this.checked');
+  h+=togRow('taggable','taggable — metadata cascades to children',!!u.taggable,'SEL_UNIT.taggable=this.checked');
+  h+=togRow('collapsible','collapsible',u.collapsible!==false,'SEL_UNIT.collapsible=this.checked');
+  h+=togRow('default_collapsed','default_collapsed — renders collapsed on page load',!!u.default_collapsed,'SEL_UNIT.default_collapsed=this.checked');
+  h+='</div>';
+
+  h+='<div class="sec"><div class="slbl">Inheritance</div>';
+  h+='<div class="fld"><div class="lbl">metadata_override_mode</div>';
+  h+='<select onchange="SEL_UNIT.metadata_override_mode=this.value">';
+  h+='<option value="merge"'+(u.metadata_override_mode!=='replace'?' selected':'')+'>merge — inherits parent metadata (default)</option>';
+  h+='<option value="replace"'+(u.metadata_override_mode==='replace'?' selected':'')+'>replace — standalone, no inheritance</option>';
+  h+='</select>';
+  h+='<div class="hint">Use replace for chapters in omnibus reports covering unrelated audit contexts.</div></div>';
+  h+='</div>';
+
+  h+='<div class="sec"><div class="slbl">Translation status <span class="bdb">per language</span></div>';
+  LANGS.forEach(function(lang){
+    var cur=(u.translation_status&&u.translation_status[lang])||'';
+    h+='<div class="g2" style="margin-bottom:5px"><div class="lbl">'+lang+'</div>';
+    h+='<select onchange="if(!SEL_UNIT.translation_status)SEL_UNIT.translation_status={};SEL_UNIT.translation_status[\''+lang+'\']=this.value">';
+    ['','original','human_translated','machine_translated','pending','not_applicable'].forEach(function(v){
+      h+='<option value="'+v+'"'+(cur===v?' selected':'')+'>'+(v||'— not set —')+'</option>';
+    });
+    h+='</select></div>';
+  });
+  h+='</div>';
+
+  ft1.innerHTML=h;
+
+  // ── TAB 3: INHERITABLE METADATA ──
+  renderUnitMetaForm(u);
+}
+
+function togRow(id,label,checked,onchange){
+  return '<div class="togrow"><span class="toglbl">'+label+'</span>'
+    +'<label class="tog"><input type="checkbox" id="tog-'+id+'"'+(checked?' checked':'')
+    +' onchange="'+onchange+'"><div class="tog-t"></div><div class="tog-k"></div></label></div>';
+}
+
+function renderUnitMetaForm(u){
+  var ft3=document.getElementById('ft3');
+  if(!u){ft3.innerHTML='<div class="empty-state"><div class="esc">📋</div><div>Select a unit first</div></div>';return;}
+  var m=u.metadata||{};
+  var h='<div style="font-size:10px;color:var(--txt3);margin-bottom:12px;padding:6px 8px;background:var(--sur2);border-radius:var(--r);border-left:2px solid var(--acc)">Inheritable metadata cascades from this unit to all its child blocks. ADDITIVE fields merge with parent; OVERRIDE fields replace parent.</div>';
+
+  // ── audit_type ── uses TAX.audit_type if loaded, otherwise hardcoded
+  h+='<div class="sec"><div class="slbl">audit_type <span class="bdg">OVERRIDE</span></div>';
+  h+='<div class="cg">';
+  var atItems=TAX.audit_type.length?TAX.audit_type:[
+    {id:'ATYPE-COMPLIANCE',en:'Compliance'},{id:'ATYPE-PERFORMANCE',en:'Performance'},
+    {id:'ATYPE-FINANCIAL',en:'Financial'},{id:'ATYPE-IT-AUDIT',en:'IT Audit'},
+    {id:'ATYPE-CERTIFICATION',en:'Certification'},{id:'ATYPE-ENVIRONMENTAL',en:'Environmental'},
+    {id:'ATYPE-IT-ASSISTED',en:'IT-Assisted'},{id:'ATYPE-OUTCOME',en:'Outcome'},
+    {id:'ATYPE-HORIZONTAL',en:'Horizontal'},{id:'ATYPE-COMBINED',en:'Combined'},
+    {id:'ATYPE-SPECIAL-PURPOSE',en:'Special Purpose'}
+  ];
+  atItems.forEach(function(e){
+    var on=(m.audit_type||[]).indexOf(e.id)>=0;
+    h+=cpill('m_at_'+e.id.replace(/-/g,'_'),e.en,on,'chkMeta(\'audit_type\',\''+e.id+'\',this.checked)');
+  });
+  h+='</div></div>';
+
+  // ── report_sector ── uses TAX.report_sector, grouped by parent
+  h+='<div class="sec"><div class="slbl">report_sector <span class="bdg">OVERRIDE</span></div>';
+  var rsItems=TAX.report_sector.length?TAX.report_sector:[
+    {id:'SECT-CIVIL',en:'Civil',par:''},{id:'SECT-CIVIL-HEALTH',en:'Civil — Health',par:'SECT-CIVIL'},
+    {id:'SECT-CIVIL-EDUCATION',en:'Civil — Education',par:'SECT-CIVIL'},
+    {id:'SECT-CIVIL-RURAL-DEV',en:'Civil — Rural Dev',par:'SECT-CIVIL'},
+    {id:'SECT-CIVIL-AGRICULTURE',en:'Civil — Agriculture',par:'SECT-CIVIL'},
+    {id:'SECT-CIVIL-WATER',en:'Civil — Water',par:'SECT-CIVIL'},
+    {id:'SECT-COMMERCIAL',en:'Commercial',par:''},{id:'SECT-REVENUE',en:'Revenue',par:''},
+    {id:'SECT-DEFENCE',en:'Defence',par:''},{id:'SECT-TELECOM',en:'Telecom',par:''},
+    {id:'SECT-RAILWAYS',en:'Railways',par:''}
+  ];
+  // Show top-level sectors as section headers, sub-sectors indented
+  var topRS=rsItems.filter(function(e){return !e.par;});
+  var subRS=rsItems.filter(function(e){return !!e.par;});
+  h+='<div class="cg">';
+  topRS.forEach(function(e){
+    var on=(m.report_sector||[]).indexOf(e.id)>=0;
+    h+=cpill('m_rs_'+e.id.replace(/-/g,'_'),e.en,on,'chkMeta(\'report_sector\',\''+e.id+'\',this.checked)');
+  });
+  h+='</div>';
+  if(subRS.length){
+    h+='<div style="font-size:9px;color:var(--txt3);margin:5px 0 3px">Sub-sectors:</div>';
+    h+='<div class="cg">';
+    subRS.forEach(function(e){
+      var on=(m.report_sector||[]).indexOf(e.id)>=0;
+      var shortLabel=e.en.replace(/^Civil — /,'↳ ');
+      h+=cpill('m_rs_'+e.id.replace(/-/g,'_'),shortLabel,on,'chkMeta(\'report_sector\',\''+e.id+'\',this.checked)');
+    });
+    h+='</div>';
+  }
+  h+='</div>';
+
+  // ── audit_period ──
+  h+='<div class="sec"><div class="slbl">audit_period <span class="bdg">OVERRIDE</span></div>';
+  h+='<div class="g2"><div class="fld"><div class="lbl">start_year</div><input type="number" value="'+((m.audit_period&&m.audit_period.start_year)||'')+'" placeholder="2018" oninput="setMetaAuditPeriod(\'start_year\',parseFloat(this.value)||null)"></div>';
+  h+='<div class="fld"><div class="lbl">end_year</div><input type="number" value="'+((m.audit_period&&m.audit_period.end_year)||'')+'" placeholder="2023" oninput="setMetaAuditPeriod(\'end_year\',parseFloat(this.value)||null)"></div></div></div>';
+
+  // ── topics ── typeahead if taxonomy loaded
+  h+='<div class="sec"><div class="slbl">topics <span class="bdb">ADDITIVE</span>'+(TAX.topics.length?' <span class="bdg">'+TAX.topics.length+' entries</span>':'')+'</div>';
+  h+=mbGroupedTag('m-topics', m.topics||[], 'topics', 'topics');
+  h+='</div>';
+
+  // ── dpc_act_sections ──
+  h+='<div class="sec"><div class="slbl">dpc_act_sections <span class="bdg">OVERRIDE</span></div><div class="cg">';
+  ['S13','S14','S15','S16','S17','S18','S19','S19A','S20','S21','S22','S23'].forEach(function(v){
+    var on=(m.dpc_act_sections||[]).indexOf(v)>=0;
+    h+=cpill('m_dpc_'+v,v,on,'chkMeta(\'dpc_act_sections\',\''+v+'\',this.checked)');
+  });
+  h+='</div></div>';
+
+  // ── primary_schemes ── dropdown if registry loaded
+  h+='<div class="sec"><div class="slbl">primary_schemes <span class="bdb">ADDITIVE</span></div>';
+  if(TAX.schemes.length){
+    var schArr=m.primary_schemes||[];
+    var schTags=schArr.map(function(v,i){
+      var e=TAX.schemes.find(function(s){return s.id===v;});
+      return '<span class="tag" title="'+esc(v)+'">'+esc(v)+'<span class="tag-x" onclick="taxRemoveTag(\'primary_schemes\','+i+')">×</span></span>';
+    }).join('');
+    h+='<div class="fld">';
+    h+='<select class="ent-sel" onchange="if(this.value){addTaxTag(\'primary_schemes\',this.value);this.value=\'\';renderUnitMetaForm(SEL_UNIT);}">'
+      +'<option value="">+ Add scheme…</option>';
+    TAX.schemes.forEach(function(e){
+      if((m.primary_schemes||[]).indexOf(e.id)<0)
+        h+='<option value="'+esc(e.id)+'">'+esc(e.en)+' ('+esc(e.id)+')</option>';
+    });
+    h+='</select>';
+    if(schTags) h+='<div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:4px">'+schTags+'</div>';
+    h+='</div>';
+  } else {
+    h+=tagInputSimple('m-pschemes', m.primary_schemes||[], 'GOI-SCH-MGNREGS…', 'primary_schemes');
+  }
+  h+='</div>';
+
+  // ── regions.states_uts ── typeahead if registry loaded
+  h+='<div class="sec"><div class="slbl">regions.states_uts <span class="bdb">ADDITIVE</span></div>';
+  h+=taxTagInput('m-states', (m.regions&&m.regions.states_uts)||[], 'states_uts', 'states_uts');
+  h+='</div>';
+
+  // ── audit_findings_categories ── typeahead if taxonomy loaded
+  h+='<div class="sec"><div class="slbl">audit_findings_categories <span class="bdb">ADDITIVE</span>'+(TAX.findings.length?' <span class="bdg">'+TAX.findings.length+' entries</span>':'')+'</div>';
+  h+=mbGroupedTag('m-findings', m.audit_findings_categories||[], 'findings', 'findings');
+  h+='</div>';
+
+  // ── main_audited_entities ──
+  h+='<div class="sec"><div class="slbl">main_audited_entities <span class="bdg">ADDITIVE</span></div>';
+  (m.main_audited_entities||[]).forEach(function(e,i){
+    h+='<div class="acard"><div class="acard-hdr"><span class="acard-ttl">Entity '+(i+1)+'</span><button class="brm" onclick="removeMetaEntity(\'main_audited_entities\','+i+')">✕</button></div>';
+    h+='<div class="g2">';
+    h+='<div class="fld"><div class="lbl">ministry</div>'+entitySelect('main_audited_entities',i,'ministry',e.ministry||'')+'</div>';
+    h+='<div class="fld"><div class="lbl">department</div>'+entitySelect('main_audited_entities',i,'department',e.department||'')+'</div>';
+    h+='</div></div>';
+  });
+  h+='<button class="badd" onclick="addMetaEntity(\'main_audited_entities\')">+ Add entity</button></div>';
+
+  // ── pac_status ──
+  h+='<div class="sec"><div class="slbl">pac_status <span class="bdr2">CHAPTER LEVEL ONLY</span></div>';
+  var pac=m.pac_status||{};
+  h+=togRow('m_pac_sel','selected_for_discussion',!!pac.selected_for_discussion,'setMetaPac(\'selected_for_discussion\',this.checked)');
+  h+=togRow('m_pac_disc','discussed',!!pac.discussed,'setMetaPac(\'discussed\',this.checked)');
+  h+='<div class="g2"><div class="fld"><div class="lbl">discussion_date</div><input type="date" value="'+(pac.discussion_date||'')+'" onchange="setMetaPac(\'discussion_date\',this.value)"></div>';
+  h+='<div class="fld"><div class="lbl">discussion_reference</div><input type="text" value="'+esc(pac.discussion_reference||'')+'" oninput="setMetaPac(\'discussion_reference\',this.value)"></div></div>';
+  h+='<div class="fld"><div class="lbl">atn_status</div><select onchange="setMetaPac(\'atn_status\',this.value)">';
+  ['','pending','received','under_review','partially_implemented','implemented','settled'].forEach(function(v){
+    h+='<option value="'+v+'"'+(pac.atn_status===v?' selected':'')+'>'+(v||'— not set —')+'</option>';
+  });
+  h+='</select></div></div>';
+
+  ft3.innerHTML=h;
+}
+
+// metadata helpers
+function chkMeta(field,val,add){
+  if(!SEL_UNIT) return;
+  if(!SEL_UNIT.metadata) SEL_UNIT.metadata={};
+  if(!SEL_UNIT.metadata[field]) SEL_UNIT.metadata[field]=[];
+  if(add){if(SEL_UNIT.metadata[field].indexOf(val)<0)SEL_UNIT.metadata[field].push(val);}
+  else SEL_UNIT.metadata[field]=SEL_UNIT.metadata[field].filter(function(v){return v!==val;});
+}
+function setMetaAuditPeriod(key,val){
+  if(!SEL_UNIT) return;
+  if(!SEL_UNIT.metadata) SEL_UNIT.metadata={};
+  if(!SEL_UNIT.metadata.audit_period) SEL_UNIT.metadata.audit_period={};
+  SEL_UNIT.metadata.audit_period[key]=val;
+}
+function setMetaPac(key,val){
+  if(!SEL_UNIT) return;
+  if(!SEL_UNIT.metadata) SEL_UNIT.metadata={};
+  if(!SEL_UNIT.metadata.pac_status) SEL_UNIT.metadata.pac_status={};
+  SEL_UNIT.metadata.pac_status[key]=val;
+}
+function addMetaEntity(field){
+  if(!SEL_UNIT) return;
+  if(!SEL_UNIT.metadata) SEL_UNIT.metadata={};
+  if(!SEL_UNIT.metadata[field]) SEL_UNIT.metadata[field]=[];
+  SEL_UNIT.metadata[field].push({ministry:null,department:null,autonomous_bodies:[],other_bodies:[]});
+  renderUnitMetaForm(SEL_UNIT);
+}
+function removeMetaEntity(field,i){
+  if(!SEL_UNIT||!SEL_UNIT.metadata||!SEL_UNIT.metadata[field]) return;
+  SEL_UNIT.metadata[field].splice(i,1);
+  renderUnitMetaForm(SEL_UNIT);
+}
+function setMetaEntity(field,i,key,val){
+  if(!SEL_UNIT||!SEL_UNIT.metadata||!SEL_UNIT.metadata[field]) return;
+  SEL_UNIT.metadata[field][i][key]=val||null;
+}
+
+// ══════════════════════════════════════════════════════
+// BLOCK LIST
+// ══════════════════════════════════════════════════════
+function renderBlockList(){
+  var el=document.getElementById('block-list');
+  if(!SEL_UNIT){el.innerHTML='<div class="empty-state"><div class="esc">⬆</div><div>Select a unit</div></div>';return;}
+  var uid=SEL_UNIT.unit_id;
+  var blist=BLOCKS[uid]||[];
+  if(!blist.length){el.innerHTML='<div class="empty-state"><div class="esc">◻</div><div>No blocks yet.<br>Click "+ Add block"</div></div>';return;}
+  var html='';
+  blist.forEach(function(b,i){
+    var sel=SEL_BLOCK&&SEL_BLOCK.block_id===b.block_id;
+    var btClass=btBadgeClass(b.block_type);
+    var prev=blockPreview(b);
+    html+='<div class="block-row'+(sel?' sel':'')+'" onclick="selectBlock(\''+b.block_id+'\')">'
+      +'<span class="seq-num">'+(b.seq||'')+' </span>'
+      +'<span class="bt-badge '+btClass+'">'+b.block_type.replace(/_/g,' ').replace('executive summary block','ESB').replace('image gallery','GAL').replace('live chart','LCH').replace('signature block','SIG')+'</span>'
+      +'<span class="block-preview">'+esc(prev)+'</span>'
+      +'<span class="block-row-actions">'
+      +'<button class="icon-btn" title="Move up" onclick="event.stopPropagation();moveBlock('+i+',-1)">↑</button>'
+      +'<button class="icon-btn" title="Move down" onclick="event.stopPropagation();moveBlock('+i+',1)">↓</button>'
+      +'<button class="icon-btn" title="Delete" onclick="event.stopPropagation();deleteBlock(\''+b.block_id+'\')">✕</button>'
+      +'</span>'
+      +'</div>';
+  });
+  el.innerHTML=html;
+}
+
+function btBadgeClass(bt){
+  if(bt==='paragraph') return 'bt-p';
+  if(bt==='heading') return 'bt-h';
+  if(bt==='list') return 'bt-l';
+  if(bt==='table') return 'bt-t';
+  if(['image','figure','map','chart','live_chart','image_gallery'].indexOf(bt)>=0) return 'bt-vis';
+  if(bt==='callout') return 'bt-call';
+  if(bt==='audit_finding') return 'bt-af';
+  if(bt==='recommendation') return 'bt-rec';
+  return 'bt-other';
+}
+
+function blockPreview(b){
+  var c=b.content||{};
+  if(c.text&&typeof c.text==='object') return c.text[LANGS[0]]||c.text.en||'(text)';
+  if(c.text&&typeof c.text==='string') return c.text;
+  if(c.observation&&c.observation[LANGS[0]]) return c.observation[LANGS[0]];
+  if(c.caption&&c.caption[LANGS[0]]) return '[Fig] '+c.caption[LANGS[0]];
+  if(c.items&&c.items.length) return '[List] '+(c.items[0].text&&(c.items[0].text[LANGS[0]]||c.items[0].text.en)||'...');
+  if(c.title&&c.title[LANGS[0]]) return c.title[LANGS[0]];
+  if(c.body&&c.body.length) return '[ES Block]';
+  if(c.chart_type) return '[Chart: '+c.chart_type+']';
+  if(c.expression) return '[Formula] '+c.expression;
+  if(c.asset_ref) return '[Asset] '+c.asset_ref;
+  if(c.callout_type) return '['+c.callout_type+']';
+  return '('+b.block_type+')';
+}
+
+// ══════════════════════════════════════════════════════
+// BLOCK CRUD
+// ══════════════════════════════════════════════════════
+function addBlock(blockType){
+  if(!SEL_UNIT) return;
+  var type=blockType||'paragraph';
+  var uid=SEL_UNIT.unit_id;
+  if(!BLOCKS[uid]) BLOCKS[uid]=[];
+  var blist=BLOCKS[uid];
+  var bid=genBlockId(uid,type);
+  // default content per type
+  var defaultContent={};
+  if(type==='list') defaultContent.items=[];
+  else if(type==='richbox') defaultContent.body=[];
+  else if(type==='executive_summary_block') defaultContent.body=[];
+  else if(type==='signature_block') defaultContent.signatories=[];
+  else if(type==='chart') defaultContent.chart_type='bar';
+  else if(type==='heading'){ defaultContent.level=2; defaultContent.text={}; }
+  else if(type!=='divider') defaultContent.text={};
+  var block={
+    block_id: bid,
+    block_type: type,
+    unit_id: uid,
+    seq: (blist.length+1)*10,
+    para_number: '',
+    lang: LANGS[0]||'en',
+    toc_include: false,
+    group_id: '',
+    group_role: '',
+    footnote_ids: [],
+    content: defaultContent,
+    block_metadata: {audit_findings_categories:[],key_findings:[],referenced_entities:[]},
+    translation_status: {}
+  };
+  blist.push(block);
+  renderBlockList();
+  selectBlock(bid);
+  sbar('Block '+bid+' added');
+}
+
+function selectBlock(bid){
+  if(!SEL_UNIT) return;
+  var blist=BLOCKS[SEL_UNIT.unit_id]||[];
+  var b=blist.filter(function(x){return x.block_id===bid;})[0];
+  if(!b) return;
+  SEL_BLOCK=b;
+  renderBlockList();
+  renderBlockForm(b);
+  switchFormTab('ft2',document.getElementById('ftab2'));
+  sbar('Editing block: '+bid);
+}
+
+function deleteBlock(bid){
+  if(!SEL_UNIT) return;
+  var uid=SEL_UNIT.unit_id;
+  BLOCKS[uid]=(BLOCKS[uid]||[]).filter(function(b){return b.block_id!==bid;});
+  if(SEL_BLOCK&&SEL_BLOCK.block_id===bid){SEL_BLOCK=null;document.getElementById('ft2').innerHTML='<div class="empty-state"><div class="esc">⬆</div><div>Select a block</div></div>';}
+  renderBlockList();
+}
+
+function moveBlock(i, dir){
+  if(!SEL_UNIT) return;
+  var uid=SEL_UNIT.unit_id;
+  var blist=BLOCKS[uid]||[];
+  var j=i+dir;
+  if(j<0||j>=blist.length) return;
+  var tmp=blist[i]; blist[i]=blist[j]; blist[j]=tmp;
+  // update seq
+  blist.forEach(function(b,idx){b.seq=(idx+1)*10;});
+  renderBlockList();
+}
+
+// ══════════════════════════════════════════════════════
+// BLOCK FORM
+// ══════════════════════════════════════════════════════
+function renderBlockForm(b){
+  // TOP-LEVEL BLOCK FIELDS + CONTENT
+  var ft2=document.getElementById('ft2');
+  var ft4=document.getElementById('ft4');
+  var h='';
+
+  // ── Top-level block fields ──
+  h+='<div class="sec"><div class="slbl">Block identity</div>';
+  h+='<div class="g2">';
+  h+='<div class="fld"><div class="lbl">block_id <span class="req">*</span></div>';
+  h+='<input class="mono" type="text" value="'+esc(b.block_id)+'" onchange="updateBlockId(this.value)"></div>';
+  h+='<div class="fld"><div class="lbl">block_type <span class="req">*</span></div>';
+  h+='<select onchange="changeBlockType(this.value)">';
+  ['paragraph','heading','list','table','image','image_gallery','figure','map','chart','live_chart','formula','callout','audit_finding','recommendation','signature_block','quote','pullquote','sidebar','code','richbox','executive_summary_block','divider'].forEach(function(t){
+    h+='<option value="'+t+'"'+(b.block_type===t?' selected':'')+'>'+t+'</option>';
+  });
+  h+='</select></div></div>';
+
+  h+='<div class="g3">';
+  h+='<div class="fld"><div class="lbl">seq</div><input type="number" value="'+(b.seq||'')+'" oninput="SEL_BLOCK.seq=parseFloat(this.value)||0"></div>';
+  h+='<div class="fld"><div class="lbl">para_number</div><input type="text" value="'+esc(b.para_number||'')+'" oninput="SEL_BLOCK.para_number=this.value"></div>';
+  h+='<div class="fld"><div class="lbl">lang</div><input type="text" value="'+esc(b.lang||'')+'" placeholder="en" oninput="SEL_BLOCK.lang=this.value"></div>';
+  h+='</div>';
+
+  h+='<div class="g2">';
+  h+='<div class="fld"><div class="lbl">group_id</div><input type="text" value="'+esc(b.group_id||'')+'" placeholder="e.g. govt-reply-para3" oninput="SEL_BLOCK.group_id=this.value"><div class="hint">Same group_id links related blocks (e.g. govt reply + audit comment)</div></div>';
+  h+='<div class="fld"><div class="lbl">group_role</div><select onchange="SEL_BLOCK.group_role=this.value"><option value="">—</option><option value="primary"'+(b.group_role==='primary'?' selected':'')+'>primary</option><option value="member"'+(b.group_role==='member'?' selected':'')+'>member</option></select></div>';
+  h+='</div>';
+
+  h+=togRow('blk_toc','toc_include — appears as TOC sub-entry',!!b.toc_include,'SEL_BLOCK.toc_include=this.checked');
+
+  h+='<div class="fld"><div class="lbl">footnote_ids <span class="bdb">array — Enter</span></div>';
+  h+=tagInputSimple('blk-footnotes', b.footnote_ids||[], 'FN01…', '__footnote_ids');
+  h+='</div>';
+  h+='</div>';
+
+  // ── Content (dynamic by block_type) ──
+  h+='<div class="sec" id="content-form-section"><div class="slbl">Content <span class="bdr2">'+b.block_type+'</span></div>';
+  h+=renderContentFields(b);
+  h+='</div>';
+
+  // ── block_metadata ──
+  var bm=b.block_metadata||{};
+  h+='<div class="sec"><div class="slbl">block_metadata <span class="hint" style="color:var(--txt3);text-transform:none;letter-spacing:0;font-size:9px">scoped override — not inherited by siblings</span></div>';
+  h+='<div class="fld"><div class="lbl">audit_findings_categories'+(TAX.findings.length?' <span class="bdg">'+TAX.findings.length+' entries</span>':'<span class="bdb"> Enter</span>')+'</div>';
+  h+=mbGroupedTag('bm-findings',bm.audit_findings_categories||[],'findings','__bm_findings');
+  h+='</div>';
+  h+='<div class="fld"><div class="lbl">key_findings</div>';
+  h+=tagInputSimple('bm-keyfind',bm.key_findings||[],'key finding id…','__bm_keyfind');
+  h+='</div>';
+  h+='<div class="fld"><div class="lbl">referenced_entities'+(TAX.entities.length?' <span class="bdg">'+TAX.entities.length+' entities</span>':'<span class="bdb"> Enter</span>')+'</div>';
+  h+=taxTagInput('bm-entities',bm.referenced_entities||[],'entities','__bm_entities');
+  h+='</div></div>';
+
+  // ── Translation status ──
+  h+='<div class="sec"><div class="slbl">Translation status</div>';
+  LANGS.forEach(function(lang){
+    var cur=(b.translation_status&&b.translation_status[lang])||'';
+    h+='<div class="g2" style="margin-bottom:5px"><div class="lbl">'+lang+'</div>';
+    h+='<select onchange="if(!SEL_BLOCK.translation_status)SEL_BLOCK.translation_status={};SEL_BLOCK.translation_status[\''+lang+'\']=this.value">';
+    ['','original','human_translated','machine_translated','pending','not_applicable'].forEach(function(v){
+      h+='<option value="'+v+'"'+(cur===v?' selected':'')+'>'+(v||'— not set —')+'</option>';
+    });
+    h+='</select></div>';
+  });
+  h+='</div>';
+
+  ft2.innerHTML=h;
+
+  // ── ft4: Annotations ──
+  renderAnnotationsForm(b);
+}
+
+function renderContentFields(b){
+  var bt=b.block_type, c=b.content||{};
+  var h='';
+  switch(bt){
+    case 'paragraph':
+      h+='<div class="fld"><div class="lbl">text <span class="req">*</span> <span class="bdb">multilingual</span></div>'+mlBlock2('text',c.text,false)+'</div>';
+      h+='<div class="g2">';
+      h+='<div class="fld"><div class="lbl">para_type</div><select onchange="SEL_BLOCK.content.para_type=this.value">';
+      ['','normal','background','scope','methodology','legal_basis','audit_criteria','audit_observation','effect','cause','data_analysis','conclusion','executive_summary','recommendation_summary','best_practice','scope_for_improvement'].forEach(function(v){
+        h+='<option value="'+v+'"'+((c.para_type||'')==v?' selected':'')+'>'+(v||'— not set —')+'</option>';
+      });
+      h+='</select></div>';
+      h+='<div class="fld"><div class="lbl">style</div><select onchange="SEL_BLOCK.content.style=this.value"><option value="">—</option><option value="normal">normal</option><option value="bold">bold</option><option value="italic">italic</option><option value="indent">indent</option></select></div>';
+      h+='</div>';
+      break;
+
+    case 'heading':
+      h+='<div class="fld"><div class="lbl">text <span class="req">*</span> <span class="bdb">multilingual</span></div>'+mlBlock2('text',c.text,false)+'</div>';
+      h+='<div class="g2">';
+      h+='<div class="fld"><div class="lbl">level <span class="req">*</span> (1-6)</div><input type="number" value="'+(c.level||1)+'" min="1" max="6" oninput="SEL_BLOCK.content.level=parseInt(this.value)||1"></div>';
+      h+='<div class="fld" style="display:flex;align-items:flex-end;gap:8px">'+togRow2('hd_num','numbered',!!c.numbered,'SEL_BLOCK.content.numbered=this.checked')+togRow2('hd_col','collapsed',!!c.collapsed,'SEL_BLOCK.content.collapsed=this.checked')+'</div>';
+      h+='</div>';
+      break;
+
+    case 'list':
+      h+='<div class="fld"><div class="lbl">list_type</div><select onchange="SEL_BLOCK.content.list_type=this.value">';
+      ['unordered','ordered','alpha','roman'].forEach(function(v){h+='<option value="'+v+'"'+(c.list_type===v?' selected':'')+'>'+v+'</option>';});
+      h+='</select></div>';
+      h+='<div class="lbl" style="margin-bottom:5px">items <span class="req">*</span></div>';
+      h+='<div id="list-items-container">';
+      (c.items||[]).forEach(function(item,i){
+        h+=renderListItem(item,i);
+      });
+      h+='</div><button class="badd" onclick="addListItem()">+ Add list item</button>';
+      break;
+
+    case 'table':
+      h+='<div class="fld"><div class="lbl">dataset_ref <span class="bdb">recommended for non-trivial tables</span></div><input class="mono" type="text" value="'+esc(c.dataset_ref||'')+'" placeholder="CH02-DS01" oninput="SEL_BLOCK.content.dataset_ref=this.value"><div class="hint">dataset_id from datasets/ folder — authoritative source for table data</div></div>';
+      h+='<div class="g2"><div class="fld"><div class="lbl">table_number</div><input type="text" value="'+esc(c.table_number||'')+'" oninput="SEL_BLOCK.content.table_number=this.value"></div>';
+      h+='<div class="fld"><div class="lbl">display_mode</div><select onchange="SEL_BLOCK.content.display_mode=this.value"><option value="full"'+(c.display_mode==='full'?' selected':'')+'>full</option><option value="summary"'+(c.display_mode==='summary'?' selected':'')+'>summary</option><option value="collapsed"'+(c.display_mode==='collapsed'?' selected':'')+'>collapsed</option></select></div></div>';
+      h+='<div class="fld"><div class="lbl">caption <span class="bdb">multilingual</span></div>'+mlBlock2('caption',c.caption,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">unit_note <span class="bdb">multilingual</span> <span class="hint" style="display:inline">e.g. ₹ in crore</span></div>'+mlBlock2('unit_note',c.unit_note,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">source <span class="bdb">multilingual</span></div>'+mlBlock2('source',c.source,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">notes <span class="bdb">multilingual</span></div>'+mlBlock2('notes',c.notes,true)+'</div>';
+      break;
+
+    case 'image':
+      h+='<div class="fld"><div class="lbl">asset_ref <span class="req">*</span></div><input type="text" value="'+esc(c.asset_ref||'')+'" placeholder="assets/IMG001.jpg" oninput="SEL_BLOCK.content.asset_ref=this.value"></div>';
+      h+='<div class="g2"><div class="fld"><div class="lbl">image_type</div><select onchange="SEL_BLOCK.content.image_type=this.value">';
+      ['','photograph','scanned_document','stamp','seal','signature','screenshot','diagram','chart_image','map_image','qr_code','other'].forEach(function(v){h+='<option value="'+v+'"'+(c.image_type===v?' selected':'')+'>'+(v||'—')+'</option>';});
+      h+='</select></div>';
+      h+='<div class="fld"><div class="lbl">width_hint</div><select onchange="SEL_BLOCK.content.width_hint=this.value"><option value="full">full</option><option value="half">half</option><option value="quarter">quarter</option><option value="inline">inline</option></select></div></div>';
+      h+='<div class="g2"><div class="fld"><div class="lbl">date_taken</div><input type="date" value="'+(c.date_taken||'')+'" onchange="SEL_BLOCK.content.date_taken=this.value"></div>';
+      h+='<div class="fld"><div class="lbl">location_ref</div><input type="text" value="'+esc(c.location_ref||'')+'" oninput="SEL_BLOCK.content.location_ref=this.value"></div></div>';
+      h+='<div class="fld"><div class="lbl">caption <span class="bdb">ML</span></div>'+mlBlock2('caption',c.caption,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">alt_text <span class="bdb">ML</span></div>'+mlBlock2('alt_text',c.alt_text,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">credit <span class="bdb">ML</span></div>'+mlBlock2('credit',c.credit,false)+'</div>';
+      break;
+
+    case 'image_gallery':
+      h+='<div class="fld"><div class="lbl">gallery_caption <span class="bdb">ML</span></div>'+mlBlock2('gallery_caption',c.gallery_caption,false)+'</div>';
+      h+='<div class="g2"><div class="fld"><div class="lbl">plate_number</div><input type="text" value="'+esc(c.plate_number||'')+'" oninput="SEL_BLOCK.content.plate_number=this.value"></div>';
+      h+='<div class="fld"><div class="lbl">layout</div><select onchange="SEL_BLOCK.content.layout=this.value"><option value="grid">grid</option><option value="carousel">carousel</option><option value="strips">strips</option></select></div></div>';
+      h+='<div class="lbl" style="margin-bottom:5px">images <span class="req">*</span></div>';
+      (c.images||[]).forEach(function(img,i){
+        h+='<div class="acard"><div class="acard-hdr"><span class="acard-ttl">Image '+(i+1)+'</span><button class="brm" onclick="removeGalleryImage('+i+')">✕</button></div>';
+        h+='<div class="fld"><div class="lbl">asset_ref</div><input type="text" value="'+esc(img.asset_ref||'')+'" oninput="SEL_BLOCK.content.images['+i+'].asset_ref=this.value"></div></div>';
+      });
+      h+='<button class="badd" onclick="if(!SEL_BLOCK.content.images)SEL_BLOCK.content.images=[];SEL_BLOCK.content.images.push({asset_ref:\'\'});renderBlockForm(SEL_BLOCK)">+ Add image</button>';
+      break;
+
+    case 'figure':
+      h+='<div class="g2"><div class="fld"><div class="lbl">figure_number</div><input type="text" value="'+esc(c.figure_number||'')+'" oninput="SEL_BLOCK.content.figure_number=this.value"></div>';
+      h+='<div class="fld"><div class="lbl">figure_type</div><select onchange="SEL_BLOCK.content.figure_type=this.value">';
+      ['','bar_chart','line_chart','pie_chart','donut_chart','area_chart','scatter_plot','flowchart','org_chart','fishbone_diagram','infographic','diagram','other'].forEach(function(v){h+='<option value="'+v+'"'+(c.figure_type===v?' selected':'')+'>'+(v||'—')+'</option>';});
+      h+='</select></div></div>';
+      h+='<div class="fld"><div class="lbl">asset_ref <span class="req">*</span></div><input type="text" value="'+esc(c.asset_ref||'')+'" oninput="SEL_BLOCK.content.asset_ref=this.value"></div>';
+      h+='<div class="fld"><div class="lbl">dataset_ref</div><input class="mono" type="text" value="'+esc(c.dataset_ref||'')+'" placeholder="CH02-DS01" oninput="SEL_BLOCK.content.dataset_ref=this.value"></div>';
+      h+='<div class="fld"><div class="lbl">caption <span class="bdb">ML</span></div>'+mlBlock2('caption',c.caption,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">alt_text <span class="bdb">ML</span></div>'+mlBlock2('alt_text',c.alt_text,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">source <span class="bdb">ML</span></div>'+mlBlock2('source',c.source,false)+'</div>';
+      break;
+
+    case 'map':
+      h+='<div class="fld"><div class="lbl">asset_ref <span class="req">*</span></div><input type="text" value="'+esc(c.asset_ref||'')+'" oninput="SEL_BLOCK.content.asset_ref=this.value"></div>';
+      h+='<div class="g2"><div class="fld"><div class="lbl">map_type</div><select onchange="SEL_BLOCK.content.map_type=this.value"><option value="administrative">administrative</option><option value="choropleth">choropleth</option><option value="thematic">thematic</option><option value="schematic">schematic</option></select></div>';
+      h+='<div class="fld"><div class="lbl">coverage_region</div><input type="text" value="'+esc(c.coverage_region||'')+'" placeholder="IN-MP" oninput="SEL_BLOCK.content.coverage_region=this.value"></div></div>';
+      h+='<div class="fld"><div class="lbl">caption <span class="bdb">ML</span></div>'+mlBlock2('caption',c.caption,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">alt_text <span class="bdb">ML</span></div>'+mlBlock2('alt_text',c.alt_text,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">source <span class="bdb">ML</span></div>'+mlBlock2('source',c.source,false)+'</div>';
+      break;
+
+    case 'chart':
+      h+='<div class="g2"><div class="fld"><div class="lbl">chart_type <span class="req">*</span></div><select onchange="SEL_BLOCK.content.chart_type=this.value">';
+      ['bar','grouped_bar','stacked_bar','line','multi_line','area','pie','donut','scatter','bubble','histogram','waterfall','treemap','funnel','gauge'].forEach(function(v){h+='<option value="'+v+'"'+(c.chart_type===v?' selected':'')+'>'+v+'</option>';});
+      h+='</select></div>';
+      h+='<div class="fld"><div class="lbl">figure_number</div><input type="text" value="'+esc(c.figure_number||'')+'" oninput="SEL_BLOCK.content.figure_number=this.value"></div></div>';
+      h+='<div class="g2"><div class="fld"><div class="lbl">dataset_ref</div><input class="mono" type="text" value="'+esc(c.dataset_ref||'')+'" oninput="SEL_BLOCK.content.dataset_ref=this.value"></div>';
+      h+='<div class="fld"><div class="lbl">asset_ref (static fallback)</div><input type="text" value="'+esc(c.asset_ref||'')+'" oninput="SEL_BLOCK.content.asset_ref=this.value"></div></div>';
+      h+='<div class="g3"><div class="fld"><div class="lbl">x_axis_col</div><input type="text" value="'+esc(c.x_axis_col||'')+'" oninput="SEL_BLOCK.content.x_axis_col=this.value"></div>';
+      h+='<div class="fld"><div class="lbl">y_axis_cols (space-sep)</div><input type="text" value="'+esc((c.y_axis_cols||[]).join(' '))+'" oninput="SEL_BLOCK.content.y_axis_cols=this.value.trim().split(/\\s+/).filter(Boolean)"></div>';
+      h+='<div class="fld"><div class="lbl">series_col</div><input type="text" value="'+esc(c.series_col||'')+'" oninput="SEL_BLOCK.content.series_col=this.value"></div></div>';
+      h+='<div class="fld"><div class="lbl">caption <span class="bdb">ML</span></div>'+mlBlock2('caption',c.caption,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">alt_text <span class="bdb">ML</span></div>'+mlBlock2('alt_text',c.alt_text,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">source <span class="bdb">ML</span></div>'+mlBlock2('source',c.source,false)+'</div>';
+      break;
+
+    case 'live_chart':
+      h+='<div class="g2"><div class="fld"><div class="lbl">embed_type <span class="req">*</span></div><select onchange="SEL_BLOCK.content.embed_type=this.value"><option value="grafana">grafana</option><option value="tableau">tableau</option><option value="powerbi">powerbi</option><option value="looker">looker</option><option value="observable">observable</option><option value="other">other</option></select></div>';
+      h+='<div class="fld"><div class="lbl">height_px</div><input type="number" value="'+(c.height_px||400)+'" oninput="SEL_BLOCK.content.height_px=parseInt(this.value)||400"></div></div>';
+      h+='<div class="fld"><div class="lbl">embed_url <span class="req">*</span></div><input type="url" value="'+esc(c.embed_url||'')+'" oninput="SEL_BLOCK.content.embed_url=this.value"></div>';
+      h+='<div class="g2"><div class="fld"><div class="lbl">dataset_ref</div><input class="mono" type="text" value="'+esc(c.dataset_ref||'')+'" oninput="SEL_BLOCK.content.dataset_ref=this.value"></div>';
+      h+='<div class="fld"><div class="lbl">fallback_asset_ref</div><input type="text" value="'+esc(c.fallback_asset_ref||'')+'" oninput="SEL_BLOCK.content.fallback_asset_ref=this.value"></div></div>';
+      h+='<div class="fld"><div class="lbl">caption <span class="bdb">ML</span></div>'+mlBlock2('caption',c.caption,false)+'</div>';
+      h+=togRow2('lc_auth','auth_required',!!c.auth_required,'SEL_BLOCK.content.auth_required=this.checked');
+      h+=togRow2('lc_full','allow_fullscreen',c.allow_fullscreen!==false,'SEL_BLOCK.content.allow_fullscreen=this.checked');
+      break;
+
+    case 'formula':
+      h+='<div class="fld"><div class="lbl">expression <span class="req">*</span></div><input class="mono" type="text" value="'+esc(c.expression||'')+'" oninput="SEL_BLOCK.content.expression=this.value"></div>';
+      h+='<div class="fld"><div class="lbl">plain_text <span class="bdb">ML — human-readable version</span></div>'+mlBlock2('plain_text',c.plain_text,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">variables <span class="hint" style="display:inline">variable name definitions as text</span></div><textarea oninput="try{SEL_BLOCK.content.variables=JSON.parse(this.value)}catch(e){}">'+esc(JSON.stringify(c.variables||[],null,2))+'</textarea></div>';
+      break;
+
+    case 'callout':
+      h+='<div class="g2"><div class="fld"><div class="lbl">callout_type <span class="req">*</span></div><select onchange="SEL_BLOCK.content.callout_type=this.value">';
+      ['key_finding','note','warning','definition','legal_provision','audit_comment','conclusion','best_practice','good_practice','adverse_finding'].forEach(function(v){h+='<option value="'+v+'"'+(c.callout_type===v?' selected':'')+'>'+v+'</option>';});
+      h+='</select></div>';
+      h+='<div class="fld"><div class="lbl">reply_date</div><input type="date" value="'+(c.reply_date||'')+'" onchange="SEL_BLOCK.content.reply_date=this.value"></div></div>';
+      h+='<div class="fld"><div class="lbl">title <span class="bdb">ML</span></div>'+mlBlock2('title',c.title,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">text <span class="req">*</span> <span class="bdb">ML</span></div>'+mlBlock2('text',c.text,true)+'</div>';
+      if(TAX.entities.length){
+        h+='<div class="fld"><div class="lbl">dept <span class="bdg">entity registry</span></div>';
+        h+='<select class="ent-sel" onchange="SEL_BLOCK.content.dept=this.value">';
+        h+='<option value="">— select entity —</option>';
+        var dgroups={};
+        TAX.entities.forEach(function(e){if(!dgroups[e.type])dgroups[e.type]=[];dgroups[e.type].push(e);});
+        Object.keys(dgroups).sort().forEach(function(t){
+          h+='<optgroup label="'+esc(t)+'">';
+          dgroups[t].forEach(function(e){h+='<option value="'+esc(e.id)+'"'+(c.dept===e.id?' selected':'')+'>'+esc(e.en)+'</option>';});
+          h+='</optgroup>';
+        });
+        h+='</select></div>';
+      } else {
+        h+='<div class="fld"><div class="lbl">dept (entity_id)</div><input class="mono" type="text" value="'+esc(c.dept||'')+'" oninput="SEL_BLOCK.content.dept=this.value"></div>';
+      }
+      break;
+
+    case 'audit_finding':
+      h+='<div class="g2"><div class="fld"><div class="lbl">finding_id <span class="req">*</span></div><input class="mono" type="text" value="'+esc(c.finding_id||'')+'" placeholder="'+esc(SEL_UNIT?SEL_UNIT.unit_id+'-AF001':'')+'" oninput="SEL_BLOCK.content.finding_id=this.value"></div>';
+      h+='<div class="fld"><div class="lbl">finding_type</div><select onchange="SEL_BLOCK.content.finding_type=this.value">';
+      ['','compliance','performance','financial','regularity','propriety','economy','efficiency','effectiveness','certification','it_audit','environmental','revenue','other'].forEach(function(v){h+='<option value="'+v+'"'+(c.finding_type===v?' selected':'')+'>'+(v||'—')+'</option>';});
+      h+='</select></div></div>';
+      h+='<div class="g2"><div class="fld"><div class="lbl">status</div><select onchange="SEL_BLOCK.content.status=this.value">';
+      ['','open','closed','partially_closed','escalated'].forEach(function(v){h+='<option value="'+v+'"'+(c.status===v?' selected':'')+'>'+(v||'—')+'</option>';});
+      h+='</select></div>';
+      h+='<div class="fld"><div class="lbl">ir_ref (Inspection Report ref)</div><input type="text" value="'+esc(c.ir_ref||'')+'" oninput="SEL_BLOCK.content.ir_ref=this.value"></div></div>';
+      h+='<div class="fld"><div class="lbl">title <span class="bdb">ML</span></div>'+mlBlock2('title',c.title,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">criteria <span class="bdb">ML — applicable rules/regulations</span></div>'+mlBlock2('criteria',c.criteria,true)+'</div>';
+      h+='<div class="fld"><div class="lbl">observation <span class="req">*</span> <span class="bdb">ML</span></div>'+mlBlock2('observation',c.observation,true)+'</div>';
+      h+='<div class="fld"><div class="lbl">effect <span class="bdb">ML</span></div>'+mlBlock2('effect',c.effect,true)+'</div>';
+      h+='<div class="fld"><div class="lbl">cause <span class="bdb">ML</span></div>'+mlBlock2('cause',c.cause,true)+'</div>';
+      h+='<div class="fld"><div class="lbl">recommendation <span class="bdb">ML</span></div>'+mlBlock2('recommendation',c.recommendation,true)+'</div>';
+      h+='<div class="fld"><div class="lbl">government_reply <span class="bdb">ML</span></div>'+mlBlock2('government_reply',c.government_reply,true)+'</div>';
+      h+='<div class="fld"><div class="lbl">audit_comment <span class="bdb">ML — response to govt reply</span></div>'+mlBlock2('audit_comment',c.audit_comment,true)+'</div>';
+      h+='<div class="fld"><div class="lbl">related_dataset_refs <span class="hint" style="display:inline">space-sep dataset_ids</span></div>';
+      h+='<input type="text" value="'+esc((c.related_dataset_refs||[]).join(' '))+'" oninput="SEL_BLOCK.content.related_dataset_refs=this.value.trim().split(/\\s+/).filter(Boolean)"></div>';
+      break;
+
+    case 'recommendation':
+      h+='<div class="g2"><div class="fld"><div class="lbl">recommendation_id</div><input class="mono" type="text" value="'+esc(c.recommendation_id||'')+'" oninput="SEL_BLOCK.content.recommendation_id=this.value"></div>';
+      h+='<div class="fld"><div class="lbl">priority</div><select onchange="SEL_BLOCK.content.priority=this.value"><option value="">—</option><option value="high"'+(c.priority==='high'?' selected':'')+'>high</option><option value="medium"'+(c.priority==='medium'?' selected':'')+'>medium</option><option value="low"'+(c.priority==='low'?' selected':'')+'>low</option></select></div></div>';
+      h+='<div class="fld"><div class="lbl">status</div><select onchange="SEL_BLOCK.content.status=this.value"><option value="">—</option>';
+      ['open','in_progress','implemented','not_implemented','partially_implemented','not_accepted'].forEach(function(v){h+='<option value="'+v+'"'+(c.status===v?' selected':'')+'>'+v+'</option>';});
+      h+='</select></div>';
+      h+='<div class="fld"><div class="lbl">text <span class="req">*</span> <span class="bdb">ML</span></div>'+mlBlock2('text',c.text,true)+'</div>';
+      if(TAX.entities.length){
+        h+='<div class="fld"><div class="lbl">addressed_to <span class="bdg">entity registry</span></div>';
+        h+='<select class="ent-sel" onchange="if(this.value){var a=SEL_BLOCK.content.addressed_to||[];if(a.indexOf(this.value)<0)a.push(this.value);SEL_BLOCK.content.addressed_to=a;this.value=\'\';renderBlockForm(SEL_BLOCK);}">'
+          +'<option value="">+ Add entity…</option>';
+        var groups={};
+        TAX.entities.forEach(function(e){if(!groups[e.type])groups[e.type]=[];groups[e.type].push(e);});
+        Object.keys(groups).sort().forEach(function(t){
+          h+='<optgroup label="'+esc(t)+'">';
+          groups[t].forEach(function(e){h+='<option value="'+esc(e.id)+'">'+esc(e.en)+'</option>';});
+          h+='</optgroup>';
+        });
+        h+='</select>';
+        if(c.addressed_to&&c.addressed_to.length){
+          h+='<div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:4px">';
+          c.addressed_to.forEach(function(v,i){
+            var e=TAX.entities.find(function(x){return x.id===v;});
+            h+='<span class="tag">'+esc(v)+'<span class="tag-x" onclick="SEL_BLOCK.content.addressed_to.splice('+i+',1);renderBlockForm(SEL_BLOCK)">×</span></span>';
+          });
+          h+='</div>';
+        }
+        h+='</div>';
+      } else {
+        h+='<div class="fld"><div class="lbl">addressed_to (entity_ids, space-sep)</div><input class="mono" type="text" value="'+esc((c.addressed_to||[]).join(' '))+'" oninput="SEL_BLOCK.content.addressed_to=this.value.trim().split(/\\s+/).filter(Boolean)"></div>';
+      }
+      h+='<div class="fld"><div class="lbl">finding_refs (block_ids, space-sep)</div><input class="mono" type="text" value="'+esc((c.finding_refs||[]).join(' '))+'" oninput="SEL_BLOCK.content.finding_refs=this.value.trim().split(/\\s+/).filter(Boolean)"></div>';
+      break;
+
+    case 'signature_block':
+      h+='<div class="lbl" style="margin-bottom:5px">signatories <span class="req">*</span></div>';
+      (c.signatories||[]).forEach(function(sig,i){
+        h+='<div class="acard"><div class="acard-hdr"><span class="acard-ttl">Signatory '+(i+1)+'</span><button class="brm" onclick="removeSig('+i+')">✕</button></div>';
+        h+='<div class="fld"><div class="lbl">role</div><input type="text" value="'+esc(sig.role||'')+'" placeholder="Accountant General" oninput="SEL_BLOCK.content.signatories['+i+'].role=this.value"></div>';
+        LANGS.forEach(function(lang){
+          h+='<div class="g2" style="margin-bottom:4px">';
+          h+='<div><div class="lbl">name ('+lang+')</div><input type="text" value="'+esc((sig.name&&sig.name[lang])||'')+'" oninput="if(!SEL_BLOCK.content.signatories['+i+'].name)SEL_BLOCK.content.signatories['+i+'].name={};SEL_BLOCK.content.signatories['+i+'].name[\''+lang+'\']=this.value"></div>';
+          h+='<div><div class="lbl">designation ('+lang+')</div><input type="text" value="'+esc((sig.designation&&sig.designation[lang])||'')+'" oninput="if(!SEL_BLOCK.content.signatories['+i+'].designation)SEL_BLOCK.content.signatories['+i+'].designation={};SEL_BLOCK.content.signatories['+i+'].designation[\''+lang+'\']=this.value"></div>';
+          h+='</div>';
+        });
+        h+='<div class="g2"><div class="fld"><div class="lbl">date</div><input type="date" value="'+(sig.date||'')+'" onchange="SEL_BLOCK.content.signatories['+i+'].date=this.value"></div>';
+        LANGS.slice(0,1).forEach(function(lang){
+          h+='<div class="fld"><div class="lbl">place ('+lang+')</div><input type="text" value="'+esc((sig.place&&sig.place[lang])||'')+'" oninput="if(!SEL_BLOCK.content.signatories['+i+'].place)SEL_BLOCK.content.signatories['+i+'].place={};SEL_BLOCK.content.signatories['+i+'].place[\''+lang+'\']=this.value"></div>';
+        });
+        h+='</div></div>';
+      });
+      h+='<button class="badd" onclick="if(!SEL_BLOCK.content.signatories)SEL_BLOCK.content.signatories=[];SEL_BLOCK.content.signatories.push({role:\'\',name:{},designation:{},place:{},date:\'\',signature_asset:\'\',seal_asset:\'\'});renderBlockForm(SEL_BLOCK)">+ Add signatory</button>';
+      break;
+
+    case 'quote':
+      h+='<div class="fld"><div class="lbl">text <span class="req">*</span> <span class="bdb">ML</span></div>'+mlBlock2('text',c.text,true)+'</div>';
+      h+='<div class="g2"><div class="fld"><div class="lbl">attribution <span class="bdb">ML</span></div>'+mlBlock2('attribution',c.attribution,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">quote_type</div><select onchange="SEL_BLOCK.content.quote_type=this.value"><option value="">—</option>';
+      ['statutory','regulatory','court_order','policy_document','official_communication','other'].forEach(function(v){h+='<option value="'+v+'"'+(c.quote_type===v?' selected':'')+'>'+v+'</option>';});
+      h+='</select></div></div>';
+      break;
+
+    case 'pullquote':
+      h+='<div class="fld"><div class="lbl">text <span class="req">*</span> <span class="bdb">ML</span></div>'+mlBlock2('text',c.text,true)+'</div>';
+      h+='<div class="fld"><div class="lbl">source_block_id</div><input class="mono" type="text" value="'+esc(c.source_block_id||'')+'" oninput="SEL_BLOCK.content.source_block_id=this.value"></div>';
+      break;
+
+    case 'sidebar':
+      h+='<div class="g2"><div class="fld"><div class="lbl">sidebar_type</div><select onchange="SEL_BLOCK.content.sidebar_type=this.value"><option value="">—</option>';
+      ['info','case_study','example','definition','timeline','key_data','legal_provision','comparative_data'].forEach(function(v){h+='<option value="'+v+'"'+((c.sidebar_type||'')==v?' selected':'')+'>'+v+'</option>';});
+      h+='</select></div>';
+      h+='<div class="fld"><div class="lbl">position</div><select onchange="SEL_BLOCK.content.position=this.value"><option value="right">right</option><option value="left">left</option><option value="full">full</option><option value="inline">inline</option></select></div></div>';
+      h+='<div class="fld"><div class="lbl">title <span class="bdb">ML</span></div>'+mlBlock2('title',c.title,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">text <span class="req">*</span> <span class="bdb">ML</span></div>'+mlBlock2('text',c.text,true)+'</div>';
+      break;
+
+    case 'code':
+      h+='<div class="fld"><div class="lbl">language</div><input type="text" value="'+esc(c.language||'')+'" placeholder="python, sql, xml..." oninput="SEL_BLOCK.content.language=this.value"></div>';
+      h+='<div class="fld"><div class="lbl">text <span class="req">*</span> <span class="bdb">ML</span></div>'+mlBlock2('text',c.text,true)+'</div>';
+      break;
+
+    case 'divider':
+      h+='<div class="fld"><div class="lbl">style</div><select onchange="SEL_BLOCK.content.style=this.value">';
+      ['line','thick_line','dotted','decorative','page_break'].forEach(function(v){h+='<option value="'+v+'"'+(c.style===v?' selected':'')+'>'+v+'</option>';});
+      h+='</select></div>';
+      break;
+
+    case 'richbox':
+      h+='<div style="font-size:10px;color:var(--pur);padding:5px 8px;background:rgba(167,139,250,.07);border-radius:4px;border-left:2px solid var(--pur);margin-bottom:10px">Unified rich content box — mix heading, paragraph, bullets, ordered list, image, and table reference items in any order.</div>';
+      h+='<div class="g2" style="margin-bottom:8px">';
+      h+='<div class="fld"><div class="lbl">box_type <span class="req">*</span></div><select onchange="SEL_BLOCK.content.box_type=this.value">';
+      ['executive_summary','case_study','background','definition','example','methodology','legal_provision','key_data','context','note','other'].forEach(function(v){
+        h+='<option value="'+v+'"'+((c.box_type||'other')===v?' selected':'')+'>'+v+'</option>';
+      });
+      h+='</select><div class="hint">Controls the visual style the portal applies to this box</div></div>';
+      h+='<div class="fld"><div class="lbl">position</div><select onchange="SEL_BLOCK.content.position=this.value">';
+      ['full_width','inline','left','right'].forEach(function(v){
+        h+='<option value="'+v+'"'+(c.position===v?' selected':'')+'>'+v+'</option>';
+      });
+      h+='</select></div></div>';
+      h+='<div class="fld"><div class="lbl">title <span class="bdb">ML — optional box heading label</span></div>'+mlBlock2('title',c.title,false)+'</div>';
+      h+='<div class="lbl" style="margin-bottom:5px;margin-top:8px">body <span class="req">*</span> <span style="font-size:9px;color:var(--txt3)">ordered content items</span></div>';
+      h+='<div id="rb-body-container">';
+      (c.body||[]).forEach(function(item,i){ h+=renderRbBodyItem(item,i); });
+      h+='</div>';
+      h+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px">';
+      h+='<button class="badd" style="flex:1" onclick="addRbItem(\'heading\')">+ Heading</button>';
+      h+='<button class="badd" style="flex:1" onclick="addRbItem(\'paragraph\')">+ Paragraph</button>';
+      h+='<button class="badd" style="flex:1" onclick="addRbItem(\'bullets\')">+ Bullets</button>';
+      h+='<button class="badd" style="flex:1" onclick="addRbItem(\'ordered_list\')">+ Numbered list</button>';
+      h+='<button class="badd" style="flex:1" onclick="addRbItem(\'image\')">+ Image</button>';
+      h+='<button class="badd" style="flex:1" onclick="addRbItem(\'table_ref\')">+ Table ref</button>';
+      h+='</div>';
+      break;
+
+    case 'executive_summary_block':
+      h+='<div style="font-size:10px;color:var(--amb);padding:5px 8px;background:rgba(245,200,66,.06);border-radius:4px;border-left:2px solid var(--amb);margin-bottom:8px">⚠ Deprecated — use <b>richbox</b> with box_type=executive_summary for new content.</div>';
+      h+='<div class="g2"><div class="fld"><div class="lbl">title <span class="bdb">ML</span></div>'+mlBlock2('title',c.title,false)+'</div>';
+      h+='<div class="fld"><div class="lbl">display_style</div><select onchange="SEL_BLOCK.content.display_style=this.value"><option value="box"'+(c.display_style==='box'?' selected':'')+'>box</option><option value="inline"'+(c.display_style==='inline'?' selected':'')+'>inline</option><option value="banner"'+(c.display_style==='banner'?' selected':'')+'>banner</option></select></div></div>';
+      h+='<div class="lbl" style="margin-bottom:5px">body <span class="req">*</span></div>';
+      h+='<div id="rb-body-container">';
+      (c.body||[]).forEach(function(item,i){ h+=renderRbBodyItem(item,i); });
+      h+='</div>';
+      h+='<div style="display:flex;gap:5px"><button class="badd" style="flex:1" onclick="addRbItem(\'paragraph\')">+ Paragraph</button><button class="badd" style="flex:1" onclick="addRbItem(\'bullets\')">+ Bullets</button></div>';
+      break;
+
+    default:
+      h+='<div class="hint" style="color:var(--txt2)">Content editing for this block type is shown as raw JSON. Edit below:</div>';
+      h+='<textarea style="min-height:120px;font-family:var(--mono);font-size:10px" oninput="try{SEL_BLOCK.content=JSON.parse(this.value)}catch(e){}">' +esc(JSON.stringify(c,null,2))+'</textarea>';
+  }
+  return h;
+}
+
+// ── Helpers for content form ──
+function mlBlock2(field, vals, isTA){
+  return LANGS.map(function(l){
+    var v=(vals&&vals[l])||'';
+    var inp=isTA
+      ? '<textarea rows="2" oninput="setBlockFieldML(\''+field+'\',\''+l+'\',this.value)">' + esc(v) + '</textarea>'
+      : '<input type="text" value="'+esc(v)+'" oninput="setBlockFieldML(\''+field+'\',\''+l+'\',this.value)">';
+    return '<div class="ml-row"><div class="ml-lbl">'+l+'</div>'+inp+'</div>';
+  }).join('');
+}
+function togRow2(id,label,checked,onchange){
+  return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><span style="font-size:11px;color:var(--txt2)">'+label+'</span>'
+    +'<label class="tog" style="margin-left:auto"><input type="checkbox" id="tog2-'+id+'"'+(checked?' checked':'')+' onchange="'+onchange+'"><div class="tog-t"></div><div class="tog-k"></div></label></div>';
+}
+function cpill(id,label,checked,onchange){
+  return '<label class="cp'+(checked?' on':'')+'"><input type="checkbox" id="'+id+'"'+(checked?' checked':'')+' onchange="'+onchange+';this.closest(\'.cp\').classList.toggle(\'on\',this.checked)"><div class="dot"></div>'+label+'</label>';
+}
+
+// ── List item rendering ──
+function renderListItem(item,i){
+  var h='<div class="acard" id="li-'+i+'"><div class="acard-hdr"><span class="acard-ttl">Item '+(i+1)+'</span><button class="brm" onclick="removeListItem('+i+')">✕</button></div>';
+  h+=LANGS.map(function(l){
+    var v=(item.text&&item.text[l])||'';
+    return '<div class="ml-row"><div class="ml-lbl">'+l+'</div><input type="text" value="'+esc(v)+'" oninput="if(!SEL_BLOCK.content.items['+i+'].text)SEL_BLOCK.content.items['+i+'].text={};SEL_BLOCK.content.items['+i+'].text[\''+l+'\']=this.value"></div>';
+  }).join('');
+  h+='<div class="fld" style="margin-top:6px"><div class="lbl">para_number</div><input type="text" style="width:80px" value="'+esc(item.para_number||'')+'" oninput="SEL_BLOCK.content.items['+i+'].para_number=this.value"></div>';
+  // sub_items
+  (item.sub_items||[]).forEach(function(sub,si){
+    h+='<div style="margin-left:12px;margin-top:4px" id="si-'+i+'-'+si+'">';
+    h+=LANGS.map(function(l){
+      var sv2=(sub.text&&sub.text[l])||'';
+      return '<div class="ml-row"><div class="ml-lbl" style="font-size:8px">'+l+'↳</div><input type="text" value="'+esc(sv2)+'" oninput="if(!SEL_BLOCK.content.items['+i+'].sub_items['+si+'].text)SEL_BLOCK.content.items['+i+'].sub_items['+si+'].text={};SEL_BLOCK.content.items['+i+'].sub_items['+si+'].text[\''+l+'\']=this.value"></div>';
+    }).join('');
+    h+='</div>';
+  });
+  h+='<button class="badd" style="margin-top:4px" onclick="addSubItem('+i+')">+ Sub-item</button></div>';
+  return h;
+}
+function addListItem(){
+  if(!SEL_BLOCK) return;
+  if(!SEL_BLOCK.content.items) SEL_BLOCK.content.items=[];
+  var newItem={text:{},sub_items:[],para_number:'',footnote_markers:[]};
+  LANGS.forEach(function(l){newItem.text[l]='';});
+  SEL_BLOCK.content.items.push(newItem);
+  renderBlockForm(SEL_BLOCK);
+}
+function removeListItem(i){
+  if(!SEL_BLOCK||!SEL_BLOCK.content.items) return;
+  SEL_BLOCK.content.items.splice(i,1);
+  renderBlockForm(SEL_BLOCK);
+}
+function addSubItem(i){
+  if(!SEL_BLOCK||!SEL_BLOCK.content.items) return;
+  if(!SEL_BLOCK.content.items[i].sub_items) SEL_BLOCK.content.items[i].sub_items=[];
+  SEL_BLOCK.content.items[i].sub_items.push({text:{}});
+  renderBlockForm(SEL_BLOCK);
+}
+function removeSig(i){
+  if(!SEL_BLOCK||!SEL_BLOCK.content.signatories) return;
+  SEL_BLOCK.content.signatories.splice(i,1);
+  renderBlockForm(SEL_BLOCK);
+}
+function removeGalleryImage(i){
+  if(!SEL_BLOCK||!SEL_BLOCK.content.images) return;
+  SEL_BLOCK.content.images.splice(i,1);
+  renderBlockForm(SEL_BLOCK);
+}
+
+// ── Richbox (unified rich content box) body helpers ──
+var RB_TYPE_LABELS={heading:'Heading',paragraph:'Paragraph',bullets:'Bullets',ordered_list:'Numbered list',image:'Image',table_ref:'Table ref'};
+
+function renderRbBodyItem(item,i){
+  var t=item.type||'paragraph';
+  var label=RB_TYPE_LABELS[t]||t;
+  var h='<div class="acard" id="rb-item-'+i+'"><div class="acard-hdr"><span class="acard-ttl">'+label+' '+(i+1)+'</span>'
+    +'<div style="display:flex;gap:4px">'
+    +'<button class="brm" style="padding:1px 5px;font-size:10px" onclick="moveRbItem('+i+',-1)">↑</button>'
+    +'<button class="brm" style="padding:1px 5px;font-size:10px" onclick="moveRbItem('+i+',1)">↓</button>'
+    +'<button class="brm" onclick="removeRbItem('+i+')">✕</button></div></div>';
+  if(t==='heading'){
+    h+='<div class="fld"><div class="lbl">level (2-6)</div><input type="number" min="2" max="6" value="'+(item.level||3)+'" oninput="SEL_BLOCK.content.body['+i+'].level=parseInt(this.value)||3" style="width:60px"></div>';
+    h+=LANGS.map(function(l){var v=(item.text&&item.text[l])||'';return '<div class="ml-row"><div class="ml-lbl">'+l+'</div><input type="text" value="'+esc(v)+'" oninput="if(!SEL_BLOCK.content.body['+i+'].text)SEL_BLOCK.content.body['+i+'].text={};SEL_BLOCK.content.body['+i+'].text[\''+l+'\']=this.value"></div>';}).join('');
+  
+    h+=rbFnMarkersField(item,i);
+  } else if(t==='paragraph'){
+    h+='<div class="fld"><div class="lbl">para_type</div><select onchange="SEL_BLOCK.content.body['+i+'].para_type=this.value">';
+    ['normal','background','scope','methodology','legal_basis','audit_criteria','audit_observation','effect','cause','data_analysis','conclusion','recommendation_summary','best_practice','scope_for_improvement'].forEach(function(v){h+='<option value="'+v+'"'+((item.para_type||'normal')===v?' selected':'')+'>'+v+'</option>';});
+    h+='</select></div>';
+    h+=LANGS.map(function(l){var v=(item.text&&item.text[l])||'';return '<div class="ml-row"><div class="ml-lbl">'+l+'</div><textarea rows="2" oninput="if(!SEL_BLOCK.content.body['+i+'].text)SEL_BLOCK.content.body['+i+'].text={};SEL_BLOCK.content.body['+i+'].text[\''+l+'\']=this.value">'+esc(v)+'</textarea></div>';}).join('');
+  
+    h+=rbFnMarkersField(item,i);
+  } else if(t==='bullets'||t==='ordered_list'){
+    if(t==='ordered_list'){h+='<div class="fld"><div class="lbl">list_type</div><select onchange="SEL_BLOCK.content.body['+i+'].list_type=this.value"><option value="decimal"'+(item.list_type==='decimal'?' selected':'')+'>decimal</option><option value="alpha"'+(item.list_type==='alpha'?' selected':'')+'>alpha</option><option value="roman"'+(item.list_type==='roman'?' selected':'')+'>roman</option></select></div>';}
+    (item.items||[]).forEach(function(bullet,bi){
+      h+='<div class="acard" style="margin-bottom:4px"><div class="acard-hdr"><span class="acard-ttl" style="font-size:9px">Item '+(bi+1)+'</span><button class="brm" onclick="removeRbBullet('+i+','+bi+')">✕</button></div>';
+      h+=LANGS.map(function(l){var v=(bullet.text&&bullet.text[l])||'';return '<div class="ml-row"><div class="ml-lbl">'+l+'</div><input type="text" value="'+esc(v)+'" oninput="if(!SEL_BLOCK.content.body['+i+'].items['+bi+'].text)SEL_BLOCK.content.body['+i+'].items['+bi+'].text={};SEL_BLOCK.content.body['+i+'].items['+bi+'].text[\''+l+'\']=this.value"></div>';}).join('');
+      h+='</div>';
+    });
+    h+='<button class="badd" onclick="addRbBullet('+i+')">+ Item</button>';
+  } else if(t==='image'){
+    h+='<div class="fld"><div class="lbl">asset_ref <span class="req">*</span></div><input type="text" value="'+esc(item.asset_ref||'')+'" placeholder="assets/images/photo01.jpg" oninput="SEL_BLOCK.content.body['+i+'].asset_ref=this.value"></div>';
+    h+='<div class="g2">';
+    h+='<div class="fld"><div class="lbl">image_type</div><select onchange="SEL_BLOCK.content.body['+i+'].image_type=this.value"><option value="photograph"'+(item.image_type==='photograph'?' selected':'')+'>photograph</option><option value="diagram"'+(item.image_type==='diagram'?' selected':'')+'>diagram</option><option value="chart_image"'+(item.image_type==='chart_image'?' selected':'')+'>chart_image</option><option value="map_image"'+(item.image_type==='map_image'?' selected':'')+'>map_image</option><option value="scanned_document"'+(item.image_type==='scanned_document'?' selected':'')+'>scanned_document</option><option value="screenshot"'+(item.image_type==='screenshot'?' selected':'')+'>screenshot</option><option value="other"'+(item.image_type==='other'?' selected':'')+'>other</option></select></div>';
+    h+='<div class="fld"><div class="lbl">width_hint</div><select onchange="SEL_BLOCK.content.body['+i+'].width_hint=this.value"><option value="full"'+(item.width_hint==='full'?' selected':'')+'>full</option><option value="half"'+(item.width_hint==='half'?' selected':'')+'>half</option><option value="quarter"'+(item.width_hint==='quarter'?' selected':'')+'>quarter</option><option value="inline"'+(item.width_hint==='inline'?' selected':'')+'>inline</option></select></div></div>';
+    h+='<div class="fld"><div class="lbl">caption <span class="bdb">ML</span></div>'+LANGS.map(function(l){var v=(item.caption&&item.caption[l])||'';return '<div class="ml-row"><div class="ml-lbl">'+l+'</div><input type="text" value="'+esc(v)+'" oninput="if(!SEL_BLOCK.content.body['+i+'].caption)SEL_BLOCK.content.body['+i+'].caption={};SEL_BLOCK.content.body['+i+'].caption[\''+l+'\']=this.value"></div>';}).join('')+'</div>';
+    h+='<div class="fld"><div class="lbl">alt_text <span class="bdb">ML</span></div>'+LANGS.map(function(l){var v=(item.alt_text&&item.alt_text[l])||'';return '<div class="ml-row"><div class="ml-lbl">'+l+'</div><input type="text" value="'+esc(v)+'" oninput="if(!SEL_BLOCK.content.body['+i+'].alt_text)SEL_BLOCK.content.body['+i+'].alt_text={};SEL_BLOCK.content.body['+i+'].alt_text[\''+l+'\']=this.value"></div>';}).join('')+'</div>';
+  } else if(t==='table_ref'){
+    h+='<div class="fld"><div class="lbl">dataset_ref <span class="req">*</span></div><input class="mono" type="text" value="'+esc(item.dataset_ref||'')+'" placeholder="CH02-DS01" oninput="SEL_BLOCK.content.body['+i+'].dataset_ref=this.value"></div>';
+    h+='<div class="fld"><div class="lbl">display_mode</div><select onchange="SEL_BLOCK.content.body['+i+'].display_mode=this.value"><option value="full"'+(item.display_mode==='full'?' selected':'')+'>full</option><option value="summary"'+(item.display_mode==='summary'?' selected':'')+'>summary</option><option value="collapsed"'+(item.display_mode==='collapsed'?' selected':'')+'>collapsed</option></select></div>';
+    h+='<div class="fld"><div class="lbl">caption <span class="bdb">ML</span></div>'+LANGS.map(function(l){var v=(item.caption&&item.caption[l])||'';return '<div class="ml-row"><div class="ml-lbl">'+l+'</div><input type="text" value="'+esc(v)+'" oninput="if(!SEL_BLOCK.content.body['+i+'].caption)SEL_BLOCK.content.body['+i+'].caption={};SEL_BLOCK.content.body['+i+'].caption[\''+l+'\']=this.value"></div>';}).join('')+'</div>';
+  }
+  return h+'</div>';
+}
+function rbFnMarkersField(item,i){
+  var markers=(item.footnote_markers||[]);
+  var tags=markers.map(function(m,mi){
+    return '<span class="tag">'+esc(m)
+      +'<span class="tag-x" onclick="rbRemoveFnMarker('+i+','+mi+')">×</span></span>';
+  }).join('');
+  return '<div class="fld" style="margin-top:4px">'
+    +'<div class="lbl" style="font-size:10px">footnote_markers <span class="bdb">press Enter</span></div>'
+    +'<div class="tw" style="min-height:24px" id="rbtw-'+i+'" onclick="rbFocusFn('+i+')">'
+    +tags
+    +'<input class="ti" id="rbfn-'+i+'" placeholder="* or 1" onkeydown="rbAddFnMarker(event,'+i+')">'
+    +'</div></div>';
+}
+function rbFocusFn(i){var el=document.getElementById("rbfn-"+i);if(el)el.focus();}
+function rbAddFnMarker(e,i){
+  if(e.key!=="Enter") return;
+  var val=e.target.value.trim(); if(!val) return;
+  e.target.value="";
+  if(!SEL_BLOCK||!SEL_BLOCK.content.body[i]) return;
+  if(!SEL_BLOCK.content.body[i].footnote_markers) SEL_BLOCK.content.body[i].footnote_markers=[];
+  SEL_BLOCK.content.body[i].footnote_markers.push(val);
+  renderBlockForm(SEL_BLOCK);
+}
+function rbRemoveFnMarker(i,mi){
+  if(!SEL_BLOCK||!SEL_BLOCK.content.body[i]) return;
+  SEL_BLOCK.content.body[i].footnote_markers.splice(mi,1);
+  renderBlockForm(SEL_BLOCK);
+}
+
+function addRbItem(type){
+  if(!SEL_BLOCK) return;
+  if(!SEL_BLOCK.content.body) SEL_BLOCK.content.body=[];
+  var item={type:type};
+  if(type==='heading'){item.text={};item.level=3;}
+  else if(type==='paragraph'){item.text={};item.para_type='normal';}
+  else if(type==='bullets'){item.items=[{text:{}}];}
+  else if(type==='ordered_list'){item.items=[{text:{}}];item.list_type='decimal';}
+  else if(type==='image'){item.asset_ref='';item.image_type='photograph';item.width_hint='full';item.caption={};item.alt_text={};}
+  else if(type==='table_ref'){item.dataset_ref='';item.display_mode='full';item.caption={};}
+  SEL_BLOCK.content.body.push(item);
+  renderBlockForm(SEL_BLOCK);
+}
+function removeRbItem(i){if(!SEL_BLOCK)return;SEL_BLOCK.content.body.splice(i,1);renderBlockForm(SEL_BLOCK);}
+function moveRbItem(i,dir){if(!SEL_BLOCK||!SEL_BLOCK.content.body)return;var body=SEL_BLOCK.content.body;var j=i+dir;if(j<0||j>=body.length)return;var tmp=body[i];body[i]=body[j];body[j]=tmp;renderBlockForm(SEL_BLOCK);}
+function addRbBullet(i){if(!SEL_BLOCK||!SEL_BLOCK.content.body[i])return;if(!SEL_BLOCK.content.body[i].items)SEL_BLOCK.content.body[i].items=[];SEL_BLOCK.content.body[i].items.push({text:{}});renderBlockForm(SEL_BLOCK);}
+function removeRbBullet(i,bi){if(!SEL_BLOCK||!SEL_BLOCK.content.body||!SEL_BLOCK.content.body[i])return;SEL_BLOCK.content.body[i].items.splice(bi,1);renderBlockForm(SEL_BLOCK);}
+// Backward compat aliases
+function addEsBodyItem(type){addRbItem(type==='bullets'?'bullets':'paragraph');}
+function removeEsBody(i){removeRbItem(i);}
+function addEsBullet(i){addRbBullet(i);}
+function removeEsBullet(i,bi){removeRbBullet(i,bi);}
+function renderEsBodyItem(item,i){return renderRbBodyItem(item,i);}
+
+// ── Change block type ──
+function changeBlockType(type){
+  if(!SEL_BLOCK||!SEL_UNIT) return;
+  if(!confirm('Change block type to '+type+'? Content will be reset.')) return;
+  // Regenerate block_id with new type prefix, preserving sequence number
+  var uid=SEL_UNIT.unit_id;
+  var oldId=SEL_BLOCK.block_id;
+  // extract trailing sequence number from old id (e.g. P001 -> 001)
+  var seqMatch=oldId.match(/(\d+)$/);
+  var seqNum=seqMatch?seqMatch[1]:'001';
+  var newPrefix=BLOCK_PREFIX[type]||type.replace(/_/g,'').toUpperCase().slice(0,4);
+  var newId=uid+'-'+newPrefix+seqNum;
+  // if newId already exists on a different block, generate fresh
+  var blist=BLOCKS[uid]||[];
+  var conflict=blist.some(function(b){ return b.block_id===newId && b!==SEL_BLOCK; });
+  if(conflict) newId=genBlockId(uid,type);
+  SEL_BLOCK.block_id=newId;
+  SEL_BLOCK.block_type=type;
+  SEL_BLOCK.content={};
+  // init content defaults
+  if(type==='list') SEL_BLOCK.content.items=[];
+  if(type==='richbox') SEL_BLOCK.content.body=[];
+  if(type==='executive_summary_block') SEL_BLOCK.content.body=[];
+  if(type==='signature_block') SEL_BLOCK.content.signatories=[];
+  if(type==='chart') SEL_BLOCK.content.chart_type='bar';
+  if(type==='heading') SEL_BLOCK.content.level=2;
+  renderBlockList();
+  renderBlockForm(SEL_BLOCK);
+  sbar('Block type changed to '+type+'. ID updated to '+newId);
+}
+
+function updateBlockId(newId){
+  if(!SEL_BLOCK||!SEL_UNIT) return;
+  var uid=SEL_UNIT.unit_id;
+  var old=SEL_BLOCK.block_id;
+  SEL_BLOCK.block_id=newId;
+  renderBlockList();
+}
+
+// ══════════════════════════════════════════════════════
+// ANNOTATIONS FORM
+// ══════════════════════════════════════════════════════
+function renderAnnotationsForm(b){
+  var ft4=document.getElementById('ft4');
+  if(!b){ft4.innerHTML='<div class="empty-state"><div class="esc">🏷</div><div>Select a block first</div></div>';return;}
+  var anns=b.annotations||[];
+
+  // ── Get paragraph text for selection helper ──────────────────────────────
+  var paraText = '';
+  var lang = LANGS[0]||'en';
+  if(b.content){
+    var ct = b.content.text;
+    if(ct && typeof ct==='object') paraText = ct[lang] || ct.en || Object.values(ct)[0] || '';
+    else if(typeof ct==='string') paraText = ct;
+    // For audit_finding use observation
+    if(!paraText && b.content.observation){
+      var obs = b.content.observation;
+      paraText = (typeof obs==='object') ? (obs[lang]||obs.en||Object.values(obs)[0]||'') : obs;
+    }
+  }
+
+  var h='<div style="font-size:10px;color:var(--txt3);margin-bottom:10px;padding:6px 8px;background:var(--sur2);border-radius:var(--r);border-left:2px solid var(--pur)">Annotations mark character-level spans in paragraph text. <b>cross_reference</b> (v1.1): links a span to another unit, dataset, or URL. <b>Select text below to auto-fill character offsets.</b></div>';
+
+  // ── Text selection panel ─────────────────────────────────────────────────
+  if(paraText){
+    h+='<div class="sec" style="margin-bottom:10px">';
+    h+='<div class="slbl" style="margin-bottom:6px">📝 Block text — select to auto-fill offsets';
+    h+=' <span style="font-size:9px;color:var(--txt3);font-weight:400">('+lang+')</span></div>';
+    h+='<div id="ann-text-box" style="'
+      +'font-size:12px;line-height:1.7;padding:10px 12px;'
+      +'background:var(--sur2);border:1px solid var(--bdr2);border-radius:var(--r);'
+      +'white-space:pre-wrap;word-break:break-all;cursor:text;user-select:text;'
+      +'max-height:140px;overflow-y:auto;font-family:Georgia,serif;color:var(--txt)"'
+      +' onmouseup="annFillOffsets()" onkeyup="annFillOffsets()">'
+      +esc(paraText)
+      +'</div>';
+    h+='<div id="ann-selection-status" style="font-size:10px;color:var(--txt3);margin-top:4px">'
+      +'Select text above — start and end offsets will fill automatically</div>';
+    h+='</div>';
+  } else {
+    h+='<div style="font-size:10px;color:var(--amb);padding:6px 8px;background:rgba(127,96,0,.08);border-radius:var(--r);border-left:2px solid var(--amber);margin-bottom:10px">'
+      +'⚠ No text content found on this block. Fill the text in the Content tab first, then return here to annotate.</div>';
+  }
+
+  
+  anns.forEach(function(a,i){
+    var isCR=a.annotation_type==='cross_reference';
+    h+='<div class="acard"><div class="acard-hdr"><span class="acard-ttl">Annotation '+(i+1)+(a.annotation_type?' — '+a.annotation_type:'')+'</span><button class="brm" onclick="removeAnnotation('+i+')">✕</button></div>';
+    h+='<div class="fld"><div class="lbl">annotation_id</div><input class="mono" type="text" value="'+esc(a.annotation_id||'')+'" oninput="SEL_BLOCK.annotations['+i+'].annotation_id=this.value"></div>';
+    h+='<div class="g3" style="align-items:end">';
+    h+='<div class="fld"><div class="lbl">lang <span style="font-size:9px;color:var(--txt3)">text language</span></div>'
+      +'<select oninput="SEL_BLOCK.annotations['+i+'].lang=this.value">';
+    LANGS.forEach(function(l){ h+='<option value="'+l+'"'+(a.lang===l?' selected':'')+'>'+l+'</option>'; });
+    h+='</select></div>';
+    // start/end with auto-fill indicator
+    var hasSpan = (a.start||0) > 0 || (a.end||0) > 0;
+    var spanPreview = '';
+    if(hasSpan && paraText){
+      var sp = paraText.substring(a.start||0, a.end||0);
+      if(sp) spanPreview = '<div style="font-size:10px;color:var(--grn);margin-top:3px;background:rgba(31,204,158,.08);padding:2px 6px;border-radius:3px">↳ "'+esc(sp.length>40?sp.slice(0,40)+'…':sp)+'"</div>';
+    }
+    h+='<div class="fld"><div class="lbl">start <span style="font-size:9px;color:var(--txt3)">char offset</span></div>'
+      +'<input type="number" id="ann-start-'+i+'" value="'+(a.start||0)+'" min="0"'
+      +' style="'+(hasSpan?'border-color:var(--grn);':'')+'"'
+      +' oninput="SEL_BLOCK.annotations['+i+'].start=parseInt(this.value)||0;renderAnnotationsForm(SEL_BLOCK)"></div>';
+    h+='<div class="fld"><div class="lbl">end <span style="font-size:9px;color:var(--txt3)">exclusive</span></div>'
+      +'<input type="number" id="ann-end-'+i+'" value="'+(a.end||0)+'" min="0"'
+      +' style="'+(hasSpan?'border-color:var(--grn);':'')+'"'
+      +' oninput="SEL_BLOCK.annotations['+i+'].end=parseInt(this.value)||0;renderAnnotationsForm(SEL_BLOCK)"></div>';
+    h+='</div>';
+    if(spanPreview) h+=spanPreview;
+    h+='<div class="g2">';
+    h+='<div class="fld"><div class="lbl">annotation_type</div><select onchange="SEL_BLOCK.annotations['+i+'].annotation_type=this.value;renderAnnotationsForm(SEL_BLOCK)">';
+    ['','normal','background','scope','methodology','legal_basis','audit_criteria','audit_observation','effect','cause','data_analysis','conclusion','executive_summary','recommendation_summary','best_practice','scope_for_improvement','cross_reference'].forEach(function(v){
+      var lbl=v||'—';
+      if(v==='cross_reference') lbl='cross_reference ★ new';
+      h+='<option value="'+v+'"'+(a.annotation_type===v?' selected':'')+'>'+lbl+'</option>';
+    });
+    h+='</select></div>';
+    h+='<div class="fld"><div class="lbl">source</div><select onchange="SEL_BLOCK.annotations['+i+'].source=this.value"><option value="human"'+(a.source==='human'?' selected':'')+'>human</option><option value="ai"'+(a.source==='ai'?' selected':'')+'>ai</option><option value="rule_based"'+(a.source==='rule_based'?' selected':'')+'>rule_based</option></select></div>';
+    h+='</div>';
+    // cross_reference fields — only shown when annotation_type=cross_reference
+    h+='<div style="'+(isCR?'':'display:none')+'" id="cr-fields-'+i+'">';
+    h+='<div style="font-size:10px;color:var(--pur);padding:5px 7px;background:rgba(167,139,250,.07);border-radius:4px;border-left:2px solid var(--pur);margin-bottom:8px">cross_reference v1.1 — links this text span to another unit, dataset, or URL.</div>';
+    h+='<div class="fld"><div class="lbl" style="color:var(--pur)">target <span class="req">*</span> <span style="font-size:9px;color:var(--txt3)">required for cross_reference</span></div>'
+      +'<input class="mono" type="text" value="'+esc(a.target||'')+'"'
+      +' placeholder="unit_id · product_id/unit_id · product_id/dataset_id · https://…"'
+      +' oninput="SEL_BLOCK.annotations['+i+'].target=this.value">'
+      +'<div class="hint">Appendix: AR01-CAG-2025-STATE-MP-APP01 · Dataset: AR01-CAG-2025-STATE-MP-CH02-DS01 · Section: AR01-CAG-2025-STATE-MP-CH02-SEC03 · External: https://...</div></div>';
+    // target_label — multilingual display override
+    h+='<div class="fld"><div class="lbl" style="color:var(--pur)">target_label <span style="font-size:9px;color:var(--txt3);font-weight:400">multilingual — optional display override</span></div>';
+    LANGS.forEach(function(l){
+      var v=(a.target_label&&a.target_label[l]||'').replace(/"/g,'&quot;');
+      h+='<div class="ml-row"><div class="ml-lbl">'+l+'</div><input type="text" value="'+v+'" placeholder="e.g. Appendix A"'+' oninput="if(!SEL_BLOCK.annotations['+i+'].target_label)SEL_BLOCK.annotations['+i+'].target_label={};'+'SEL_BLOCK.annotations['+i+'].target_label[\'"+l+"\']=this.value"></div>';
+    });
+    h+='<div class="hint">When set, the portal renders this text as the hyperlink label. Omit to use the annotated span text itself as the link label.</div></div>';
+    h+='</div>'; // /cr-fields
+    h+='<div class="g2">';
+    h+='<div class="fld"><div class="lbl">confidence (0-1, ai only)</div><input type="number" step="0.01" min="0" max="1" value="'+(a.confidence||'')+'" oninput="SEL_BLOCK.annotations['+i+'].confidence=parseFloat(this.value)||null"></div>';
+    h+='<div class="fld"><div class="lbl">model (ai only)</div><input type="text" value="'+esc(a.model||'')+'" oninput="SEL_BLOCK.annotations['+i+'].model=this.value"></div>';
+    h+='</div>';
+    h+=togRow2('ann_rev_'+i,'reviewed',!!a.reviewed,'SEL_BLOCK.annotations['+i+'].reviewed=this.checked');
+    h+='<div class="fld"><div class="lbl">notes</div><input type="text" value="'+esc(a.notes||'')+'" oninput="SEL_BLOCK.annotations['+i+'].notes=this.value"></div>';
+    h+='</div>';
+  });
+  h+='<button class="badd" onclick="addAnnotation()">+ Add annotation</button>';
+  ft4.innerHTML=h;
+}
+// ══════════════════════════════════════════════════════
+// ANNOTATION OFFSET HELPERS
+// ══════════════════════════════════════════════════════
+function annFillOffsets(){
+  // Called on mouseup/keyup in the text box — fills start+end
+  // on the LAST annotation that has a cross_reference type,
+  // or the LAST annotation if only one exists
+  if(!SEL_BLOCK) return;
+  var sel = window.getSelection();
+  if(!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
+
+  // Verify selection is inside our text box
+  var box = document.getElementById('ann-text-box');
+  if(!box) return;
+  if(!box.contains(sel.anchorNode)) return;
+
+  var range   = sel.getRangeAt(0);
+  var preRange = document.createRange();
+  preRange.setStart(box, 0);
+  preRange.setEnd(range.startContainer, range.startOffset);
+  var start   = preRange.toString().length;
+  var selText = range.toString();
+  var end     = start + selText.length;
+
+  if(start === end) return;
+
+  // Find which annotation to fill:
+  // 1. If exactly one annotation, fill it
+  // 2. Otherwise fill the last cross_reference annotation
+  // 3. Otherwise fill the last annotation
+  var anns  = SEL_BLOCK.annotations||[];
+  var target_idx = -1;
+  if(anns.length === 1){
+    target_idx = 0;
+  } else {
+    // prefer last cross_reference
+    for(var i = anns.length-1; i >= 0; i--){
+      if(anns[i].annotation_type === 'cross_reference'){ target_idx = i; break; }
+    }
+    if(target_idx < 0) target_idx = anns.length - 1;
+  }
+  if(target_idx < 0) return;
+
+  SEL_BLOCK.annotations[target_idx].start = start;
+  SEL_BLOCK.annotations[target_idx].end   = end;
+
+  // Show status
+  var status = document.getElementById('ann-selection-status');
+  if(status){
+    var preview = selText.length > 50 ? selText.slice(0,50)+'…' : selText;
+    status.innerHTML = '<span style="color:var(--grn)">✓ Annotation '+(target_idx+1)
+      +' — chars '+start+'–'+end+' — "'+esc(preview)+'"</span>';
+  }
+
+  // Update start/end inputs directly without full re-render
+  var sEl = document.getElementById('ann-start-'+target_idx);
+  var eEl = document.getElementById('ann-end-'+target_idx);
+  if(sEl){ sEl.value = start; sEl.style.borderColor='var(--grn)'; }
+  if(eEl){ eEl.value = end;   eEl.style.borderColor='var(--grn)'; }
+
+  // Highlight the selected span in the text box
+  annHighlightSpan(box, start, end);
+}
+
+function annHighlightSpan(box, start, end){
+  // Re-render the text box with <mark> around the selected span
+  if(!box) return;
+  var full = SEL_BLOCK.content && SEL_BLOCK.content.text;
+  if(!full) return;
+  var lang = LANGS[0]||'en';
+  var txt  = (typeof full==='object') ? (full[lang]||full.en||Object.values(full)[0]||'') : full;
+  if(!txt || start >= end || end > txt.length) return;
+
+  var before = esc(txt.slice(0, start));
+  var marked = txt.slice(start, end);
+  var after  = esc(txt.slice(end));
+  box.innerHTML = before
+    + '<mark style="background:rgba(104,117,245,.3);border-radius:2px;padding:0 1px;color:var(--txt)">'
+    + esc(marked) + '</mark>'
+    + after;
+}
+
+function addAnnotation(){
+  if(!SEL_BLOCK) return;
+  if(!SEL_BLOCK.annotations) SEL_BLOCK.annotations=[];
+  var uid=SEL_UNIT?SEL_UNIT.unit_id:'';
+  var bid=SEL_BLOCK.block_id;
+  SEL_BLOCK.annotations.push({annotation_id:'ANN-'+bid+'-'+pad3(SEL_BLOCK.annotations.length+1),lang:LANGS[0]||'en',start:0,end:0,annotation_type:'',source:'human',reviewed:false});
+  renderAnnotationsForm(SEL_BLOCK);
+}
+function removeAnnotation(i){
+  if(!SEL_BLOCK) return;
+  SEL_BLOCK.annotations.splice(i,1);
+  renderAnnotationsForm(SEL_BLOCK);
+}
+
+// ══════════════════════════════════════════════════════
+// FORM TAB SWITCHING
+// ══════════════════════════════════════════════════════
+function switchFormTab(id,el){
+  document.querySelectorAll('.fpnl').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.form-tab').forEach(function(t){t.classList.remove('on');});
+  document.getElementById(id).classList.add('on');
+  el.classList.add('on');
+  if(id==='ft4' && SEL_BLOCK) renderAnnotationsForm(SEL_BLOCK);
+  if(id==='ft5' && SEL_UNIT)  renderFootnotesForm(SEL_UNIT);
+}
+
+// ══════════════════════════════════════════════════════
+// TAG INPUT HELPER (simple, no persistent array)
+// ══════════════════════════════════════════════════════
+function tagInputSimple(id, arr, placeholder, key){
+  var w='<div class="tw" id="tw-'+id+'" onclick="document.getElementById(\'ti-'+id+'\').focus()">';
+  arr.forEach(function(v,i){
+    w+='<span class="tag">'+esc(v)+'<span class="tag-x" onclick="removeTagSimple(\''+id+'\',\''+key+'\','+i+')">×</span></span>';
+  });
+  w+='<input class="ti" id="ti-'+id+'" placeholder="'+placeholder+'" onkeydown="addTagSimple(event,\''+id+'\',\''+key+'\')">';
+  w+='</div>';
+  return w;
+}
+function tagInput(id, arr, onAddFn, placeholder){
+  return tagInputSimple(id, arr, placeholder, id);
+}
+
+function addTagSimple(e,id,key){
+  if(e.key!=='Enter') return;
+  var val=e.target.value.trim(); if(!val) return;
+  e.target.value='';
+  // Route to correct state object
+  routeTagToState(key,val,'add');
+  // Re-render the relevant form section
+  if(SEL_UNIT&&(key.startsWith('m-')||key.startsWith('m_')||['topics','primary_schemes','states_uts','audit_findings_categories','findings'].indexOf(key)>=0||key.startsWith('__bm'))) renderUnitMetaForm(SEL_UNIT);
+  if(SEL_BLOCK) renderBlockForm(SEL_BLOCK);
+}
+function removeTagSimple(id,key,i){
+  routeTagToState(key,null,i);
+  if(SEL_UNIT) renderUnitMetaForm(SEL_UNIT);
+  if(SEL_BLOCK) renderBlockForm(SEL_BLOCK);
+}
+function routeTagToState(key,val,action){
+  var isAdd=(action==='add');
+  function applyArr(arr,isField){
+    if(isAdd){if(arr.indexOf(val)<0)arr.push(val);}
+    else arr.splice(action,1);
+  }
+  if(!SEL_UNIT) return;
+  var m=SEL_UNIT.metadata||(SEL_UNIT.metadata={});
+  if(key==='topics'||key==='m-topics'){if(!m.topics)m.topics=[];applyArr(m.topics);}
+  else if(key==='primary_schemes'||key==='m-pschemes'){if(!m.primary_schemes)m.primary_schemes=[];applyArr(m.primary_schemes);}
+  else if(key==='states_uts'||key==='m-states'){if(!m.regions)m.regions={};if(!m.regions.states_uts)m.regions.states_uts=[];applyArr(m.regions.states_uts);}
+  else if(key==='audit_findings_categories'||key==='m-findings'){if(!m.audit_findings_categories)m.audit_findings_categories=[];applyArr(m.audit_findings_categories);}
+  else if(key==='__bm_findings'&&SEL_BLOCK){var bm=SEL_BLOCK.block_metadata||(SEL_BLOCK.block_metadata={});if(!bm.audit_findings_categories)bm.audit_findings_categories=[];applyArr(bm.audit_findings_categories);}
+  else if(key==='__bm_keyfind'&&SEL_BLOCK){var bm=SEL_BLOCK.block_metadata||(SEL_BLOCK.block_metadata={});if(!bm.key_findings)bm.key_findings=[];applyArr(bm.key_findings);}
+  else if(key==='__bm_entities'&&SEL_BLOCK){var bm=SEL_BLOCK.block_metadata||(SEL_BLOCK.block_metadata={});if(!bm.referenced_entities)bm.referenced_entities=[];applyArr(bm.referenced_entities);}
+  else if(key==='__footnote_ids'&&SEL_BLOCK){if(!SEL_BLOCK.footnote_ids)SEL_BLOCK.footnote_ids=[];applyArr(SEL_BLOCK.footnote_ids);}
+}
+
+// ══════════════════════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════
+// UNIT FILE JSON  (units/{unit_id}.json)
+// ══════════════════════════════════════════════════════
+// Each unit gets its own standalone JSON file in units/.
+// This is the FULL content_unit object — identical shape to the
+// content_unit definition in structure.schema but stored as a
+// self-contained file so the pipeline can load units independently
+// without parsing the entire structure tree.
+// structure.json carries lightweight refs (unit_id + children[]).
+// units/{unit_id}.json carries all the fields.
+function buildUnitFileJSON(u){
+  var out = { unit_id: u.unit_id, unit_type: u.unit_type };
+
+  // Ordering follows structure.schema property order for readability
+  if (u.seq != null)           out.seq = u.seq;
+  if (u.title && Object.keys(u.title).length)
+    out.title = u.title;
+  if (u.executive_summary && Object.keys(u.executive_summary).some(function(k){ return u.executive_summary[k]; }))
+    out.executive_summary = u.executive_summary;
+  if (u.vector_embedding_id)   out.vector_embedding_id = u.vector_embedding_id;
+  if (u.embedding_model)       out.embedding_model = u.embedding_model;
+  if (u.slug)                  out.slug = u.slug;
+  if (u.citation && Object.keys(u.citation).some(function(k){ return u.citation[k]; }))
+    out.citation = u.citation;
+  if (u.page_range && (u.page_range.start || u.page_range.end))
+    out.page_range = u.page_range;
+  if (u.para_number)           out.para_number = u.para_number;
+  if (u.toc_include === false) out.toc_include = false;
+  if (u.taggable)              out.taggable = true;
+  if (u.collapsible === false) out.collapsible = false;
+  if (u.default_collapsed)     out.default_collapsed = true;
+  if (u.metadata_override_mode && u.metadata_override_mode !== 'merge')
+    out.metadata_override_mode = u.metadata_override_mode;
+
+  // metadata — inheritable_audit_metadata fields, omit if empty
+  var m = u.metadata || {};
+  var mOut = {};
+  if (m.audit_type && m.audit_type.length)           mOut.audit_type = m.audit_type;
+  if (m.report_sector && m.report_sector.length)     mOut.report_sector = m.report_sector;
+  if (m.audit_period && (m.audit_period.start_year || m.audit_period.end_year))
+    mOut.audit_period = m.audit_period;
+  if (m.topics && m.topics.length)                   mOut.topics = m.topics;
+  if (m.audit_findings_categories && m.audit_findings_categories.length)
+    mOut.audit_findings_categories = m.audit_findings_categories;
+  if (m.primary_schemes && m.primary_schemes.length) mOut.primary_schemes = m.primary_schemes;
+  if (m.other_schemes && m.other_schemes.length)     mOut.other_schemes = m.other_schemes;
+  if (m.regions) {
+    var r = {};
+    if (m.regions.states_uts && m.regions.states_uts.length) r.states_uts = m.regions.states_uts;
+    if (m.regions.ulbs && m.regions.ulbs.length)             r.ulbs = m.regions.ulbs;
+    if (m.regions.pris && m.regions.pris.length)             r.pris = m.regions.pris;
+    if (Object.keys(r).length) mOut.regions = r;
+  }
+  if (m.main_audited_entities && m.main_audited_entities.length)
+    mOut.main_audited_entities = m.main_audited_entities;
+  if (m.other_audited_entities && m.other_audited_entities.length)
+    mOut.other_audited_entities = m.other_audited_entities;
+  if (m.referenced_entities && m.referenced_entities.length)
+    mOut.referenced_entities = m.referenced_entities;
+  if (m.dpc_act_sections && m.dpc_act_sections.length)
+    mOut.dpc_act_sections = m.dpc_act_sections;
+  if (m.examination_coverage && m.examination_coverage.coverage_type)
+    mOut.examination_coverage = m.examination_coverage;
+  if (m.pac_status && Object.keys(m.pac_status).some(function(k){ return m.pac_status[k]; }))
+    mOut.pac_status = m.pac_status;
+  if (m.unit_structure)       mOut.unit_structure = m.unit_structure;
+  if (Object.keys(mOut).length) out.metadata = mOut;
+
+  // translation_status
+  if (u.translation_status && Object.keys(u.translation_status).length)
+    out.translation_status = u.translation_status;
+
+  // references (unit-level cross-references)
+  if (u.references && u.references.length)
+    out.references = u.references;
+
+  // children — ordered list of child unit_ids for this unit only
+  var childIds = allUnits()
+    .filter(function(au){ return au.parent_id === u.unit_id; })
+    .sort(function(a,b){ return (a.seq||0)-(b.seq||0); })
+    .map(function(au){ return au.unit_id; });
+  if (childIds.length) out.children = childIds;
+
+  return out;
+}
+
+// Download a single unit/{unit_id}.json
+function downloadUnitJSON(uid){
+  var u = findUnit(uid);
+  if (!u) return;
+  var json = JSON.stringify(buildUnitFileJSON(u), null, 2);
+  dl(u.unit_id + '.json', json, 'application/json');
+  sbar('Downloaded units/' + u.unit_id + '.json');
+}
+
+// Download every unit as a separate {unit_id}.json file
+// Browser will queue them as sequential downloads (one per unit)
+function downloadAllUnits(){
+  var units = allUnits();
+  if (!units.length){ alert('No units yet.'); return; }
+  if (!confirm('Download ' + units.length + ' unit JSON file(s)?\nBrowser will download them one by one.')) return;
+  var delay = 0;
+  units.forEach(function(u){
+    setTimeout(function(){
+      var json = JSON.stringify(buildUnitFileJSON(u), null, 2);
+      dl(u.unit_id + '.json', json, 'application/json');
+    }, delay);
+    delay += 200;   // 200 ms gap so browsers don't block multiple downloads
+  });
+  sbar('Downloading ' + units.length + ' unit file(s)…');
+}
+
+function buildStructureJSON(){
+  function cleanUnit(u){
+    var out={unit_id:u.unit_id,unit_type:u.unit_type};
+    if(u.seq!=null) out.seq=u.seq;
+    if(u.title&&Object.keys(u.title).length) out.title=u.title;
+    if(u.executive_summary&&Object.keys(u.executive_summary).some(function(k){return u.executive_summary[k];})) out.executive_summary=u.executive_summary;
+    if(u.slug) out.slug=u.slug;
+    if(u.para_number) out.para_number=u.para_number;
+    if(u.toc_include===false) out.toc_include=false;
+    if(u.taggable) out.taggable=true;
+    if(u.collapsible===false) out.collapsible=false;
+    if(u.default_collapsed) out.default_collapsed=true;
+    if(u.metadata_override_mode&&u.metadata_override_mode!=='merge') out.metadata_override_mode=u.metadata_override_mode;
+    if(u.metadata&&Object.keys(u.metadata).length) out.metadata=u.metadata;
+    if(u.translation_status&&Object.keys(u.translation_status).length) out.translation_status=u.translation_status;
+    // children: compute from parent_id relationships
+    var childIds=allUnits().filter(function(au){return au.parent_id===u.unit_id;}).map(function(au){return au.unit_id;});
+    if(childIds.length) out.children=childIds;
+    return out;
+  }
+  return {
+    front_matter: STRUCT.front_matter.map(cleanUnit),
+    content_units: STRUCT.content_units.map(cleanUnit),
+    back_matter: STRUCT.back_matter.map(cleanUnit)
+  };
+}
+
+function downloadStructure(){
+  if(!allUnits().length){alert('No units yet.');return;}
+  var json=JSON.stringify(buildStructureJSON(),null,2);
+  dl('structure.json',json,'application/json');
+  sbar('structure.json downloaded');
+}
+
+function showBlocksDownload(){
+  var modal=document.getElementById('dl-blocks-modal');
+  var sel=document.getElementById('dl_chapter');
+  sel.innerHTML='';
+  // Chapters = units of type chapter
+  var chapters=allUnits().filter(function(u){
+    return u.unit_type==='chapter'||u.unit_type==='preface'||u.unit_type==='executive_summary'||u.unit_type==='appendix'||u.unit_type==='annexure';
+  });
+  if(!chapters.length){
+    // if no chapters, show all units
+    allUnits().forEach(function(u){
+      sel.innerHTML+='<option value="'+u.unit_id+'">'+esc(u.unit_id)+'</option>';
+    });
+  } else {
+    chapters.forEach(function(u){
+      var n=(Object.keys(BLOCKS).filter(function(uid){return uid===u.unit_id||uid.startsWith(u.unit_id+'-');}).reduce(function(acc,uid){return acc+(BLOCKS[uid]||[]).length;},0));
+      sel.innerHTML+='<option value="'+u.unit_id+'">'+esc(u.unit_id)+' ('+n+' blocks)</option>';
+    });
+  }
+  modal.classList.add('on');
+}
+
+function confirmDownloadBlocks(){
+  var chapterId=document.getElementById('dl_chapter').value;
+  if(!chapterId) return;
+  // collect blocks for this chapter and all descendants
+  var chapterUnitIds=[chapterId];
+  allUnits().forEach(function(u){
+    if(u.unit_id!==chapterId&&u.unit_id.startsWith(chapterId+'-')) chapterUnitIds.push(u.unit_id);
+  });
+  var lines=[];
+  chapterUnitIds.forEach(function(uid){
+    (BLOCKS[uid]||[]).forEach(function(b){
+      lines.push(JSON.stringify(cleanBlock(b)));
+    });
+  });
+  if(!lines.length){alert('No blocks for this unit.');return;}
+  // Standard naming: content_block_{unit_id}.ndjson
+  // The full unit_id is used as-is — uppercase preserved — matching the
+  // pattern content_block_*.ndjson expected by repo_layout.block_ndjson_files()
+  // and generate_embeddings.py sidecar_stem().
+  // e.g. AR01-CAG-2025-STATE-MP-CH02 → content_block_AR01-CAG-2025-STATE-MP-CH02.ndjson
+  var fname='content_block_'+chapterId+'.ndjson';
+  dl(fname,lines.join('\n'),'application/x-ndjson');
+  closeModal('dl-blocks-modal');
+  sbar('Downloaded '+lines.length+' blocks → '+fname);
+}
+
+function cleanBlock(b){
+  var out={block_id:b.block_id,block_type:b.block_type,unit_id:b.unit_id,content:b.content||{}};
+  if(b.seq) out.seq=b.seq;
+  if(b.para_number) out.para_number=b.para_number;
+  if(b.lang) out.lang=b.lang;
+  if(b.toc_include) out.toc_include=true;
+  if(b.group_id) out.group_id=b.group_id;
+  if(b.group_role) out.group_role=b.group_role;
+  if(b.footnote_ids&&b.footnote_ids.length) out.footnote_ids=b.footnote_ids;
+  if(b.block_metadata){var bm=b.block_metadata;if((bm.audit_findings_categories&&bm.audit_findings_categories.length)||(bm.key_findings&&bm.key_findings.length)||(bm.referenced_entities&&bm.referenced_entities.length))out.block_metadata=bm;}
+  if(b.translation_status&&Object.keys(b.translation_status).length) out.translation_status=b.translation_status;
+  if(b.annotations&&b.annotations.length) out.annotations=b.annotations;
+  return out;
+}
+
+function dl(filename, content, type){
+  var blob=new Blob([content],{type:type});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  a.click();
+}
+
+// ══════════════════════════════════════════════════════
+// LOAD FILES
+// ══════════════════════════════════════════════════════
+function handleLoadStructure(input){
+  var file=input.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      STRUCT.front_matter=[];STRUCT.content_units=[];STRUCT.back_matter=[];
+      ['front_matter','content_units','back_matter'].forEach(function(sec){
+        (data[sec]||[]).forEach(function(u){
+          var unit=Object.assign({metadata:{},translation_status:{},parent_id:null},u);
+          STRUCT[sec].push(unit);
+        });
+      });
+      renderUnitTree();
+      sbar('structure.json loaded — '+allUnits().length+' units');
+      alert('Structure loaded: '+allUnits().length+' units.');
+    }catch(err){alert('Error loading structure.json: '+err.message);}
+  };
+  reader.readAsText(file);
+  input.value='';
+}
+
+function handleLoadBlocks(input){
+  var file=input.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var lines=e.target.result.split('\n').filter(function(l){return l.trim();});
+    var loaded=0;
+    lines.forEach(function(line){
+      try{
+        var b=JSON.parse(line);
+        var uid=b.unit_id;
+        if(!uid) return;
+        if(!BLOCKS[uid]) BLOCKS[uid]=[];
+        BLOCKS[uid].push(b);
+        loaded++;
+      }catch(err){}
+    });
+    if(SEL_UNIT) renderBlockList();
+    sbar('Loaded '+loaded+' blocks from NDJSON');
+    alert('Loaded '+loaded+' blocks.');
+  };
+  reader.readAsText(file);
+  input.value='';
+}
+
+// ══════════════════════════════════════════════════════
+// STATUS
+// ══════════════════════════════════════════════════════
+function sbar(msg){
+  var el=document.getElementById('sbar-msg');
+  el.className='sok';
+  el.textContent=msg;
+  var info=document.getElementById('sbar-info');
+  var total=allUnits().length;
+  var bcount=Object.keys(BLOCKS).reduce(function(a,k){return a+(BLOCKS[k]||[]).length;},0);
+  info.textContent=total+' units · '+bcount+' blocks';
+}
+
+
+// ══════════════════════════════════════════════════════
+// TAXONOMY & REGISTRY STATE
+// ══════════════════════════════════════════════════════
+var TAX = {
+  audit_type:   [],   // [{id,en}]
+  report_sector:[],   // [{id,en,par}]
+  topics:       [],   // [{id,en,par}]
+  findings:     [],   // [{id,en,par}]
+  states_uts:   [],   // [{id,en}]
+  entities:     [],   // [{id,en,type}]
+  schemes:      []    // [{id,en}]
+};
+var TAX_LOADED = false;
+var TAX_DIR_HANDLE = null; // FileSystemDirectoryHandle
+
+// File name → TAX key mapping
+var TAX_FILE_MAP = {
+  'taxonomy_audit_type.json':                   'audit_type',
+  'taxonomy_report_sector.json':                'report_sector',
+  'taxonomy_topics.json':                       'topics',
+  'taxonomy_audit_findings_audit_report.json':  'findings',
+  'registry_states_uts.json':                   'states_uts',
+  'registry_entities.json':                     'entities',
+  'registry_schemes.json':                      'schemes'
+};
+
+// ── LOAD TAXONOMY FOLDER (File System Access API) ───────────────────────────
+async function loadTaxonomyFolder(){
+  if(!window.showDirectoryPicker){
+    // Firefox fallback
+    document.getElementById('tax-fallback-btn').style.display='';
+    document.getElementById('btn-load-tax').style.display='none';
+    sbar('Firefox detected — use the file picker to select individual JSON files');
+    return;
+  }
+  try{
+    TAX_DIR_HANDLE = await window.showDirectoryPicker({mode:'read'});
+    await readTaxFromDir(TAX_DIR_HANDLE);
+  }catch(e){
+    if(e.name!=='AbortError') sbar('Could not open folder: '+e.message);
+  }
+}
+
+async function readTaxFromDir(dirHandle){
+  var loaded=[], missing=[];
+  // Recursively search for files in this dir and one level of sub-dirs
+  async function scanDir(dh, depth){
+    for await(var entry of dh.values()){
+      if(entry.kind==='file' && TAX_FILE_MAP[entry.name]){
+        var file = await entry.getFile();
+        var text = await file.text();
+        try{
+          var data = JSON.parse(text);
+          var key = TAX_FILE_MAP[entry.name];
+          TAX[key] = parseEntries(data, key);
+          loaded.push(entry.name);
+        }catch(e){ missing.push(entry.name+'(parse error)'); }
+      } else if(entry.kind==='directory' && depth<2){
+        await scanDir(entry, depth+1);
+      }
+    }
+  }
+  await scanDir(dirHandle, 0);
+
+  var expected = Object.keys(TAX_FILE_MAP).length;
+  TAX_LOADED = loaded.length>0;
+
+  // Cache in localStorage
+  try{
+    var cache={};
+    Object.keys(TAX).forEach(function(k){cache[k]=TAX[k];});
+    localStorage.setItem('cag_tax_cache', JSON.stringify(cache));
+    localStorage.setItem('cag_tax_loaded_at', new Date().toISOString());
+  }catch(e){}
+
+  updateTaxStatus(loaded.length, expected);
+  if(SEL_UNIT) renderUnitMetaForm(SEL_UNIT);
+  if(SEL_BLOCK) renderBlockForm(SEL_BLOCK);
+  sbar('Loaded '+loaded.length+'/'+expected+' taxonomy files');
+}
+
+// ── HANDLE FILE-BY-FILE (Firefox fallback) ──────────────────────────────────
+function handleTaxFiles(files){
+  var loaded=0;
+  Array.from(files).forEach(function(file){
+    if(!TAX_FILE_MAP[file.name]) return;
+    var reader=new FileReader();
+    reader.onload=function(e){
+      try{
+        var data=JSON.parse(e.target.result);
+        TAX[TAX_FILE_MAP[file.name]]=parseEntries(data, TAX_FILE_MAP[file.name]);
+        loaded++;
+        TAX_LOADED=true;
+        try{
+          var cache={};
+          Object.keys(TAX).forEach(function(k){cache[k]=TAX[k];});
+          localStorage.setItem('cag_tax_cache',JSON.stringify(cache));
+        }catch(ex){}
+        updateTaxStatus(loaded, Object.keys(TAX_FILE_MAP).length);
+        if(SEL_UNIT) renderUnitMetaForm(SEL_UNIT);
+        if(SEL_BLOCK) renderBlockForm(SEL_BLOCK);
+      }catch(ex){ sbar('Parse error in '+file.name+': '+ex.message); }
+    };
+    reader.readAsText(file);
+  });
+}
+
+// ── RELOAD from same directory ───────────────────────────────────────────────
+async function reloadTaxonomy(){
+  if(TAX_DIR_HANDLE){
+    sbar('Reloading from disk…');
+    await readTaxFromDir(TAX_DIR_HANDLE);
+  } else {
+    sbar('No folder handle — load the folder again to refresh');
+  }
+}
+
+// ── CLEAR ────────────────────────────────────────────────────────────────────
+function clearTaxonomy(){
+  Object.keys(TAX).forEach(function(k){TAX[k]=[];});
+  TAX_LOADED=false; TAX_DIR_HANDLE=null;
+  try{localStorage.removeItem('cag_tax_cache');localStorage.removeItem('cag_tax_loaded_at');}catch(e){}
+  updateTaxStatus(0,0);
+  if(SEL_UNIT) renderUnitMetaForm(SEL_UNIT);
+  sbar('Taxonomy cleared');
+}
+
+// ── RESTORE FROM CACHE ────────────────────────────────────────────────────────
+function restoreTaxCache(){
+  try{
+    var raw=localStorage.getItem('cag_tax_cache');
+    var at=localStorage.getItem('cag_tax_loaded_at');
+    if(!raw) return;
+    var cache=JSON.parse(raw);
+    var anyLoaded=false;
+    Object.keys(cache).forEach(function(k){ if(TAX[k]!==undefined&&cache[k].length){TAX[k]=cache[k];anyLoaded=true;} });
+    TAX_LOADED=anyLoaded;
+    if(anyLoaded){
+      var total=Object.keys(TAX_FILE_MAP).length;
+      var loaded=Object.values(TAX).filter(function(v){return v.length>0;}).length;
+      updateTaxStatus(loaded, total, at);
+    }
+  }catch(e){}
+}
+
+// ── PARSE ENTRIES helper ──────────────────────────────────────────────────────
+function parseEntries(data, key){
+  var entries=data.entries||[];
+  if(key==='audit_type')    return entries.map(function(e){return {id:e.id,en:e.label&&e.label.en||e.id};});
+  if(key==='report_sector') return entries.map(function(e){return {id:e.id,en:e.label&&e.label.en||e.id,par:e.parent_id||''};});
+  if(key==='topics')        return entries.map(function(e){return {id:e.id,en:e.label&&e.label.en||e.id,par:e.parent_id||''};});
+  if(key==='findings')      return entries.map(function(e){return {id:e.id,en:e.label&&e.label.en||e.id,par:e.parent_id||''};});
+  if(key==='states_uts')    return entries.map(function(e){return {id:e.id,en:e.name&&e.name.en||e.id};});
+  if(key==='entities')      return entries.map(function(e){return {id:e.id,en:e.name&&e.name.en||e.id,type:e.entity_type||''};});
+  if(key==='schemes')       return entries.map(function(e){return {id:e.id,en:e.name&&e.name.en||e.id};});
+  return [];
+}
+
+// ── STATUS BAR ────────────────────────────────────────────────────────────────
+function updateTaxStatus(loaded, total, cachedAt){
+  var el=document.getElementById('tax-status');
+  var reload=document.getElementById('btn-reload-tax');
+  var clear=document.getElementById('btn-clear-tax');
+  if(loaded>0){
+    var counts=Object.keys(TAX).map(function(k){return TAX[k].length;}).reduce(function(a,b){return a+b;},0);
+    var msg='✓ Taxonomy loaded: '+counts+' entries across '+loaded+' files';
+    if(cachedAt) msg+=' (cached '+cachedAt.slice(0,10)+')';
+    el.textContent=msg; el.className='tax-status loaded';
+    reload.style.display='';clear.style.display='';
+  } else {
+    el.textContent='No taxonomy loaded — dropdowns show plain text inputs';
+    el.className='tax-status none';
+    reload.style.display='none'; clear.style.display='none';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// TYPEAHEAD SEARCH INPUT  (replaces plain tagInputSimple for taxonomy fields)
+// ══════════════════════════════════════════════════════
+// Renders: tags for current values + search input + live dropdown
+var TA_ACTIVE = null; // id of currently open dropdown
+
+function mbGroupedTag(domId, arr, taxKey, stateKey){
+  var items  = TAX[taxKey]||[];
+  var sel    = arr||[];
+  var parents  = items.filter(function(e){ return !e.par; });
+  var byP = {};
+  items.forEach(function(e){
+    if(e.par){ if(!byP[e.par]) byP[e.par]=[]; byP[e.par].push(e); }
+  });
+
+  // Tag chips
+  var tags = sel.map(function(v,i){
+    var entry = items.find(function(e){ return e.id===v; });
+    var lbl   = entry ? (entry.par ? entry.par.replace(/_/g,' ')+' › '+entry.en : entry.en) : v;
+    if(lbl.length>45) lbl=lbl.slice(0,45)+'…';
+    return '<span class="tag" title="'+esc(v)+'">'+esc(lbl)
+      +'<span class="tag-x" data-sk="'+esc(stateKey)+'" data-i="'+i+'" onclick="mbGrpRm(this)">x</span></span>';
+  }).join('');
+
+  // Options grouped by parent
+  var opts = '<option value="">+ add…</option>';
+  parents.forEach(function(p){
+    var ch = byP[p.id]||[];
+    opts += '<optgroup label="▶ '+esc(p.en)+'">';
+    opts += '<option value="'+esc(p.id)+'" style="font-style:italic;color:#888">'+esc(p.en)+' (all)</option>';
+    ch.forEach(function(c){ opts += '<option value="'+esc(c.id)+'">'+esc(c.en)+'</option>'; });
+    opts += '</optgroup>';
+  });
+
+  return '<div class="tw" style="min-height:28px" id="'+esc(domId)+'">'
+    + tags
+    + '<select data-sk="'+esc(stateKey)+'" style="background:transparent;border:none;outline:none;font-size:11px;color:var(--txt2);max-width:260px;cursor:pointer"'
+    + ' onchange="mbGrpAdd(this)">'
+    + opts + '</select></div>';
+}
+function mbGrpAdd(sel){
+  var sk=sel.getAttribute('data-sk');
+  var v=sel.value; sel.value='';
+  if(!v) return;
+  var arr=getTaxArr(sk);
+  if(arr.indexOf(v)<0){ addTaxTag(sk,v); }
+}
+function mbGrpRm(btn){
+  var sk=btn.getAttribute('data-sk');
+  var i=parseInt(btn.getAttribute('data-i'));
+  taxRemoveTag(sk,i);
+}
+
+
+function taxTagInput(id, arr, taxKey, stateKey){
+  var items = TAX[taxKey]||[];
+  // If taxonomy not loaded, fall back to plain tag input
+  if(!items.length) return tagInputSimple(id, arr, taxKey+' id…', stateKey);
+
+  var tagsHtml = arr.map(function(v,i){
+    var entry=items.find(function(e){return e.id===v;});
+    var label=entry?entry.en+' ('+v+')':v;
+    return '<span class="tag" title="'+esc(v)+'">'+esc(v)
+      +'<span class="tag-x" onclick="taxRemoveTag(\''+stateKey+'\','+i+')">×</span></span>';
+  }).join('');
+
+  return '<div class="ta-wrap" id="taw-'+id+'">'
+    +'<div class="tw" id="tw-'+id+'" onclick="document.getElementById(\'tai-'+id+'\').focus()">'
+      +tagsHtml
+      +'<input class="ti" id="tai-'+id+'" placeholder="Type to search…"'
+      +' oninput="taxSearch(\''+id+'\',\''+taxKey+'\',\''+stateKey+'\',this.value)"'
+      +' onkeydown="taxKeyDown(event,\''+id+'\',\''+taxKey+'\',\''+stateKey+'\')"'
+      +' onfocus="taxSearch(\''+id+'\',\''+taxKey+'\',\''+stateKey+'\',this.value)">'
+    +'</div>'
+    +'<div class="ta-dropdown" id="tad-'+id+'"></div>'
+    +'</div>';
+}
+
+function taxSearch(id, taxKey, stateKey, q){
+  var items=TAX[taxKey]||[];
+  var dd=document.getElementById('tad-'+id);
+  if(!dd) return;
+  q=(q||'').toLowerCase().trim();
+
+  // Get current selected values to exclude them
+  var curr=getTaxArr(stateKey);
+
+  // Filter
+  var filtered=items.filter(function(e){
+    if(curr.indexOf(e.id)>=0) return false;
+    if(!q) return true;
+    return e.id.toLowerCase().indexOf(q)>=0 || e.en.toLowerCase().indexOf(q)>=0;
+  });
+
+  if(!filtered.length){dd.innerHTML='<div class="ta-item" style="color:var(--txt3);cursor:default">No matches</div>';dd.classList.add('on');return;}
+
+  // Group by parent if has parent info
+  var hasParents=filtered.some(function(e){return e.par;});
+  var html='';
+  if(hasParents&&q.length<3){
+    // Show grouped by parent
+    var groups={};
+    filtered.slice(0,80).forEach(function(e){
+      var g=e.par||'__top';
+      if(!groups[g]) groups[g]=[];
+      groups[g].push(e);
+    });
+    Object.keys(groups).forEach(function(g){
+      if(g!=='__top'){
+        var parentEntry=items.find(function(e){return e.id===g;});
+        html+='<div class="ta-group">'+(parentEntry?parentEntry.en:g)+'</div>';
+      }
+      groups[g].forEach(function(e){
+        html+='<div class="ta-item" onclick="taxPick(\''+id+'\',\''+stateKey+'\',\''+esc(e.id)+'\')">'
+          +'<span>'+esc(e.en)+'</span><span class="ta-item-id">'+esc(e.id)+'</span></div>';
+      });
+    });
+  } else {
+    filtered.slice(0,60).forEach(function(e){
+      html+='<div class="ta-item" onclick="taxPick(\''+id+'\',\''+stateKey+'\',\''+esc(e.id)+'\')">'
+        +'<span>'+esc(e.en)+'</span><span class="ta-item-id">'+esc(e.id)+'</span></div>';
+    });
+    if(filtered.length>60) html+='<div class="ta-item" style="color:var(--txt3);cursor:default">…'+(filtered.length-60)+' more — type to filter</div>';
+  }
+  dd.innerHTML=html;
+  dd.classList.add('on');
+  TA_ACTIVE=id;
+}
+
+function taxKeyDown(e,id,taxKey,stateKey){
+  if(e.key==='Escape'){closeTaDd(id);return;}
+  if(e.key==='Enter'){
+    var dd=document.getElementById('tad-'+id);
+    if(!dd) return;
+    var first=dd.querySelector('.ta-item:not([style*="cursor:default"])');
+    if(first) first.click();
+    return;
+  }
+}
+
+function taxPick(id, stateKey, val){
+  var inp=document.getElementById('tai-'+id);
+  if(inp) inp.value='';
+  closeTaDd(id);
+  // Add to state
+  addTaxTag(stateKey, val);
+  // Re-render the whole meta form so tag shows
+  if(SEL_UNIT) renderUnitMetaForm(SEL_UNIT);
+  if(SEL_BLOCK) renderBlockForm(SEL_BLOCK);
+}
+
+function closeTaDd(id){
+  var dd=document.getElementById('tad-'+id);
+  if(dd) dd.classList.remove('on');
+  TA_ACTIVE=null;
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', function(e){
+  if(TA_ACTIVE){
+    var wrap=document.getElementById('taw-'+TA_ACTIVE);
+    if(wrap&&!wrap.contains(e.target)) closeTaDd(TA_ACTIVE);
+  }
+});
+
+// ── GET / ADD / REMOVE TAG helpers ──────────────────────────────────────────
+function getTaxArr(stateKey){
+  if(!SEL_UNIT) return [];
+  var m=SEL_UNIT.metadata||{};
+  if(stateKey==='topics') return m.topics||[];
+  if(stateKey==='findings') return m.audit_findings_categories||[];
+  if(stateKey==='states_uts') return (m.regions&&m.regions.states_uts)||[];
+  if(stateKey==='primary_schemes') return m.primary_schemes||[];
+  if(stateKey==='__bm_findings'&&SEL_BLOCK) return (SEL_BLOCK.block_metadata&&SEL_BLOCK.block_metadata.audit_findings_categories)||[];
+  if(stateKey==='__bm_entities'&&SEL_BLOCK) return (SEL_BLOCK.block_metadata&&SEL_BLOCK.block_metadata.referenced_entities)||[];
+  return [];
+}
+
+function addTaxTag(stateKey, val){
+  if(!SEL_UNIT) return;
+  if(!SEL_UNIT.metadata) SEL_UNIT.metadata={};
+  var m=SEL_UNIT.metadata;
+  function push(arr){ if(arr.indexOf(val)<0) arr.push(val); }
+  if(stateKey==='topics')          { if(!m.topics)m.topics=[];push(m.topics); }
+  else if(stateKey==='findings')   { if(!m.audit_findings_categories)m.audit_findings_categories=[];push(m.audit_findings_categories); }
+  else if(stateKey==='states_uts') { if(!m.regions)m.regions={};if(!m.regions.states_uts)m.regions.states_uts=[];push(m.regions.states_uts); }
+  else if(stateKey==='primary_schemes'){ if(!m.primary_schemes)m.primary_schemes=[];push(m.primary_schemes); }
+  else if(stateKey==='__bm_findings'&&SEL_BLOCK){ if(!SEL_BLOCK.block_metadata)SEL_BLOCK.block_metadata={};if(!SEL_BLOCK.block_metadata.audit_findings_categories)SEL_BLOCK.block_metadata.audit_findings_categories=[];push(SEL_BLOCK.block_metadata.audit_findings_categories); }
+  else if(stateKey==='__bm_entities'&&SEL_BLOCK){ if(!SEL_BLOCK.block_metadata)SEL_BLOCK.block_metadata={};if(!SEL_BLOCK.block_metadata.referenced_entities)SEL_BLOCK.block_metadata.referenced_entities=[];push(SEL_BLOCK.block_metadata.referenced_entities); }
+}
+
+function taxRemoveTag(stateKey, idx){
+  if(!SEL_UNIT) return;
+  var m=SEL_UNIT.metadata||{};
+  if(stateKey==='topics'&&m.topics) m.topics.splice(idx,1);
+  else if(stateKey==='findings'&&m.audit_findings_categories) m.audit_findings_categories.splice(idx,1);
+  else if(stateKey==='states_uts'&&m.regions&&m.regions.states_uts) m.regions.states_uts.splice(idx,1);
+  else if(stateKey==='primary_schemes'&&m.primary_schemes) m.primary_schemes.splice(idx,1);
+  else if(stateKey==='__bm_findings'&&SEL_BLOCK&&SEL_BLOCK.block_metadata&&SEL_BLOCK.block_metadata.audit_findings_categories) SEL_BLOCK.block_metadata.audit_findings_categories.splice(idx,1);
+  else if(stateKey==='__bm_entities'&&SEL_BLOCK&&SEL_BLOCK.block_metadata&&SEL_BLOCK.block_metadata.referenced_entities) SEL_BLOCK.block_metadata.referenced_entities.splice(idx,1);
+  if(SEL_UNIT) renderUnitMetaForm(SEL_UNIT);
+  if(SEL_BLOCK) renderBlockForm(SEL_BLOCK);
+}
+
+// ── ENTITY SELECT DROPDOWN (ministry / department) ──────────────────────────
+function entitySelect(field, idx, subKey, currentVal){
+  var items=TAX.entities||[];
+  if(!items.length){
+    return '<input class="mono" type="text" value="'+esc(currentVal||'')+'"'
+      +' placeholder="GOI-MIN-FINANCE" oninput="setMetaEntity(\''+field+'\','+idx+',\''+subKey+'\',this.value)">';
+  }
+  var html='<select class="ent-sel" onchange="setMetaEntity(\''+field+'\','+idx+',\''+subKey+'\',this.value)">';
+  html+='<option value="">— select entity —</option>';
+  // Group by type
+  var types={};
+  items.forEach(function(e){ if(!types[e.type])types[e.type]=[]; types[e.type].push(e); });
+  Object.keys(types).sort().forEach(function(t){
+    html+='<optgroup label="'+esc(t)+'">';
+    types[t].forEach(function(e){
+      html+='<option value="'+esc(e.id)+'"'+(currentVal===e.id?' selected':'')+'>'+esc(e.en)+' ('+esc(e.id)+')</option>';
+    });
+    html+='</optgroup>';
+  });
+  html+='</select>';
+  return html;
+}
+
+// ── SCHEME SELECT ─────────────────────────────────────────────────────────────
+function schemeSelect(field, idx, currentVal){
+  var items=TAX.schemes||[];
+  if(!items.length){
+    return '<input class="mono" type="text" value="'+esc(currentVal||'')+'"'
+      +' placeholder="GOI-SCH-MGNREGS" oninput="setMetaEntity(\''+field+'\','+idx+',\'scheme\',this.value)">';
+  }
+  var html='<select class="ent-sel" onchange="setMetaEntity(\''+field+'\','+idx+',\'scheme\',this.value)">';
+  html+='<option value="">— select scheme —</option>';
+  items.forEach(function(e){
+    html+='<option value="'+esc(e.id)+'"'+(currentVal===e.id?' selected':'')+'>'+esc(e.en)+'</option>';
+  });
+  html+='</select>';
+  return html;
+}
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SESSION SAVE / LOAD
+// Session format: { pid, langs, struct, blocks, timestamp, version }
+// Saves the FULL state — all units, all blocks, product_id, languages.
+// Use to build chapter by chapter across multiple sessions.
+// ══════════════════════════════════════════════════════════════════════════════
+function saveSession(){
+  var session = {
+    version:   '1.0',
+    timestamp: new Date().toISOString(),
+    pid:       pid(),
+    langs:     LANGS.slice(),
+    struct:    JSON.parse(JSON.stringify(STRUCT)),
+    blocks:    JSON.parse(JSON.stringify(BLOCKS)),
+    footnotes: JSON.parse(JSON.stringify(FOOTNOTES))
+  };
+  var filename = (pid()||'session') + '.session.json';
+  var blob = new Blob([JSON.stringify(session, null, 2)], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  sbar('Session saved: ' + filename + ' — ' + countUnits() + ' units, ' + countBlocks() + ' blocks');
+}
+
+function handleLoadSession(input){
+  var file = input.files[0]; if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      var session = JSON.parse(e.target.result);
+      if(!session.struct || !session.blocks){
+        alert('Invalid session file — missing struct or blocks.');
+        return;
+      }
+
+      // Confirm if current state has content
+      var currentUnits = countUnits();
+      if(currentUnits > 0){
+        var msg = 'Load session? This replaces current state (' + currentUnits + ' units). Save current session first if needed.'; if(!confirm(msg)) return;
+      }
+
+      // Restore pid
+      if(session.pid){
+        document.getElementById('G_pid').value = session.pid;
+      }
+
+      // Restore langs
+      if(session.langs && session.langs.length){
+        LANGS = session.langs.slice();
+        initLangPills();
+      }
+
+      // Restore struct
+      STRUCT.front_matter  = session.struct.front_matter  || [];
+      STRUCT.content_units = session.struct.content_units || [];
+      STRUCT.back_matter   = session.struct.back_matter   || [];
+
+      // Restore blocks
+      BLOCKS    = JSON.parse(JSON.stringify(session.blocks));
+  FOOTNOTES = JSON.parse(JSON.stringify(session.footnotes||{}));
+
+      // Reset selection
+      SEL_UNIT  = null;
+      SEL_BLOCK = null;
+
+      renderUnitTree();
+      sbar('Session loaded: ' + countUnits() + ' units, ' + countBlocks() + ' blocks' +
+           (session.timestamp ? ' — saved ' + session.timestamp.replace('T',' ').replace(/\.\d+Z$/,'') : ''));
+    } catch(err){
+      alert('Error loading session: ' + err.message);
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function countUnits(){
+  return (STRUCT.front_matter||[]).length +
+         (STRUCT.content_units||[]).length +
+         (STRUCT.back_matter||[]).length;
+}
+
+function countBlocks(){
+  return Object.keys(BLOCKS).reduce(function(n,k){
+    return n + (BLOCKS[k]||[]).length;
+  }, 0);
+}
+
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FOOTNOTES (ft5 tab)
+// ══════════════════════════════════════════════════════════════════════════════
+function renderFootnotesForm(u){
+  var ft5=document.getElementById('ft5');
+  if(!u){
+    ft5.innerHTML='<div class="empty-state"><div class="esc">📝</div><div>Select a unit<br>to manage its footnotes</div></div>';
+    return;
+  }
+  var uid=u.unit_id;
+  if(!FOOTNOTES[uid]) FOOTNOTES[uid]=[];
+  var fns=FOOTNOTES[uid];
+  var blist=BLOCKS[uid]||[];
+
+  var h='<div style="font-size:10px;color:var(--txt3);padding:6px 8px;background:var(--sur2);border-radius:var(--r);border-left:2px solid var(--grn);margin-bottom:10px">'
+    +'Footnotes for <b>'+esc(uid)+'</b>. Select anchor type, then pick where in the text the superscript appears.</div>';
+
+  fns.forEach(function(fn,i){
+    var isTitle   = !!fn.anchor_unit_title;
+    var isDataset = !fn.anchor_block_id && fn.anchor_dataset_id;
+    var isBoth    = fn.anchor_block_id && fn.anchor_dataset_id;
+    var anchorType = isTitle ? 'title' : isBoth ? 'both' : isDataset ? 'dataset' : 'block';
+
+    h+='<div class="acard"><div class="acard-hdr">'
+      +'<span class="acard-ttl">FN'+(i+1)+' — <b>'+esc(fn.marker||'?')+'</b></span>'
+      +'<button class="brm" onclick="removeFn('+i+')">✕</button>'
+      +'</div>';
+
+    // ID + marker
+    h+='<div class="g2">';
+    h+='<div class="fld"><div class="lbl">footnote_id</div>'
+      +'<input class="mono" type="text" value="'+esc(fn.footnote_id||'')+'"'
+      +' oninput="FOOTNOTES[SEL_UNIT.unit_id]['+i+'].footnote_id=this.value"></div>';
+    h+='<div class="fld"><div class="lbl">marker <span class="req">*</span></div>'
+      +'<input type="text" value="'+esc(fn.marker||'')+'" placeholder="1 or * or †"'
+      +' style="width:80px"'
+      +' oninput="FOOTNOTES[SEL_UNIT.unit_id]['+i+'].marker=this.value;fnRefresh()"></div>';
+    h+='</div>';
+
+    // Footnote text (ML)
+    h+='<div class="fld"><div class="lbl">footnote text <span class="req">*</span> <span class="bdb">multilingual</span></div>';
+    LANGS.forEach(function(l){
+      var v=(fn.text&&fn.text[l]||'');
+      h+='<div class="ml-row"><div class="ml-lbl">'+l+'</div>'
+        +'<textarea rows="2" style="width:100%;resize:none;min-height:50px"'
+        +' oninput="if(!FOOTNOTES[SEL_UNIT.unit_id]['+i+'].text)FOOTNOTES[SEL_UNIT.unit_id]['+i+'].text={};'
+        +'FOOTNOTES[SEL_UNIT.unit_id]['+i+'].text[l]=this.value">'+esc(v)+'</textarea></div>';
+    });
+    h+='</div>';
+
+    // Anchor type
+    h+='<div class="fld"><div class="lbl">anchor type <span class="req">*</span></div>'
+      +'<select onchange="fnSetAnchorType(SEL_UNIT.unit_id,'+i+',this.value)">'
+      +'<option value="title"'+(anchorType==='title'?' selected':'')+'>Unit title (section/chapter heading)</option>'
+      +'<option value="block"'+(anchorType==='block'?' selected':'')+'>Block — paragraph, heading, finding...</option>'
+      +'<option value="dataset"'+(anchorType==='dataset'?' selected':'')+'>Dataset table cell</option>'
+      +'<option value="both"'+(anchorType==='both'?' selected':'')+'>Both block and table cell</option>'
+      +'</select></div>';
+
+    // ── UNIT TITLE anchor ──────────────────────────────────────────────────────
+    h+='<div id="fn-title-'+i+'" style="'+(anchorType!=='title'?'display:none':'')+'">';
+    var unitTitle=(u.title&&(u.title[LANGS[0]]||u.title.en))||uid;
+    h+='<div style="margin-top:6px;font-size:11px;line-height:1.7;padding:8px 10px;'
+      +'background:var(--sur2);border:1px solid var(--grn);border-radius:var(--r);'
+      +'font-family:Georgia,serif;color:var(--txt)">'
+      +esc(unitTitle)+'<sup style="color:var(--grn);font-weight:700"> '+esc(fn.marker||'N')+'</sup></div>'
+      +'<div class="hint">Superscript will appear on this unit\u2019s heading in the portal.</div>';
+    h+='</div>';
+
+    // ── BLOCK anchor ───────────────────────────────────────────────────────────
+    h+='<div id="fn-block-'+i+'" style="'+(anchorType==='title'||anchorType==='dataset'?'display:none':'')+'">';
+
+    // Block selector dropdown
+    h+='<div class="fld"><div class="lbl">select block</div>'
+      +'<select onchange="fnPickBlock(SEL_UNIT.unit_id,'+i+',this.value)">'
+      +'<option value="">— pick block —</option>';
+    blist.forEach(function(b){
+      var lang=LANGS[0]||'en'; var c=b.content||{};
+      var txt='';
+      if(c.text&&typeof c.text==='object') txt=c.text[lang]||c.text.en||'';
+      else if(typeof c.text==='string') txt=c.text;
+      else if(c.observation&&c.observation[lang]) txt=c.observation[lang];
+      var preview=(b.block_type+' · seq '+b.seq+' — '+(txt||'(no text)')).slice(0,65);
+      h+='<option value="'+esc(b.block_id)+'"'+(fn.anchor_block_id===b.block_id?' selected':'')+'>'+esc(preview)+'</option>';
+    });
+    h+='</select></div>';
+
+    // Selected block full text with selection for char offsets
+    var selBlock = fn.anchor_block_id ? blist.find(function(b){return b.block_id===fn.anchor_block_id;}) : null;
+    if(selBlock){
+      var lang=LANGS[0]||'en'; var c=selBlock.content||{};
+      var fullText='';
+      if(c.text&&typeof c.text==='object') fullText=c.text[lang]||c.text.en||'';
+      else if(typeof c.text==='string') fullText=c.text;
+      else if(c.observation&&c.observation[lang]) fullText=c.observation[lang];
+      if(fullText){
+        // Build highlighted preview
+        var start=fn.anchor_char_start; var end2=fn.anchor_char_end;
+        var hasOffset = (start!==undefined && start!==null);
+        var displayHTML;
+        if(hasOffset && start<=fullText.length){
+          var insertAt = (end2!==undefined&&end2!==null&&end2>start) ? end2 : start;
+          displayHTML = esc(fullText.slice(0,insertAt))
+            +'<sup style="color:var(--grn);font-weight:700;font-size:12px"> '+esc(fn.marker||'N')+'</sup>'
+            +esc(fullText.slice(insertAt));
+        } else {
+          displayHTML = esc(fullText)
+            +'<sup style="color:var(--grn);font-weight:700;font-size:12px"> '+esc(fn.marker||'N')+'</sup>';
+        }
+        h+='<div class="fld"><div class="lbl" style="color:var(--grn)">select position in text — mouse-select to set offsets</div>'
+          +'<div id="fn-txt-'+i+'" data-fn-idx="'+i+'" data-uid="'+esc(uid)+'"'
+          +' style="font-size:11px;line-height:1.9;padding:8px 10px;'
+          +'background:var(--sur2);border:1px solid var(--bdr2);border-radius:var(--r);'
+          +'font-family:Georgia,serif;color:var(--txt);cursor:text;user-select:text;'
+          +'white-space:pre-wrap;word-break:break-all;max-height:120px;overflow-y:auto"'
+          +' onmouseup="fnFillOffsets(this)" onkeyup="fnFillOffsets(this)">'
+          +displayHTML+'</div>';
+
+        // Offset inputs
+        h+='<div class="g2" style="margin-top:4px">'
+          +'<div class="fld"><div class="lbl">anchor_char_start '
+          +'<span class="hint" style="display:inline">(0-indexed, auto-fills on selection)</span></div>'
+          +'<input type="number" id="fn-start-'+i+'" min="0" value="'+(start!==undefined?start:'')+'"'
+          +' style="'+(hasOffset?'border-color:var(--grn)':'')+'"'
+          +' oninput="FOOTNOTES[SEL_UNIT.unit_id]['+i+'].anchor_char_start=parseInt(this.value)||0;fnRefresh()"></div>'
+          +'<div class="fld"><div class="lbl">anchor_char_end '
+          +'<span class="hint" style="display:inline">(= start for zero-width insertion)</span></div>'
+          +'<input type="number" id="fn-end-'+i+'" min="0" value="'+(end2!==undefined?end2:'')+'"'
+          +' style="'+(hasOffset?'border-color:var(--grn)':'')+'"'
+          +' oninput="FOOTNOTES[SEL_UNIT.unit_id]['+i+'].anchor_char_end=parseInt(this.value)||0;fnRefresh()"></div>'
+          +'</div>';
+        h+='<div class="hint">Select text above — offsets fill automatically. Superscript ⌘ is shown green in preview.</div>';
+        h+='</div>'; // /fld
+      }
+    } else if(fn.anchor_block_id || anchorType==='block') {
+      h+='<div class="hint" style="color:var(--amb)">Pick a block above to see its text and set the insertion point.</div>';
+    }
+    h+='</div>'; // /fn-block
+
+    // ── DATASET anchor ─────────────────────────────────────────────────────────
+    h+='<div id="fn-dataset-'+i+'" style="'+(anchorType==='title'||anchorType==='block'?'display:none':'')+'">';
+    h+='<div class="g3">';
+    h+='<div class="fld"><div class="lbl">anchor_dataset_id</div>'
+      +'<input type="text" value="'+esc(fn.anchor_dataset_id||'')+'" placeholder="CH02-DS01"'
+      +' oninput="FOOTNOTES[SEL_UNIT.unit_id]['+i+'].anchor_dataset_id=this.value||undefined"></div>';
+    h+='<div class="fld"><div class="lbl">anchor_row_id</div>'
+      +'<input type="text" value="'+esc(fn.anchor_row_id||'')+'" placeholder="row_003"'
+      +' oninput="FOOTNOTES[SEL_UNIT.unit_id]['+i+'].anchor_row_id=this.value||undefined"></div>';
+    h+='<div class="fld"><div class="lbl">anchor_col_id</div>'
+      +'<input type="text" value="'+esc(fn.anchor_col_id||'')+'" placeholder="col_amount"'
+      +' oninput="FOOTNOTES[SEL_UNIT.unit_id]['+i+'].anchor_col_id=this.value||undefined"></div>';
+    h+='</div>'
+      +'<div class="hint">Row and column IDs come from your dataset JSON. The marker appears in that specific cell.</div>';
+    h+='</div>'; // /fn-dataset
+
+    // Type + scope
+    h+='<div class="g2" style="margin-top:8px">';
+    h+='<div class="fld"><div class="lbl">footnote_type</div>'
+      +'<select oninput="FOOTNOTES[SEL_UNIT.unit_id]['+i+'].footnote_type=this.value">';
+    ['explanatory','data_note','statistical_source','legal_citation','general','audit_process'].forEach(function(v){
+      h+='<option value="'+v+'"'+(fn.footnote_type===v?' selected':'')+'>'+v+'</option>';
+    });
+    h+='</select></div>';
+    h+='<div class="fld"><div class="lbl">display_scope</div>'
+      +'<select oninput="FOOTNOTES[SEL_UNIT.unit_id]['+i+'].display_scope=this.value">';
+    ['chapter','section'].forEach(function(v){
+      h+='<option value="'+v+'"'+(fn.display_scope===v?' selected':'')+'>'+v+'</option>';
+    });
+    h+='</select></div>';
+    h+='</div>';
+
+    h+='</div>'; // /acard
+  });
+
+  h+='<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">';
+  h+='<button class="badd" onclick="addFn()">+ Add footnote</button>';
+  if(fns.length){
+    h+='<button class="btn bgg" style="font-size:11px;padding:4px 10px"'
+      +' onclick="downloadFootnotes(SEL_UNIT.unit_id)">&#8595; footnotes_'+esc(uid.slice(-12))+'.json</button>';
+  }
+  h+='</div>';
+
+  ft5.innerHTML=h;
+}
+
+// Auto-fill offsets when text is selected in the fn text box
+function fnFillOffsets(box){
+  var sel=window.getSelection();
+  if(!sel||sel.rangeCount===0||sel.isCollapsed) return;
+  if(!box.contains(sel.anchorNode)) return;
+  var range=sel.getRangeAt(0);
+  var pre=document.createRange();
+  pre.setStart(box,0);
+  pre.setEnd(range.startContainer,range.startOffset);
+  var start=pre.toString().length;
+  var txt=range.toString();
+  var end2=start+txt.length;
+  var idx=parseInt(box.getAttribute('data-fn-idx'));
+  var uid=box.getAttribute('data-uid');
+  FOOTNOTES[uid][idx].anchor_char_start=start;
+  FOOTNOTES[uid][idx].anchor_char_end=end2;
+  var sEl=document.getElementById('fn-start-'+idx);
+  var eEl=document.getElementById('fn-end-'+idx);
+  if(sEl){sEl.value=start;sEl.style.borderColor='var(--grn)';}
+  if(eEl){eEl.value=end2;eEl.style.borderColor='var(--grn)';}
+  // Re-render just the preview without losing focus
+  fnRefreshPreview(uid,idx,box,start,end2);
+}
+
+function fnRefreshPreview(uid,idx,box,start,end2){
+  var fn=FOOTNOTES[uid][idx];
+  var marker=fn.marker||'N';
+  // Get plain text from box (strip existing HTML)
+  var blist=BLOCKS[uid]||[];
+  var selBlock=blist.find(function(b){return b.block_id===fn.anchor_block_id;});
+  if(!selBlock) return;
+  var lang=LANGS[0]||'en'; var c=selBlock.content||{};
+  var fullText='';
+  if(c.text&&typeof c.text==='object') fullText=c.text[lang]||c.text.en||'';
+  else if(typeof c.text==='string') fullText=c.text;
+  else if(c.observation&&c.observation[lang]) fullText=c.observation[lang];
+  if(!fullText) return;
+  var insertAt=(end2!==undefined&&end2!==null&&end2>start)?end2:start;
+  box.innerHTML=esc(fullText.slice(0,insertAt))
+    +'<sup style="color:var(--grn);font-weight:700;font-size:12px"> '+esc(marker)+'</sup>'
+    +esc(fullText.slice(insertAt));
+}
+
+function fnRefresh(){
+  var uid=SEL_UNIT?SEL_UNIT.unit_id:null; var idx=-1; // refresh whole form
+  // Lightweight refresh - just re-render without losing text selections
+  renderFootnotesForm(SEL_UNIT);
+}
+
+
+function fnPickBlock(uid, idx, bid){
+  FOOTNOTES[uid][idx].anchor_block_id = bid || undefined;
+  renderFootnotesForm(SEL_UNIT);
+}
+
+function addFn(){
+  var uid=SEL_UNIT?SEL_UNIT.unit_id:null;
+  if(!uid) return;
+  if(!FOOTNOTES[uid]) FOOTNOTES[uid]=[];
+  var n=FOOTNOTES[uid].length+1;
+  FOOTNOTES[uid].push({
+    footnote_id: uid+'-FN'+String(n).padStart(3,'0'),
+    marker: String(n),
+    text: {},
+    anchor_block_id: '',
+    footnote_type: 'explanatory',
+    display_scope: 'chapter'
+  });
+  renderFootnotesForm(SEL_UNIT);
+  switchFormTab('ft5', document.getElementById('ftab5'));
+}
+
+function removeFn(idx){
+  if(!SEL_UNIT) return;
+  var uid=SEL_UNIT.unit_id;
+  if(!FOOTNOTES[uid]) return;
+  FOOTNOTES[uid].splice(idx, 1);
+  renderFootnotesForm(SEL_UNIT);
+}
+
+function fnSetAnchorType(uid, idx, type){
+  var fn=FOOTNOTES[uid][idx];
+  delete fn.anchor_block_id; delete fn.anchor_dataset_id;
+  delete fn.anchor_row_id;   delete fn.anchor_col_id;
+  delete fn.anchor_unit_title;
+  if(type==='title')   fn.anchor_unit_title=true;
+  if(type==='both')  { fn.anchor_block_id=''; fn.anchor_dataset_id=''; }
+  renderFootnotesForm(SEL_UNIT);
+}
+
+function buildFootnotesJSON(uid){
+  var fns=(FOOTNOTES[uid]||[]).map(function(fn){
+    var out={footnote_id:fn.footnote_id, marker:fn.marker};
+    if(fn.text&&Object.keys(fn.text).some(function(k){return fn.text[k];})) out.text=fn.text;
+    if(fn.anchor_unit_title) out.anchor_unit_title=true;
+    if(fn.anchor_block_id)   out.anchor_block_id=fn.anchor_block_id;
+    if(fn.anchor_char_start!==undefined&&fn.anchor_char_start!==null) out.anchor_char_start=fn.anchor_char_start;
+    if(fn.anchor_char_end!==undefined&&fn.anchor_char_end!==null)     out.anchor_char_end=fn.anchor_char_end;
+    if(fn.anchor_dataset_id){ out.anchor_dataset_id=fn.anchor_dataset_id; out.anchor_row_id=fn.anchor_row_id; out.anchor_col_id=fn.anchor_col_id; }
+    if(fn.footnote_type)     out.footnote_type=fn.footnote_type;
+    if(fn.display_scope)     out.display_scope=fn.display_scope;
+    return out;
+  });
+  return {unit_id: uid, footnotes: fns};
+}
+
+function downloadFootnotes(uid){
+  var data=buildFootnotesJSON(uid);
+  dl('footnotes_'+uid+'.json', JSON.stringify(data,null,2), 'application/json');
+  sbar('Downloaded footnotes_'+uid+'.json');
+}
+
+function downloadAllFootnotes(){
+  var uids=Object.keys(FOOTNOTES).filter(function(k){return FOOTNOTES[k]&&FOOTNOTES[k].length;});
+  if(!uids.length){ sbar('No footnotes to download'); return; }
+  var delay=0;
+  uids.forEach(function(uid){
+    setTimeout(function(){downloadFootnotes(uid);}, delay);
+    delay+=200;
+  });
+  sbar('Downloading '+uids.length+' footnote file(s)…');
+}
+
+
+initLangPills();
+renderUnitTree();
+sbar('Ready');
+restoreTaxCache();
+</script>
+</body>
+</html>

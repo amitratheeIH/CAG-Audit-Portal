@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$version": "1.0",
+  "title": "Reference Object",
+  "description": "Typed, machine-readable cross-reference. v1.0: canonical baseline. type↔target_format cross-validation added via allOf if/then rules — each reference type now enforces exactly one valid target_format. inverse_relationship_type required when relationship_type is present — ensures bidirectional graph traversal without runtime inference.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["type", "target", "target_format"],
+  "properties": {
+    "reference_id": {
+      "type": "string",
+      "pattern": "^REF-[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+      "description": "Stable ID assigned at ingest time. e.g. REF-AR01-CAG-2025-UT-JK-0042. Set by ingestion pipeline."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "report", "chapter", "section", "subsection", "block",
+        "dataset", "figure", "image", "asset", "footnote",
+        "finding", "recommendation", "entity", "location",
+        "taxonomy", "legislation", "external", "atn"
+      ]
+    },
+    "target_format": {
+      "type": "string",
+      "enum": [
+        "product_id",
+        "product_id/unit_id",
+        "product_id/block_id",
+        "product_id/dataset_id",
+        "product_id/atn_id",
+        "entity_id",
+        "location_id",
+        "legislation_code",
+        "taxonomy_id",
+        "uri"
+      ]
+    },
+    "target": {
+      "type": "string",
+      "description": "Stable ID or URI. Format governed by target_format."
+    },
+    "relationship_type": {
+      "type": "string",
+      "enum": [
+        "cites", "confirms", "contradicts", "extends",
+        "follows_up", "supersedes", "amends", "implements",
+        "evidences", "related_same_entity", "related_same_scheme",
+        "related_same_sector", "related_prior_year"
+      ]
+    },
+    "inverse_relationship_type": {
+      "type": "string",
+      "enum": [
+        "cited_by", "confirmed_by", "contradicted_by", "extended_by",
+        "followed_up_by", "superseded_by", "amended_by", "implemented_by",
+        "evidenced_by", "related_same_entity", "related_same_scheme",
+        "related_same_sector", "related_prior_year"
+      ],
+      "description": "Declared inverse of relationship_type. Enables bidirectional graph traversal. Set automatically by ingestion pipeline from relationship_type. Symmetric relationship types carry the same value in both directions."
+    },
+    "label": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Multilingual display label. e.g. { 'en': 'See Chapter 3, Para 3.2.1' }"
+    },
+    "note": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Optional multilingual explanatory note."
+    }
+  },
+  "allOf": [
+    {
+      "description": "inverse_relationship_type required when relationship_type is present.",
+      "if": { "required": ["relationship_type"] },
+      "then": { "required": ["inverse_relationship_type"] }
+    },
+    {
+      "description": "report, chapter, section, subsection → product_id or product_id/unit_id",
+      "if": { "properties": { "type": { "enum": ["report"] } }, "required": ["type"] },
+      "then": { "properties": { "target_format": { "const": "product_id" } } }
+    },
+    {
+      "description": "chapter/section/subsection → product_id/unit_id",
+      "if": { "properties": { "type": { "enum": ["chapter", "section", "subsection"] } }, "required": ["type"] },
+      "then": { "properties": { "target_format": { "const": "product_id/unit_id" } } }
+    },
+    {
+      "description": "block/finding/recommendation → product_id/block_id",
+      "if": { "properties": { "type": { "enum": ["block", "finding", "recommendation", "figure", "image"] } }, "required": ["type"] },
+      "then": { "properties": { "target_format": { "const": "product_id/block_id" } } }
+    },
+    {
+      "description": "dataset → product_id/dataset_id",
+      "if": { "properties": { "type": { "const": "dataset" } }, "required": ["type"] },
+      "then": { "properties": { "target_format": { "const": "product_id/dataset_id" } } }
+    },
+    {
+      "description": "atn → product_id/atn_id",
+      "if": { "properties": { "type": { "const": "atn" } }, "required": ["type"] },
+      "then": { "properties": { "target_format": { "const": "product_id/atn_id" } } }
+    },
+    {
+      "description": "entity → entity_id",
+      "if": { "properties": { "type": { "const": "entity" } }, "required": ["type"] },
+      "then": { "properties": { "target_format": { "const": "entity_id" } } }
+    },
+    {
+      "description": "location → location_id",
+      "if": { "properties": { "type": { "const": "location" } }, "required": ["type"] },
+      "then": { "properties": { "target_format": { "const": "location_id" } } }
+    },
+    {
+      "description": "legislation → legislation_code",
+      "if": { "properties": { "type": { "const": "legislation" } }, "required": ["type"] },
+      "then": { "properties": { "target_format": { "const": "legislation_code" } } }
+    },
+    {
+      "description": "taxonomy → taxonomy_id",
+      "if": { "properties": { "type": { "const": "taxonomy" } }, "required": ["type"] },
+      "then": { "properties": { "target_format": { "const": "taxonomy_id" } } }
+    },
+    {
+      "description": "external → uri",
+      "if": { "properties": { "type": { "const": "external" } }, "required": ["type"] },
+      "then": { "properties": { "target_format": { "const": "uri" } } }
+    },
+    {
+      "description": "asset/footnote → asset or block references",
+      "if": { "properties": { "type": { "enum": ["asset", "footnote"] } }, "required": ["type"] },
+      "then": { "properties": { "target_format": { "enum": ["product_id/block_id", "product_id/unit_id"] } } }
+    }
+  ]
+}

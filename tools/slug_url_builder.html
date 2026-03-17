@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CAG Slug & URL Builder</title>
+<style>
+:root{
+  --bg:#0c0f1a;--sur:#131825;--sur2:#192033;--sur3:#1e2840;
+  --bdr:#273050;--bdr2:#3a4870;
+  --acc:#6875f5;--grn:#1fcc9e;--amb:#f5c842;--red:#f56060;--pur:#a78bfa;
+  --txt:#d8dff0;--txt2:#7e8db5;--txt3:#404e78;
+  --r:5px;--mono:'Cascadia Code','Fira Code','Consolas',monospace;
+  --sans:-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--sans);background:var(--bg);color:var(--txt);font-size:12px}
+
+.hdr{display:flex;align-items:center;gap:10px;padding:10px 18px;background:var(--sur);border-bottom:1px solid var(--bdr)}
+.logo{width:26px;height:26px;background:var(--pur);border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:#fff;flex-shrink:0}
+.hdr-title{font-size:13px;font-weight:500}
+.hdr-sub{font-size:11px;color:var(--txt2);margin-left:4px}
+
+.main{max-width:760px;margin:0 auto;padding:24px 20px 60px}
+
+.sec{background:var(--sur);border:1px solid var(--bdr);border-radius:8px;padding:18px;margin-bottom:14px}
+.sec-ttl{font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--txt3);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:580px){.g2,.g3{grid-template-columns:1fr}}
+
+.fld{margin-bottom:0}
+.lbl{font-size:11px;font-weight:500;color:var(--txt2);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.req{color:var(--red);font-size:10px}
+.hint{font-size:10px;color:var(--txt3);margin-top:3px;line-height:1.5}
+input[type=text],input[type=number],select,textarea{width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);color:var(--txt);font-family:var(--sans);font-size:11px;padding:6px 9px;outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--acc)}
+input::placeholder,textarea::placeholder{color:var(--txt3)}
+textarea{resize:vertical;min-height:52px;line-height:1.6}
+select option{background:var(--sur2)}
+.mono-inp{font-family:var(--mono)!important}
+
+/* RESULT BOXES */
+.result-box{background:var(--sur2);border:1px solid var(--bdr2);border-radius:var(--r);padding:12px 14px;margin-top:8px}
+.result-label{font-size:10px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--txt3);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.result-value{font-family:var(--mono);font-size:13px;color:var(--grn);word-break:break-all;line-height:1.6}
+.result-value.invalid{color:var(--red)}
+.result-value.empty{color:var(--txt3);font-style:italic;font-size:11px}
+.copy-btn{background:rgba(31,204,158,.1);border:1px solid rgba(31,204,158,.25);color:var(--grn);border-radius:3px;font-size:9px;font-weight:600;padding:2px 7px;cursor:pointer;transition:all .15s;font-family:var(--sans)}
+.copy-btn:hover{background:rgba(31,204,158,.2)}
+.copy-btn.copied{color:var(--acc);border-color:var(--acc);background:rgba(104,117,245,.1)}
+
+/* VALIDATION BADGE */
+.vbadge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:600;padding:2px 7px;border-radius:12px}
+.vok{background:rgba(31,204,158,.1);color:var(--grn);border:1px solid rgba(31,204,158,.2)}
+.vfail{background:rgba(245,96,96,.1);color:var(--red);border:1px solid rgba(245,96,96,.2)}
+.vwarn{background:rgba(245,200,66,.1);color:var(--amb);border:1px solid rgba(245,200,66,.2)}
+
+/* PREVIEW */
+.url-preview{font-family:var(--mono);font-size:11px;color:var(--txt2);line-height:2;word-break:break-all}
+.url-preview .seg{color:var(--acc);font-weight:600}
+.url-preview .sep{color:var(--txt3)}
+
+/* SLUG BUILDER */
+.slug-parts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.slug-part{display:flex;align-items:center;gap:3px;background:var(--sur3);border:1px solid var(--bdr);border-radius:var(--r);padding:3px 8px;font-family:var(--mono);font-size:11px}
+.slug-part.active{border-color:var(--acc);color:var(--acc)}
+.slug-part.inactive{color:var(--txt3)}
+.slug-sep{color:var(--txt3);font-family:var(--mono)}
+
+/* MANUAL OVERRIDE */
+.override-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.override-toggle{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--txt2);cursor:pointer;user-select:none;flex-shrink:0}
+.tog{position:relative;width:28px;height:16px;flex-shrink:0}
+.tog input{display:none}
+.tog-t{position:absolute;inset:0;background:var(--bdr);border-radius:8px;transition:.2s}
+.tog input:checked+.tog-t{background:var(--acc)}
+.tog-k{position:absolute;top:2px;left:2px;width:12px;height:12px;background:#fff;border-radius:50%;transition:.2s;pointer-events:none}
+.tog input:checked~.tog-k{transform:translateX(12px)}
+
+/* OUTPUT JSON */
+.json-out{font-family:var(--mono);font-size:11px;background:var(--sur2);border:1px solid var(--bdr2);border-radius:var(--r);padding:14px;line-height:1.8;white-space:pre-wrap;word-break:break-all;color:var(--txt2)}
+.json-key{color:var(--acc)}
+.json-str{color:var(--grn)}
+
+/* BUTTONS */
+.btn{padding:6px 16px;border-radius:var(--r);font-size:11px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all .15s;font-family:var(--sans)}
+.bga{background:var(--acc);color:#fff;border-color:var(--acc)}.bga:hover{background:#5565e8}
+.bgg{background:rgba(31,204,158,.12);border-color:rgba(31,204,158,.3);color:var(--grn);font-weight:600}.bgg:hover{background:rgba(31,204,158,.2)}
+.bg{background:transparent;border-color:var(--bdr);color:var(--txt2)}.bg:hover{border-color:var(--txt2);color:var(--txt)}
+
+.btn-row{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+
+.info{padding:8px 12px;background:var(--sur2);border-left:2px solid var(--acc);border-radius:var(--r);font-size:10px;color:var(--txt2);line-height:1.6;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo">SU</div>
+  <div class="hdr-title">Slug & URL Builder</div>
+  <span class="hdr-sub">— CAG Audit Report Portal</span>
+</div>
+
+<div class="main">
+
+  <div class="info">
+    <b>What this builds:</b> <code>slug</code> (URL-safe lowercase identifier for the report) and <code>canonical_url</code> (permanent public URL). Both go into <code>metadata.json → common</code>. The slug also appears in every catalog entry and is used for deep-links and SEO.
+  </div>
+
+  <!-- STEP 1: INPUTS -->
+  <div class="sec">
+    <div class="sec-ttl">Step 1 — Report identity</div>
+
+    <div class="g2" style="margin-bottom:12px">
+      <div class="fld">
+        <div class="lbl">product_id <span class="req">*</span></div>
+        <input type="text" id="product_id" class="mono-inp" placeholder="AR06-CAG-2023-STATE-MP" oninput="rebuild()">
+        <div class="hint">Pattern: {PREFIX}{NN}-CAG-{YEAR}-{JURISDICTION}(-{STATE})</div>
+      </div>
+      <div class="fld">
+        <div class="lbl">product_type <span class="req">*</span></div>
+        <select id="product_type" onchange="rebuild()">
+          <option value="">— select —</option>
+          <option value="audit_report">audit_report</option>
+          <option value="accounts_report">accounts_report</option>
+          <option value="finance_report">finance_report</option>
+          <option value="study_report">study_report</option>
+          <option value="audit_impact_report">audit_impact_report</option>
+          <option value="compendium">compendium</option>
+          <option value="other">other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="g3" style="margin-bottom:12px">
+      <div class="fld">
+        <div class="lbl">year <span class="req">*</span></div>
+        <input type="number" id="year" placeholder="2023" min="1860" max="2100" oninput="rebuild()">
+      </div>
+      <div class="fld">
+        <div class="lbl">jurisdiction</div>
+        <select id="jurisdiction" onchange="jurisdictionChange()">
+          <option value="">— select —</option>
+          <option value="UNION">UNION</option>
+          <option value="STATE">STATE</option>
+          <option value="UT">UT</option>
+          <option value="LG">LG</option>
+        </select>
+      </div>
+      <div class="fld" id="state-fld" style="display:none">
+        <div class="lbl">State / UT</div>
+        <select id="state_code" onchange="rebuild()">
+          <option value="">— select —</option>
+          <option value="IN-AN">Andaman and Nicobar Islands (IN-AN)</option><option value="IN-AP">Andhra Pradesh (IN-AP)</option><option value="IN-AR">Arunachal Pradesh (IN-AR)</option><option value="IN-AS">Assam (IN-AS)</option><option value="IN-BR">Bihar (IN-BR)</option><option value="IN-CH">Chandigarh (IN-CH)</option><option value="IN-CT">Chhattisgarh (IN-CT)</option><option value="IN-DN">Dadra and Nagar Haveli (IN-DN)</option><option value="IN-DD">Dadra and Nagar Haveli and Daman and Diu (IN-DD)</option><option value="IN-DL">Delhi (IN-DL)</option><option value="IN-GA">Goa (IN-GA)</option><option value="IN-GJ">Gujarat (IN-GJ)</option><option value="IN-HR">Haryana (IN-HR)</option><option value="IN-HP">Himachal Pradesh (IN-HP)</option><option value="IN-JK">Jammu and Kashmir (IN-JK)</option><option value="IN-JH">Jharkhand (IN-JH)</option><option value="IN-KA">Karnataka (IN-KA)</option><option value="IN-KL">Kerala (IN-KL)</option><option value="IN-LA">Ladakh (IN-LA)</option><option value="IN-LD">Lakshadweep (IN-LD)</option><option value="IN-MP">Madhya Pradesh (IN-MP)</option><option value="IN-MH">Maharashtra (IN-MH)</option><option value="IN-MN">Manipur (IN-MN)</option><option value="IN-ML">Meghalaya (IN-ML)</option><option value="IN-MZ">Mizoram (IN-MZ)</option><option value="IN-NL">Nagaland (IN-NL)</option><option value="IN-OD">Odisha (IN-OD)</option><option value="IN-PY">Puducherry (IN-PY)</option><option value="IN-PB">Punjab (IN-PB)</option><option value="IN-RJ">Rajasthan (IN-RJ)</option><option value="IN-SK">Sikkim (IN-SK)</option><option value="IN-TN">Tamil Nadu (IN-TN)</option><option value="IN-TG">Telangana (IN-TG)</option><option value="IN-TR">Tripura (IN-TR)</option><option value="IN-UP">Uttar Pradesh (IN-UP)</option><option value="IN-UK">Uttarakhand (IN-UK)</option><option value="IN-WB">West Bengal (IN-WB)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="fld" style="margin-bottom:12px">
+      <div class="lbl">report title (English) <span class="req">*</span></div>
+      <textarea id="title_en" placeholder="Report of the Comptroller and Auditor General of India on Degradation of Kshipra River, Madhya Pradesh" oninput="rebuild()" rows="2"></textarea>
+      <div class="hint">Used to auto-generate the slug. Short descriptive words from the title are extracted.</div>
+    </div>
+
+    <div class="fld">
+      <div class="lbl">base portal URL</div>
+      <input type="text" id="base_url" value="https://cag.gov.in/portal" oninput="rebuild()">
+      <div class="hint">Your portal's base URL — the canonical_url will be built from this.</div>
+    </div>
+  </div>
+
+  <!-- STEP 2: SLUG -->
+  <div class="sec">
+    <div class="sec-ttl">Step 2 — Slug</div>
+    <div class="hint" style="margin-bottom:12px">Pattern: <code>^[a-z0-9\-]+$</code> — lowercase letters, digits, and hyphens only. No spaces, no special characters.</div>
+
+    <div class="fld" style="margin-bottom:10px">
+      <div class="lbl">Auto-generated from:</div>
+      <div class="slug-parts" id="slug-parts"></div>
+    </div>
+
+    <div class="result-box">
+      <div class="result-label">
+        slug
+        <div style="display:flex;gap:6px;align-items:center">
+          <span id="slug-badge"></span>
+          <button class="copy-btn" id="copy-slug" onclick="copyField('copy-slug','slug-val')">Copy</button>
+        </div>
+      </div>
+      <div class="result-value" id="slug-val"></div>
+    </div>
+
+    <div class="override-row">
+      <label class="override-toggle">
+        <label class="tog"><input type="checkbox" id="slug-override-tog" onchange="toggleOverride('slug')"><div class="tog-t"></div><div class="tog-k"></div></label>
+        Override slug manually
+      </label>
+    </div>
+    <div id="slug-override-box" style="display:none;margin-top:8px">
+      <input type="text" id="slug-manual" class="mono-inp" placeholder="cag-mp-kshipra-river-2023" oninput="rebuild()">
+      <div class="hint">Must match <code>^[a-z0-9\-]+$</code></div>
+    </div>
+  </div>
+
+  <!-- STEP 3: CANONICAL URL -->
+  <div class="sec">
+    <div class="sec-ttl">Step 3 — Canonical URL</div>
+    <div class="hint" style="margin-bottom:12px">Built from base URL + portal_section path + product_id. Permanent — do not change after publication.</div>
+
+    <div class="fld" style="margin-bottom:10px">
+      <div class="lbl">URL structure preview</div>
+      <div class="url-preview" id="url-preview"></div>
+    </div>
+
+    <div class="result-box">
+      <div class="result-label">
+        canonical_url
+        <div style="display:flex;gap:6px;align-items:center">
+          <span id="url-badge"></span>
+          <button class="copy-btn" id="copy-url" onclick="copyField('copy-url','url-val')">Copy</button>
+        </div>
+      </div>
+      <div class="result-value" id="url-val"></div>
+    </div>
+
+    <div class="override-row">
+      <label class="override-toggle">
+        <label class="tog"><input type="checkbox" id="url-override-tog" onchange="toggleOverride('url')"><div class="tog-t"></div><div class="tog-k"></div></label>
+        Override URL manually
+      </label>
+    </div>
+    <div id="url-override-box" style="display:none;margin-top:8px">
+      <input type="text" id="url-manual" class="mono-inp" placeholder="https://cag.gov.in/portal/..." oninput="rebuild()">
+    </div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="sec">
+    <div class="sec-ttl">Output — paste into metadata.json common section</div>
+    <div class="json-out" id="json-out"></div>
+    <div class="btn-row">
+      <button class="btn bgg" onclick="copyJSON()">↓ Copy JSON snippet</button>
+      <button class="btn bg" onclick="resetAll()">↺ Reset</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── STATE ─────────────────────────────────────────────────────────────────────
+var STATES = [{"id":"IN-AN","en":"Andaman and Nicobar Islands"},{"id":"IN-AP","en":"Andhra Pradesh"},{"id":"IN-AR","en":"Arunachal Pradesh"},{"id":"IN-AS","en":"Assam"},{"id":"IN-BR","en":"Bihar"},{"id":"IN-CH","en":"Chandigarh"},{"id":"IN-CT","en":"Chhattisgarh"},{"id":"IN-DN","en":"Dadra and Nagar Haveli"},{"id":"IN-DD","en":"Dadra and Nagar Haveli and Daman and Diu"},{"id":"IN-DL","en":"Delhi"},{"id":"IN-GA","en":"Goa"},{"id":"IN-GJ","en":"Gujarat"},{"id":"IN-HR","en":"Haryana"},{"id":"IN-HP","en":"Himachal Pradesh"},{"id":"IN-JK","en":"Jammu and Kashmir"},{"id":"IN-JH","en":"Jharkhand"},{"id":"IN-KA","en":"Karnataka"},{"id":"IN-KL","en":"Kerala"},{"id":"IN-LA","en":"Ladakh"},{"id":"IN-LD","en":"Lakshadweep"},{"id":"IN-MP","en":"Madhya Pradesh"},{"id":"IN-MH","en":"Maharashtra"},{"id":"IN-MN","en":"Manipur"},{"id":"IN-ML","en":"Meghalaya"},{"id":"IN-MZ","en":"Mizoram"},{"id":"IN-NL","en":"Nagaland"},{"id":"IN-OD","en":"Odisha"},{"id":"IN-PY","en":"Puducherry"},{"id":"IN-PB","en":"Punjab"},{"id":"IN-RJ","en":"Rajasthan"},{"id":"IN-SK","en":"Sikkim"},{"id":"IN-TN","en":"Tamil Nadu"},{"id":"IN-TG","en":"Telangana"},{"id":"IN-TR","en":"Tripura"},{"id":"IN-UP","en":"Uttar Pradesh"},{"id":"IN-UK","en":"Uttarakhand"},{"id":"IN-WB","en":"West Bengal"}];
+
+// Portal section paths per product_type + jurisdiction
+var PORTAL_PATHS = {
+  audit_report:       '/audit-reports',
+  accounts_report: {
+    UNION: '/accounts/union',
+    STATE: '/accounts/state',
+    UT:    '/accounts/state',
+    LG:    '/accounts/ulb',   // or /pri — user can override
+    '':    '/accounts'
+  },
+  finance_report: {
+    UNION: '/finance/union',
+    STATE: '/finance/state',
+    UT:    '/finance/state',
+    LG:    '/finance/ulb',
+    '':    '/finance'
+  },
+  study_report:       '/studies',
+  audit_impact_report:'/audit-impact',
+  compendium:         '/compendium',
+  other:              '/other'
+};
+
+// Stop words to strip from title when building slug
+var STOP_WORDS = new Set([
+  'a','an','the','of','on','in','at','to','for','and','or','but','nor',
+  'with','by','as','is','are','was','were','be','been','being',
+  'this','that','these','those','its','their','our','report','of','india',
+  'comptroller','auditor','general','cag','government','state',
+]);
+
+// ── SLUG BUILDER ──────────────────────────────────────────────────────────────
+function slugify(str){
+  return (str||'')
+    .toLowerCase()
+    .replace(/[^\w\s-]/g,'')          // remove special chars
+    .replace(/\s+/g,' ')
+    .trim()
+    .split(' ')
+    .filter(function(w){ return w.length > 1 && !STOP_WORDS.has(w); })
+    .join('-')
+    .replace(/-+/g,'-')
+    .replace(/^-|-$/g,'');
+}
+
+function buildSlugParts(){
+  var pt   = gv('product_type');
+  var yr   = gv('year');
+  var jur  = gv('jurisdiction');
+  var st   = gv('state_code');
+  var title = gv('title_en');
+
+  var parts = [];
+
+  // prefix from product_type
+  var prefixMap = {
+    audit_report:'cag', accounts_report:'cag', finance_report:'cag',
+    study_report:'cag-study', audit_impact_report:'cag-ai',
+    compendium:'cag-compendium', other:'cag'
+  };
+  if(pt) parts.push({text: prefixMap[pt]||'cag', key:'prefix'});
+
+  // state name if applicable
+  if(st){
+    var stEntry = STATES.find(function(s){return s.id===st;});
+    if(stEntry){
+      var stSlug = slugify(stEntry.en.replace('and','').replace('  ',' '));
+      parts.push({text: stSlug, key:'state'});
+    }
+  } else if(jur==='UNION'){
+    parts.push({text:'union', key:'state'});
+  }
+
+  // key words from title
+  if(title){
+    var titleWords = slugify(title);
+    // Take first 5 meaningful words
+    var words = titleWords.split('-').slice(0,5).join('-');
+    if(words) parts.push({text: words, key:'title'});
+  }
+
+  // year
+  if(yr) parts.push({text: yr, key:'year'});
+
+  return parts;
+}
+
+function assembleSlug(parts){
+  return parts.map(function(p){return p.text;}).join('-')
+    .replace(/-+/g,'-').replace(/^-|-$/g,'');
+}
+
+// ── URL BUILDER ───────────────────────────────────────────────────────────────
+function buildCanonicalUrl(slug, productId){
+  var base = gv('base_url').replace(/\/$/,'');
+  var pt   = gv('product_type');
+  var jur  = gv('jurisdiction');
+
+  if(!base || !productId) return '';
+
+  // Get portal section path
+  var sectionPath = '';
+  if(typeof PORTAL_PATHS[pt] === 'string'){
+    sectionPath = PORTAL_PATHS[pt];
+  } else if(PORTAL_PATHS[pt] && typeof PORTAL_PATHS[pt] === 'object'){
+    sectionPath = PORTAL_PATHS[pt][jur] || PORTAL_PATHS[pt][''] || '/' + (pt||'other').replace('_','-');
+  }
+
+  // URL structure: base + section + /year + /product_id
+  var yr = gv('year');
+  var segments = [base, sectionPath.replace(/^\//,'')];
+  if(yr) segments.push(yr);
+  segments.push(productId);
+
+  // Clean double slashes
+  return segments.filter(Boolean).join('/').replace(/([^:]\/)\/+/g,'$1');
+}
+
+// ── MAIN REBUILD ──────────────────────────────────────────────────────────────
+function rebuild(){
+  var slugOverride = document.getElementById('slug-override-tog').checked;
+  var urlOverride  = document.getElementById('url-override-tog').checked;
+  var productId    = gv('product_id').trim().toUpperCase();
+
+  // ── Slug ──
+  var slug = '';
+  if(slugOverride){
+    slug = gv('slug-manual').toLowerCase().replace(/[^a-z0-9-]/g,'');
+  } else {
+    var parts = buildSlugParts();
+    slug = assembleSlug(parts);
+    // Render parts preview
+    var partsHTML = parts.map(function(p){
+      var labels = {prefix:'type',state:'location',title:'title keywords',year:'year'};
+      return '<div class="slug-part active"><span style="font-size:9px;color:var(--txt3);margin-right:3px">'
+        + (labels[p.key]||p.key) + ':</span>' + esc(p.text) + '</div>';
+    }).join('<span class="slug-sep">-</span>');
+    document.getElementById('slug-parts').innerHTML = partsHTML || '<span style="color:var(--txt3);font-size:11px">Fill fields above to see slug parts</span>';
+  }
+
+  // Validate slug
+  var slugValid = /^[a-z0-9-]+$/.test(slug) && slug.length > 0;
+  var slugEl = document.getElementById('slug-val');
+  var slugBadge = document.getElementById('slug-badge');
+  if(!slug){
+    slugEl.textContent = 'Fill fields above to generate slug';
+    slugEl.className = 'result-value empty';
+    slugBadge.innerHTML = '';
+  } else if(slugValid){
+    slugEl.textContent = slug;
+    slugEl.className = 'result-value';
+    slugBadge.innerHTML = '<span class="vbadge vok">✓ valid</span>';
+  } else {
+    slugEl.textContent = slug + ' ← invalid characters';
+    slugEl.className = 'result-value invalid';
+    slugBadge.innerHTML = '<span class="vbadge vfail">✗ invalid</span>';
+  }
+
+  // ── URL ──
+  var canonicalUrl = '';
+  if(urlOverride){
+    canonicalUrl = gv('url-manual');
+  } else {
+    canonicalUrl = buildCanonicalUrl(slug, productId);
+  }
+
+  // URL preview breakdown
+  var base   = gv('base_url').replace(/\/$/,'');
+  var pt     = gv('product_type');
+  var jur    = gv('jurisdiction');
+  var yr     = gv('year');
+  var sPath  = '';
+  if(typeof PORTAL_PATHS[pt]==='string') sPath=PORTAL_PATHS[pt];
+  else if(PORTAL_PATHS[pt]) sPath=PORTAL_PATHS[pt][jur]||PORTAL_PATHS[pt]['']||'';
+
+  var previewHTML = '';
+  if(base) previewHTML += '<span style="color:var(--txt2)">' + esc(base) + '</span>';
+  if(sPath) previewHTML += '<span style="color:var(--pur)">' + esc(sPath) + '</span>';
+  if(yr)   previewHTML += '<span style="color:var(--amb)">/' + yr + '</span>';
+  if(productId) previewHTML += '<span style="color:var(--grn)">/' + esc(productId) + '</span>';
+  document.getElementById('url-preview').innerHTML = previewHTML || '<span style="color:var(--txt3)">Fill fields to preview URL structure</span>';
+
+  var urlEl = document.getElementById('url-val');
+  var urlBadge = document.getElementById('url-badge');
+  if(!canonicalUrl){
+    urlEl.textContent = 'Fill product_id, product_type, and base URL';
+    urlEl.className = 'result-value empty';
+    urlBadge.innerHTML = '';
+  } else {
+    urlEl.textContent = canonicalUrl;
+    urlEl.className = 'result-value';
+    var isValid = /^https?:\/\/.+/.test(canonicalUrl);
+    urlBadge.innerHTML = isValid
+      ? '<span class="vbadge vok">✓ valid URI</span>'
+      : '<span class="vbadge vwarn">⚠ check format</span>';
+  }
+
+  // ── JSON output ──
+  var jsonLines = [];
+  if(slug && /^[a-z0-9-]+$/.test(slug)){
+    jsonLines.push(
+      '<span class="json-key">"slug"</span>: <span class="json-str">"' + esc(slug) + '"</span>'
+    );
+  }
+  if(canonicalUrl){
+    jsonLines.push(
+      '<span class="json-key">"canonical_url"</span>: <span class="json-str">"' + esc(canonicalUrl) + '"</span>'
+    );
+  }
+  document.getElementById('json-out').innerHTML = jsonLines.length
+    ? jsonLines.join(',<br>')
+    : '<span style="color:var(--txt3)">Fill fields above to generate output</span>';
+}
+
+// ── UI HELPERS ────────────────────────────────────────────────────────────────
+function jurisdictionChange(){
+  var jur = gv('jurisdiction');
+  var stateFld = document.getElementById('state-fld');
+  if(jur==='STATE'||jur==='UT'||jur==='LG'){
+    stateFld.style.display='';
+  } else {
+    stateFld.style.display='none';
+    document.getElementById('state_code').value='';
+  }
+  rebuild();
+}
+
+function toggleOverride(type){
+  if(type==='slug'){
+    var on = document.getElementById('slug-override-tog').checked;
+    document.getElementById('slug-override-box').style.display = on ? '' : 'none';
+    document.getElementById('slug-parts').closest('.fld').style.display = on ? 'none' : '';
+  } else {
+    var on2 = document.getElementById('url-override-tog').checked;
+    document.getElementById('url-override-box').style.display = on2 ? '' : 'none';
+  }
+  rebuild();
+}
+
+function copyField(btnId, valId){
+  var text = document.getElementById(valId).textContent;
+  if(!text || text.includes('Fill fields')) return;
+  navigator.clipboard.writeText(text).then(function(){
+    var btn = document.getElementById(btnId);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent='Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function copyJSON(){
+  // Get raw values not HTML
+  var slug = document.getElementById('slug-val').textContent;
+  var url  = document.getElementById('url-val').textContent;
+  var lines = [];
+  if(slug && !/Fill|empty/i.test(slug) && /^[a-z0-9-]+$/.test(slug))
+    lines.push('"slug": "' + slug + '"');
+  if(url && !/Fill|empty/i.test(url))
+    lines.push('"canonical_url": "' + url + '"');
+  if(!lines.length) return;
+  navigator.clipboard.writeText(lines.join(',\\n')).then(function(){
+    var btn = event.target;
+    btn.textContent='Copied!';
+    setTimeout(function(){ btn.textContent='↓ Copy JSON snippet'; }, 2000);
+  });
+}
+
+function resetAll(){
+  ['product_id','year','title_en'].forEach(function(id){document.getElementById(id).value='';});
+  ['product_type','jurisdiction','state_code'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('base_url').value='https://cag.gov.in/portal';
+  document.getElementById('slug-manual').value='';
+  document.getElementById('url-manual').value='';
+  document.getElementById('slug-override-tog').checked=false;
+  document.getElementById('url-override-tog').checked=false;
+  document.getElementById('slug-override-box').style.display='none';
+  document.getElementById('url-override-box').style.display='none';
+  document.getElementById('slug-parts').closest('.fld').style.display='';
+  document.getElementById('state-fld').style.display='none';
+  rebuild();
+}
+
+function gv(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// Init
+rebuild();
+</script>
+</body>
+</html>

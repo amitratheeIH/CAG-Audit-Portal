@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CAG Manifest Builder</title>
+<style>
+:root{
+  --bg:#0c0f1a;--sur:#131825;--sur2:#192033;--sur3:#1e2840;
+  --bdr:#273050;--bdr2:#3a4870;
+  --acc:#6875f5;--grn:#1fcc9e;--amb:#f5c842;--red:#f56060;--pur:#a78bfa;
+  --txt:#d8dff0;--txt2:#7e8db5;--txt3:#404e78;
+  --r:5px;--mono:'Cascadia Code','Fira Code','Consolas',monospace;
+  --sans:-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--sans);background:var(--bg);color:var(--txt);font-size:12px}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;gap:10px;padding:8px 16px;background:var(--sur);border-bottom:1px solid var(--bdr);flex-wrap:wrap}
+.logo{width:24px;height:24px;background:var(--pur);border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:#fff;flex-shrink:0}
+.hdr-title{font-size:13px;font-weight:500}
+.hdr-meta{display:flex;align-items:center;gap:8px;flex:1;flex-wrap:wrap}
+.mf{display:flex;align-items:center;gap:5px}
+.mf label{font-size:10px;color:var(--txt2);white-space:nowrap;font-weight:500}
+.mf input,.mf select{background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);color:var(--txt);font-family:var(--mono);font-size:11px;padding:4px 7px;outline:none;transition:border-color .15s}
+.mf input{width:180px}.mf input:focus,.mf select:focus{border-color:var(--acc)}
+.hdr-btns{display:flex;gap:5px;flex-shrink:0}
+.btn{padding:5px 13px;border-radius:var(--r);font-family:var(--sans);font-size:11px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all .15s;outline:none;white-space:nowrap}
+.bg{background:transparent;border-color:var(--bdr);color:var(--txt2)}.bg:hover{border-color:var(--txt2);color:var(--txt)}
+.bgg{background:rgba(31,204,158,.12);border-color:rgba(31,204,158,.3);color:var(--grn);font-weight:600}.bgg:hover{background:rgba(31,204,158,.2)}
+.bga{background:var(--acc);color:#fff}.bga:hover{background:#5565e8}
+
+/* MAIN */
+.main{max-width:1000px;margin:0 auto;padding:18px}
+
+/* DROP ZONE */
+.drop-zone{border:2px dashed var(--bdr2);border-radius:10px;padding:28px 20px;text-align:center;transition:all .2s;margin-bottom:16px;background:var(--sur);position:relative;cursor:pointer}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--acc);background:rgba(104,117,245,.04)}
+.drop-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-icon{font-size:32px;opacity:.3;margin-bottom:8px}
+.drop-title{font-size:14px;font-weight:500;margin-bottom:4px}
+.drop-sub{font-size:11px;color:var(--txt2);margin-bottom:10px}
+.drop-types{display:flex;gap:5px;justify-content:center;flex-wrap:wrap}
+.dt{font-size:9px;padding:2px 7px;border-radius:3px;background:var(--sur2);border:1px solid var(--bdr);color:var(--txt3);font-family:var(--mono)}
+
+/* OR FOLDER BUTTON */
+.folder-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px}
+.or-line{flex:1;height:1px;background:var(--bdr)}
+.or-txt{font-size:10px;color:var(--txt3)}
+
+/* SECTION */
+.sec{background:var(--sur);border:1px solid var(--bdr);border-radius:8px;margin-bottom:12px;overflow:hidden}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--bdr);background:var(--sur)}
+.sec-ttl{font-size:11px;font-weight:600;display:flex;align-items:center;gap:8px}
+.sec-cnt{font-size:10px;font-weight:400;color:var(--txt2)}
+.cat-badge{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:600}
+.cb-metadata{background:rgba(104,117,245,.12);color:var(--acc);border:1px solid rgba(104,117,245,.2)}
+.cb-structure{background:rgba(31,204,158,.1);color:var(--grn);border:1px solid rgba(31,204,158,.2)}
+.cb-units{background:rgba(245,200,66,.1);color:var(--amb);border:1px solid rgba(245,200,66,.2)}
+.cb-blocks{background:rgba(167,139,250,.1);color:var(--pur);border:1px solid rgba(167,139,250,.2)}
+.cb-datasets{background:rgba(56,189,248,.1);color:#38bdf8;border:1px solid rgba(56,189,248,.2)}
+.cb-footnotes{background:rgba(245,200,66,.1);color:var(--amb);border:1px solid rgba(245,200,66,.2)}
+.cb-atn{background:rgba(245,96,96,.1);color:var(--red);border:1px solid rgba(245,96,96,.2)}
+.cb-assets{background:rgba(127,127,127,.1);color:var(--txt2);border:1px solid var(--bdr)}
+.cb-other{background:var(--sur2);color:var(--txt3);border:1px solid var(--bdr)}
+
+/* FILE TABLE */
+.file-table{width:100%;border-collapse:collapse;font-size:11px}
+.file-table td{padding:5px 14px;border-bottom:1px solid rgba(39,48,80,.3);vertical-align:middle}
+.file-table tr:last-child td{border-bottom:none}
+.file-table tr:hover td{background:rgba(104,117,245,.03)}
+.fname{font-family:var(--mono);color:var(--txt2)}
+.fpath{font-family:var(--mono);font-size:10px;color:var(--txt3)}
+.fsize{font-size:10px;color:var(--txt3);white-space:nowrap}
+.fhash{font-family:var(--mono);font-size:9px;color:var(--txt3);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:help}
+.fhash.done{color:var(--grn)}
+.fhash.computing{color:var(--amb)}
+.fhash.err{color:var(--red)}
+.fstatus{width:16px;height:16px;border-radius:50%;flex-shrink:0}
+.status-ok{background:var(--grn)}
+.status-pending{background:var(--bdr)}
+.status-err{background:var(--red)}
+.fdel{background:none;border:none;cursor:pointer;color:var(--txt3);font-size:12px;padding:0 3px;transition:color .15s}
+.fdel:hover{color:var(--red)}
+
+/* EMPTY STATE */
+.empty{padding:20px;text-align:center;font-size:11px;color:var(--txt3)}
+
+/* SUMMARY BAR */
+.summary-bar{display:flex;gap:16px;padding:10px 16px;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:12px;flex-wrap:wrap}
+.sb-item{display:flex;flex-direction:column;gap:2px}
+.sb-val{font-size:18px;font-weight:600;color:var(--txt);font-family:var(--mono)}
+.sb-val.ok{color:var(--grn)}.sb-val.pending{color:var(--amb)}.sb-val.err{color:var(--red)}
+.sb-lbl{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px}
+
+/* INFO */
+.info{padding:8px 12px;background:var(--sur2);border-radius:var(--r);border-left:2px solid var(--acc);font-size:10px;color:var(--txt2);line-height:1.6;margin-bottom:14px}
+.hint{font-size:10px;color:var(--txt3);margin-top:2px;line-height:1.4}
+
+/* FORM */
+.fld{margin-bottom:8px}
+.lbl{font-size:11px;font-weight:500;color:var(--txt2);margin-bottom:3px}
+input[type=text],input[type=number],select{width:100%;background:var(--sur2);border:1px solid var(--bdr);border-radius:var(--r);color:var(--txt);font-family:var(--sans);font-size:11px;padding:5px 8px;outline:none;transition:border-color .15s}
+input:focus,select:focus{border-color:var(--acc)}
+select option{background:var(--sur2)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+
+/* PROGRESS */
+.progress-bar{height:3px;background:var(--bdr);border-radius:2px;margin-top:8px;overflow:hidden;display:none}
+.progress-bar.on{display:block}
+.progress-fill{height:100%;background:var(--grn);border-radius:2px;transition:width .3s}
+
+/* STATUS BAR */
+.sbar{position:sticky;bottom:0;display:flex;align-items:center;justify-content:space-between;padding:4px 16px;background:var(--sur);border-top:1px solid var(--bdr);font-size:10px;color:var(--txt3);z-index:10}
+.sok{color:var(--grn)}.swrn{color:var(--amb)}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo">MF</div>
+  <div class="hdr-title">Manifest Builder</div>
+  <div class="hdr-meta">
+    <div class="mf"><label>PRODUCT ID</label>
+      <input id="G_pid" class="mono" placeholder="AR06-CAG-2023-STATE-MP" oninput="onMetaChange()">
+    </div>
+    <div class="mf"><label>TYPE</label>
+      <select id="G_type" onchange="onMetaChange()">
+        <option value="audit_report">audit_report</option>
+        <option value="accounts_report">accounts_report</option>
+        <option value="state_finance_report">state_finance_report</option>
+        <option value="study_report">study_report</option>
+        <option value="audit_impact_report">audit_impact_report</option>
+        <option value="other">other</option>
+      </select>
+    </div>
+    <div class="mf"><label>YEAR</label>
+      <input id="G_year" type="number" style="width:70px" placeholder="2023" oninput="onMetaChange()">
+    </div>
+  </div>
+  <div class="hdr-btns">
+    <input type="file" id="meta-load" accept=".json" style="display:none" onchange="loadMetadata(this)">
+    <button class="btn bg" onclick="document.getElementById('meta-load').click()" title="Load metadata.json to auto-fill product_id, type, year">↑ From metadata.json</button>
+    <button class="btn bg" id="btn-folder" onclick="pickFolder()" style="display:none">📂 Pick report folder</button>
+    <button class="btn bga" onclick="computeAllHashes()" id="btn-hash">⟳ Compute hashes</button>
+    <button class="btn bgg" onclick="downloadManifest()" id="btn-dl">↓ Download manifest.json</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="info">
+    <b>How to use:</b> Drop all your report JSON/NDJSON files here (or pick the report folder on Chrome/Edge).
+    The builder computes SHA-256 checksums in the browser, categorises each file, and generates a
+    valid <code>manifest.json</code>. Load <code>metadata.json</code> first to auto-fill product_id, type, and year.
+  </div>
+
+  <!-- DROP ZONE -->
+  <div class="drop-zone" id="drop-zone">
+    <input type="file" id="file-input" accept=".json,.ndjson" multiple onchange="handleFiles(this.files)">
+    <div class="drop-icon">⬆</div>
+    <div class="drop-title">Drop all report files here</div>
+    <div class="drop-sub">Select multiple files — Ctrl+A in your report folder, then drag here</div>
+    <div class="drop-types">
+      <span class="dt">metadata.json</span>
+      <span class="dt">structure.json</span>
+      <span class="dt">units/*.json</span>
+      <span class="dt">blocks/*.ndjson</span>
+      <span class="dt">datasets/*.json</span>
+      <span class="dt">datasets/ndjson/*.ndjson</span>
+      <span class="dt">footnotes/*.json</span>
+      <span class="dt">atn/*.json</span>
+    </div>
+  </div>
+
+  <div class="folder-bar">
+    <div class="or-line"></div>
+    <span class="or-txt">or</span>
+    <button class="btn bg" onclick="pickFolder()" id="btn-folder2" style="font-size:11px">
+      📂 Pick report folder (Chrome/Edge — reads all files recursively)
+    </button>
+    <div class="or-line"></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+  <!-- SUMMARY -->
+  <div class="summary-bar" id="summary-bar" style="display:none">
+    <div class="sb-item"><div class="sb-val" id="sb-total">0</div><div class="sb-lbl">Total files</div></div>
+    <div class="sb-item"><div class="sb-val ok" id="sb-hashed">0</div><div class="sb-lbl">Hashed</div></div>
+    <div class="sb-item"><div class="sb-val pending" id="sb-pending">0</div><div class="sb-lbl">Pending</div></div>
+    <div class="sb-item"><div class="sb-val err" id="sb-errors">0</div><div class="sb-lbl">Errors</div></div>
+    <div class="sb-item" style="margin-left:auto">
+      <div class="sb-val" id="sb-size" style="font-size:14px">0 KB</div>
+      <div class="sb-lbl">Total size</div>
+    </div>
+  </div>
+
+  <!-- FILE SECTIONS -->
+  <div id="file-sections"></div>
+
+</div>
+
+<div class="sbar">
+  <span id="sbar-msg" class="sok">Ready — drop report files to begin</span>
+  <span id="sbar-info"></span>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// EMBEDDED SCHEMA VERSIONS (auto-generated)
+// ═══════════════════════════════════════════════════════
+var SCHEMA_VERSIONS = {"atn":"1.0","audit_report_metadata":"1.0","catalog":"1.8","common_metadata":"1.1","content_block":"1.2.1","dataset":"1.0","footnote":"1.0","inheritable_audit_metadata":"1.0","manifest":"1.1","product":"1.1","reference":"1.0","structure":"1.0"};
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+// FILES: array of {name, path, size, type, category, hash, status, fileObj}
+var FILES = [];
+// status: 'pending' | 'hashing' | 'done' | 'error'
+
+var CATS = {
+  metadata:  {label:'Metadata',        badge:'cb-metadata',  files:[]},
+  structure: {label:'Structure',        badge:'cb-structure', files:[]},
+  units:     {label:'Units',            badge:'cb-units',     files:[]},
+  blocks:    {label:'Blocks (NDJSON)',  badge:'cb-blocks',    files:[]},
+  datasets:  {label:'Datasets JSON',   badge:'cb-datasets',  files:[]},
+  ndjson:    {label:'Dataset rows NDJSON', badge:'cb-blocks', files:[]},
+  footnotes: {label:'Footnotes',        badge:'cb-footnotes', files:[]},
+  atn:       {label:'ATN',              badge:'cb-atn',       files:[]},
+  assets:    {label:'Assets',           badge:'cb-assets',    files:[]},
+  other:     {label:'Other',            badge:'cb-other',     files:[]}
+};
+
+// ═══════════════════════════════════════════════════════
+// FILE CATEGORISATION
+// ═══════════════════════════════════════════════════════
+function categorise(name, path) {
+  var n = name.toLowerCase();
+  var p = (path || '').toLowerCase();
+
+  if (n === 'metadata.json')               return 'metadata';
+  if (n === 'structure.json')              return 'structure';
+  if (n === 'manifest.json')               return null; // exclude self
+  if (p.indexOf('units/') >= 0 && n.endsWith('.json'))   return 'units';
+  if (p.indexOf('blocks/') >= 0 && n.endsWith('.ndjson')) return 'blocks';
+  if (n.startsWith('content_block_') && n.endsWith('.ndjson')) return 'blocks';
+  if (p.indexOf('footnotes/') >= 0 || n.startsWith('footnotes_')) return 'footnotes';
+  if (p.indexOf('atn/') >= 0 || n.startsWith('atn_'))   return 'atn';
+  if (p.indexOf('datasets/ndjson') >= 0 && n.endsWith('.ndjson')) return 'ndjson';
+  if (p.indexOf('datasets/') >= 0 && n.endsWith('.json')) return 'datasets';
+  if (n.endsWith('.ndjson')) return 'blocks';
+  if (p.indexOf('assets/') >= 0) return 'assets';
+  if (n.endsWith('.json'))  return 'other';
+  return 'assets';
+}
+
+function relPath(name, path) {
+  // Try to derive a clean relative path from full path
+  if (!path) return name;
+  // Strip everything up to the product folder
+  var clean = path.replace(/\\/g, '/');
+  // Remove leading ./ or /
+  clean = clean.replace(/^\.?\/?/, '');
+  return clean;
+}
+
+// ═══════════════════════════════════════════════════════
+// FILE HANDLING
+// ═══════════════════════════════════════════════════════
+function handleFiles(fileList) {
+  Array.from(fileList).forEach(function(file) {
+    var path = file.webkitRelativePath || file.name;
+    var cat = categorise(file.name, path);
+    if (cat === null) return; // skip manifest.json itself
+    if (!cat) cat = 'other';
+    // Avoid duplicates
+    if (FILES.some(function(f){ return f.path === path; })) return;
+    FILES.push({
+      name: file.name,
+      path: path,
+      size: file.size,
+      type: file.type || 'application/json',
+      category: cat,
+      hash: null,
+      status: 'pending',
+      fileObj: file
+    });
+  });
+  renderSections();
+  updateSummary();
+  sbar('Added ' + FILES.length + ' files. Click "Compute hashes" to generate checksums.');
+}
+
+// ═══════════════════════════════════════════════════════
+// FOLDER PICKER (File System Access API)
+// ═══════════════════════════════════════════════════════
+async function pickFolder() {
+  if (!window.showDirectoryPicker) {
+    sbar('Folder picker not supported — use file drop instead (works in Chrome/Edge)');
+    return;
+  }
+  try {
+    var dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+    var collected = [];
+    await scanDir(dirHandle, '', collected);
+    if (collected.length) handleFiles(collected);
+    sbar('Loaded ' + collected.length + ' files from folder');
+  } catch(e) {
+    if (e.name !== 'AbortError') sbar('Error: ' + e.message);
+  }
+}
+
+async function scanDir(dh, prefix, out) {
+  for await (var entry of dh.values()) {
+    var entryPath = prefix ? prefix + '/' + entry.name : entry.name;
+    if (entry.kind === 'file' && (entry.name.endsWith('.json') || entry.name.endsWith('.ndjson'))) {
+      var file = await entry.getFile();
+      // Attach path info
+      Object.defineProperty(file, 'webkitRelativePath', { value: entryPath, writable: false });
+      out.push(file);
+    } else if (entry.kind === 'directory' && entry.name !== 'node_modules' && !entry.name.startsWith('.')) {
+      await scanDir(entry, entryPath, out);
+    }
+  }
+}
+
+// Show folder picker button only on Chrome/Edge
+if (window.showDirectoryPicker) {
+  document.getElementById('btn-folder').style.display = '';
+}
+
+// ═══════════════════════════════════════════════════════
+// HASH COMPUTATION  (SHA-256 via Web Crypto)
+// ═══════════════════════════════════════════════════════
+async function computeAllHashes() {
+  var pending = FILES.filter(function(f){ return f.status === 'pending' || f.status === 'error'; });
+  if (!pending.length) { sbar('All files already hashed.'); return; }
+
+  var pb = document.getElementById('progress-bar');
+  var pf = document.getElementById('progress-fill');
+  pb.classList.add('on');
+
+  var done = 0, errors = 0;
+  var total = pending.length;
+
+  for (var i = 0; i < pending.length; i++) {
+    var entry = pending[i];
+    entry.status = 'hashing';
+    renderFileRow(entry);
+
+    try {
+      var buf = await entry.fileObj.arrayBuffer();
+      var hashBuf = await crypto.subtle.digest('SHA-256', buf);
+      var hashArr = Array.from(new Uint8Array(hashBuf));
+      entry.hash = hashArr.map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+      entry.status = 'done';
+      done++;
+    } catch(e) {
+      entry.hash = null;
+      entry.status = 'error';
+      errors++;
+    }
+
+    pf.style.width = Math.round((i+1) / total * 100) + '%';
+    renderFileRow(entry);
+    updateSummary();
+
+    // Yield to keep UI responsive
+    if (i % 5 === 0) await new Promise(function(r){ setTimeout(r, 0); });
+  }
+
+  pb.classList.remove('on');
+  sbar('Hashed ' + done + ' files' + (errors ? ', ' + errors + ' errors' : '') + '. Ready to download manifest.json');
+}
+
+async function hashSingle(entry) {
+  entry.status = 'hashing';
+  renderFileRow(entry);
+  try {
+    var buf = await entry.fileObj.arrayBuffer();
+    var hashBuf = await crypto.subtle.digest('SHA-256', buf);
+    var arr = Array.from(new Uint8Array(hashBuf));
+    entry.hash = arr.map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+    entry.status = 'done';
+  } catch(e) { entry.status = 'error'; }
+  renderFileRow(entry);
+  updateSummary();
+}
+
+// ═══════════════════════════════════════════════════════
+// LOAD METADATA.JSON → auto-fill header fields
+// ═══════════════════════════════════════════════════════
+function loadMetadata(input) {
+  var file = input.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var d = JSON.parse(e.target.result);
+      var com = d.common || d; // handle both wrapped and flat
+      if (com.product_id) document.getElementById('G_pid').value = com.product_id;
+      if (com.product_type) document.getElementById('G_type').value = com.product_type;
+      if (com.year) document.getElementById('G_year').value = com.year;
+      onMetaChange();
+      sbar('Loaded metadata — product_id, type, year filled in');
+    } catch(e) { sbar('Could not parse metadata.json: ' + e.message); }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+function onMetaChange() {
+  updateSummary();
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDERING
+// ═══════════════════════════════════════════════════════
+function renderSections() {
+  var container = document.getElementById('file-sections');
+
+  // Re-group files by category
+  Object.keys(CATS).forEach(function(k){ CATS[k].files = []; });
+  FILES.forEach(function(f){ if (CATS[f.category]) CATS[f.category].files.push(f); });
+
+  var html = '';
+  Object.keys(CATS).forEach(function(cat) {
+    var c = CATS[cat];
+    if (!c.files.length) return;
+    html += '<div class="sec" id="sec-' + cat + '">';
+    html += '<div class="sec-hdr">';
+    html += '<span class="sec-ttl"><span class="cat-badge ' + c.badge + '">' + c.label + '</span> <span class="sec-cnt">' + c.files.length + ' file(s)</span></span>';
+    html += '<button class="btn bg" style="font-size:10px;padding:2px 8px" onclick="removeCategory(\'' + cat + '\')">Remove all</button>';
+    html += '</div>';
+    html += '<table class="file-table" id="ft-' + cat + '">';
+    html += '<colgroup><col style="width:16px"><col style="width:40%"><col style="width:15%"><col style="width:10%"><col style="width:30%"><col style="width:20px"></colgroup>';
+    c.files.forEach(function(f, i) {
+      html += renderRowHTML(f, cat, i);
+    });
+    html += '</table></div>';
+  });
+
+  if (!html) html = '<div class="empty">No files added yet — drop files above or pick folder.</div>';
+  container.innerHTML = html;
+}
+
+function renderRowHTML(f) {
+  var statusClass = f.status === 'done' ? 'status-ok' : f.status === 'error' ? 'status-err' : 'status-pending';
+  var hashText = f.hash ? f.hash.slice(0,16) + '…' : (f.status === 'hashing' ? '⟳ computing…' : f.status === 'error' ? 'error' : '—');
+  var hashClass = f.hash ? 'done' : f.status === 'hashing' ? 'computing' : f.status === 'error' ? 'err' : '';
+  var size = f.size < 1024 ? f.size + ' B' : f.size < 1048576 ? (f.size/1024).toFixed(1) + ' KB' : (f.size/1048576).toFixed(2) + ' MB';
+  var pathId = CSS.escape ? CSS.escape(f.path) : f.path.replace(/[^a-zA-Z0-9]/g, '_');
+  return '<tr id="row-' + pathId + '">'
+    + '<td><div class="fstatus ' + statusClass + '"></div></td>'
+    + '<td><div class="fname">' + esc(f.name) + '</div><div class="fpath">' + esc(f.path) + '</div></td>'
+    + '<td><select class="ent-sel" style="background:var(--sur2);border:1px solid var(--bdr);border-radius:3px;color:var(--txt);font-size:10px;padding:2px 5px;width:100%;outline:none" onchange="recategorise(\'' + esc(f.path) + '\',this.value)">'
+      + Object.keys(CATS).map(function(k){ return '<option value="' + k + '"' + (f.category===k?' selected':'') + '>' + CATS[k].label + '</option>'; }).join('')
+    + '</select></td>'
+    + '<td class="fsize">' + size + '</td>'
+    + '<td><span class="fhash ' + hashClass + '" title="' + (f.hash||'') + '">' + esc(hashText) + '</span></td>'
+    + '<td><button class="fdel" onclick="removeFile(\'' + esc(f.path) + '\')" title="Remove">✕</button></td>'
+    + '</tr>';
+}
+
+function renderFileRow(entry) {
+  // Re-render just this row
+  var pathId = entry.path.replace(/[^a-zA-Z0-9]/g, '_');
+  var row = document.getElementById('row-' + pathId);
+  if (!row) { renderSections(); return; }
+  row.outerHTML = renderRowHTML(entry);
+}
+
+function removeFile(path) {
+  FILES = FILES.filter(function(f){ return f.path !== path; });
+  renderSections();
+  updateSummary();
+}
+
+function removeCategory(cat) {
+  FILES = FILES.filter(function(f){ return f.category !== cat; });
+  renderSections();
+  updateSummary();
+}
+
+function recategorise(path, newCat) {
+  var f = FILES.find(function(f){ return f.path === path; });
+  if (f) {
+    f.category = newCat;
+    renderSections();
+    updateSummary();
+  }
+}
+
+function updateSummary() {
+  var total = FILES.length;
+  var hashed = FILES.filter(function(f){ return f.status === 'done'; }).length;
+  var pending = FILES.filter(function(f){ return f.status === 'pending'; }).length;
+  var errors = FILES.filter(function(f){ return f.status === 'error'; }).length;
+  var totalSize = FILES.reduce(function(a, f){ return a + (f.size || 0); }, 0);
+  var sizeStr = totalSize < 1024 ? totalSize + ' B' : totalSize < 1048576 ? (totalSize/1024).toFixed(1) + ' KB' : (totalSize/1048576).toFixed(2) + ' MB';
+
+  var sb = document.getElementById('summary-bar');
+  sb.style.display = total ? 'flex' : 'none';
+
+  document.getElementById('sb-total').textContent = total;
+  document.getElementById('sb-hashed').textContent = hashed;
+  document.getElementById('sb-pending').textContent = pending;
+  document.getElementById('sb-errors').textContent = errors;
+  document.getElementById('sb-size').textContent = sizeStr;
+
+  document.getElementById('sbar-info').textContent = total + ' files · ' + hashed + ' hashed';
+}
+
+// ═══════════════════════════════════════════════════════
+// BUILD MANIFEST JSON
+// ═══════════════════════════════════════════════════════
+function buildManifest() {
+  var pid  = document.getElementById('G_pid').value.trim();
+  var ptype = document.getElementById('G_type').value;
+  var year = parseInt(document.getElementById('G_year').value) || null;
+
+  var now = new Date().toISOString();
+  var out = {
+    product_id:   pid   || 'UNKNOWN',
+    product_type: ptype || 'audit_report',
+    generated_at: now,
+    schema_versions: SCHEMA_VERSIONS
+  };
+  if (year) out.year = year;
+
+  // file_checksums — all hashed files keyed by relative path
+  var checksums = {};
+  var hashedFiles = FILES.filter(function(f){ return f.status === 'done' && f.hash; });
+  hashedFiles.forEach(function(f){ checksums[f.path] = f.hash; });
+  out.file_checksums = checksums;
+
+  // total_files (required)
+  out.total_files = hashedFiles.length;
+
+  // file_lists — categorised lists
+  var fl = {};
+  var metaFile  = FILES.find(function(f){ return f.category === 'metadata' && f.status === 'done'; });
+  var structFile = FILES.find(function(f){ return f.category === 'structure' && f.status === 'done'; });
+  if (metaFile)  fl.metadata  = metaFile.path;
+  if (structFile) fl.structure = structFile.path;
+
+  var unitFiles = FILES.filter(function(f){ return f.category === 'units' && f.status === 'done'; }).map(function(f){ return f.path; });
+  var blockFiles = FILES.filter(function(f){ return f.category === 'blocks' && f.status === 'done'; }).map(function(f){ return f.path; });
+  var dsFiles = FILES.filter(function(f){ return f.category === 'datasets' && f.status === 'done'; }).map(function(f){ return f.path; });
+  var ndjsonFiles = FILES.filter(function(f){ return f.category === 'ndjson' && f.status === 'done'; }).map(function(f){ return f.path; });
+  var fnFiles = FILES.filter(function(f){ return f.category === 'footnotes' && f.status === 'done'; }).map(function(f){ return f.path; });
+  var atnFiles = FILES.filter(function(f){ return f.category === 'atn' && f.status === 'done'; }).map(function(f){ return f.path; });
+  var assetFiles = FILES.filter(function(f){ return f.category === 'assets' && f.status === 'done'; }).map(function(f){ return f.path; });
+  var otherFiles = FILES.filter(function(f){ return f.category === 'other' && f.status === 'done'; }).map(function(f){ return f.path; });
+
+  if (unitFiles.length)  fl.units    = unitFiles;
+  if (blockFiles.length) fl.blocks   = blockFiles;
+  if (dsFiles.length)    fl.datasets = dsFiles;
+  if (ndjsonFiles.length) fl.ndjson  = ndjsonFiles;
+  if (fnFiles.length)    fl.footnotes = fnFiles;
+  if (atnFiles.length)   fl.atn      = atnFiles;
+  if (assetFiles.length) fl.assets   = assetFiles;
+  if (otherFiles.length) fl.other    = otherFiles;
+
+  if (Object.keys(fl).length) out.file_lists = fl;
+
+  // Top-level convenience arrays (schema also supports these directly)
+  if (unitFiles.length)  out.units     = unitFiles;
+  if (blockFiles.length) out.blocks    = blockFiles;
+  if (fnFiles.length)    out.footnotes = fnFiles;
+  if (dsFiles.length)    out.datasets  = dsFiles;
+
+  return out;
+}
+
+function downloadManifest() {
+  var pending = FILES.filter(function(f){ return f.status === 'pending'; });
+  if (pending.length) {
+    if (!confirm(pending.length + ' file(s) not yet hashed — download manifest without their checksums?')) return;
+  }
+  var mf = buildManifest();
+  if (!mf.total_files) { alert('No hashed files yet — click "Compute hashes" first.'); return; }
+
+  var json = JSON.stringify(mf, null, 2);
+  var blob = new Blob([json], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'manifest.json';
+  a.click();
+  sbar('Downloaded manifest.json — ' + mf.total_files + ' files, ' + Object.keys(mf.file_checksums).length + ' checksums');
+}
+
+// ═══════════════════════════════════════════════════════
+// DROP ZONE SETUP
+// ═══════════════════════════════════════════════════════
+var dz = document.getElementById('drop-zone');
+dz.addEventListener('dragover', function(e){ e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', function(){ dz.classList.remove('drag'); });
+dz.addEventListener('drop', function(e){
+  e.preventDefault(); dz.classList.remove('drag');
+  handleFiles(e.dataTransfer.files);
+});
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function sbar(msg){ document.getElementById('sbar-msg').textContent = msg; }
+
+// Show folder button if supported
+if (window.showDirectoryPicker) {
+  document.getElementById('btn-folder').style.display = '';
+  document.getElementById('btn-folder2').title = 'Pick report folder — reads all .json and .ndjson files recursively';
+}
+</script>
+</body>
+</html>

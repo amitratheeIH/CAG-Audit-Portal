@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$version": "1.1",
+  "title": "Product Schema",
+  "description": "Base container schema for all repository products. v1.0: canonical baseline. datasets[] now $ref dataset.schema (was untyped). metadata.specific gains product_type_key discriminator field for pipeline routing.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "product"
+  ],
+  "properties": {
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metadata",
+        "structure"
+      ],
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "common"
+          ],
+          "properties": {
+            "common": {
+              "$ref": "./common_metadata.schema",
+              "description": "Fields common to all product types."
+            },
+            "specific": {
+              "type": "object",
+              "description": "Product-type-specific metadata. For audit_report, validated against audit_report_metadata.schema. The product_type_key field is the pipeline discriminator — it must match common.product_type. Pipeline routes validation to the correct type-specific schema based on this value.",
+              "properties": {
+                "product_type_key": {
+                  "type": "string",
+                  "enum": [
+                    "audit_report",
+                    "accounts_report",
+                    "finance_report",
+                    "study_report",
+                    "audit_impact_report",
+                    "other"
+                  ],
+                  "description": "Discriminator field. Must match metadata.common.product_type. Pipeline uses this to route validation to the correct type-specific schema (e.g. audit_report_metadata.schema). Set by ingestion pipeline."
+                }
+              }
+            }
+          }
+        },
+        "structure": {
+          "$ref": "./structure.schema"
+        },
+        "datasets": {
+          "type": "array",
+          "description": "Structured datasets extracted from tables within this report. Each item must conform to dataset.schema — dataset_id is the stable cross-reference key used by table blocks (content.dataset_ref) and footnotes (anchor_dataset_id).",
+          "items": {
+            "$ref": "./dataset.schema"
+          }
+        }
+      }
+    }
+  }
+}

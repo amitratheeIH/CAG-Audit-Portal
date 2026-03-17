@@ -1,0 +1,309 @@
+{
+  "$version": "1.0",
+  "$schema": "./taxonomy_product_types.schema.json",
+  "updated_at": "2025-01-01",
+  "$schema_sync": {
+    "target_schema": "common_metadata.schema",
+    "target_field": "product_type.enum",
+    "instruction": "The enum in common_metadata.schema must be kept in sync with the ids in this file. This is enforced by CI validation (scripts/validate_schema_enum_sync.py) — never edit the enum manually. The CI check runs on every commit and fails if the enum values diverge from the IDs in this file."
+  },
+  "description": {
+    "en": "Controlled vocabulary for product_type field in common_metadata.schema. atn_applicable and pac_applicable flags are consumed by the ingestion pipeline to determine whether ATN and PAC tracking structures are expected.",
+    "hi": "CAG भंडार उत्पाद प्रकारों के लिए नियंत्रित शब्दावली।"
+  },
+  "entries": [
+    {
+      "id": "audit_report",
+      "label": {
+        "en": "Audit Report",
+        "hi": "लेखापरीक्षा प्रतिवेदन"
+      },
+      "atn_applicable": true,
+      "pac_applicable": true,
+      "jurisdiction_applicable": true,
+      "valid_jurisdictions": [
+        "UNION",
+        "STATE",
+        "UT",
+        "LG"
+      ],
+      "jurisdiction_required": true,
+      "accounts_sub_type_applicable": false,
+      "description": "Compliance, performance, financial and other audit reports. Tabled in Parliament or State Legislature. Supports ATN and PAC tracking.",
+      "portal_section": "audit_reports"
+    },
+    {
+      "id": "accounts_report",
+      "label": {
+        "en": "Accounts Report",
+        "hi": "लेखा प्रतिवेदन"
+      },
+      "prefix": "AC",
+      "atn_applicable": false,
+      "pac_applicable": false,
+      "jurisdiction_applicable": true,
+      "valid_jurisdictions": [
+        "UNION",
+        "STATE",
+        "UT",
+        "LG"
+      ],
+      "jurisdiction_required": true,
+      "state_code_required_for": [
+        "STATE",
+        "UT",
+        "LG"
+      ],
+      "lg_code_optional_for": [
+        "LG"
+      ],
+      "accounts_sub_type_applicable": true,
+      "description": "Annual government accounts. Four categories based on jurisdiction: union_accounts (UNION), state_accounts (STATE/UT), ulb_accounts (LG), pri_accounts (LG). accounts_sub_type (finance_accounts/appropriation_accounts/combined) applies to union_accounts and state_accounts only. ULB and PRI accounts do not have the finance/appropriation split. For LG: state_code always required; lg_code is optional (specific body or all LG in state).",
+      "categories": [
+        {
+          "id": "union_accounts",
+          "label": {
+            "en": "Union Accounts",
+            "hi": "संघ लेखा"
+          },
+          "jurisdiction": "UNION",
+          "state_code": false,
+          "lg_code": false,
+          "accounts_sub_type_applicable": true,
+          "portal_section": "accounts_reports",
+          "portal_url": "/accounts/union",
+          "product_id_example": "AC01-CAG-2023-UNION"
+        },
+        {
+          "id": "state_accounts",
+          "label": {
+            "en": "State/UT Accounts",
+            "hi": "राज्य/संघ राज्यक्षेत्र लेखा"
+          },
+          "jurisdiction": "STATE or UT",
+          "state_code": true,
+          "lg_code": false,
+          "accounts_sub_type_applicable": true,
+          "portal_section": "accounts_reports",
+          "portal_url": "/accounts/state",
+          "product_id_example": "AC01-CAG-2023-STATE-MP"
+        },
+        {
+          "id": "ulb_accounts",
+          "label": {
+            "en": "ULB Accounts",
+            "hi": "नगरीय स्थानीय निकाय लेखा"
+          },
+          "jurisdiction": "LG",
+          "local_body_type": "ulb",
+          "state_code": true,
+          "lg_code": "optional",
+          "accounts_sub_type_applicable": false,
+          "portal_section": "accounts_reports",
+          "portal_url": "/accounts/ulb",
+          "product_id_example": "AC01-CAG-2023-LG-MP or AC01-CAG-2023-LG-MP-BBMP"
+        },
+        {
+          "id": "pri_accounts",
+          "label": {
+            "en": "PRI Accounts",
+            "hi": "पंचायती राज संस्था लेखा"
+          },
+          "jurisdiction": "LG",
+          "local_body_type": "pri",
+          "state_code": true,
+          "lg_code": "optional",
+          "accounts_sub_type_applicable": false,
+          "portal_section": "accounts_reports",
+          "portal_url": "/accounts/pri",
+          "product_id_example": "AC02-CAG-2023-LG-MP or AC02-CAG-2023-LG-MP-ZPJABALPUR"
+        }
+      ],
+      "accounts_sub_types": [
+        {
+          "id": "finance_accounts",
+          "label": {
+            "en": "Finance Accounts",
+            "hi": "वित्त लेखा"
+          },
+          "applicable_to_categories": [
+            "union_accounts",
+            "state_accounts"
+          ],
+          "description": "Annual Finance Accounts — receipts, expenditure, balances of Consolidated Fund, Contingency Fund, and Public Account."
+        },
+        {
+          "id": "appropriation_accounts",
+          "label": {
+            "en": "Appropriation Accounts",
+            "hi": "विनियोग लेखा"
+          },
+          "applicable_to_categories": [
+            "union_accounts",
+            "state_accounts"
+          ],
+          "description": "Appropriation Accounts — comparison of actual expenditure against Parliamentary/Legislative grants."
+        },
+        {
+          "id": "combined",
+          "label": {
+            "en": "Combined (Finance + Appropriation)",
+            "hi": "संयुक्त"
+          },
+          "applicable_to_categories": [
+            "union_accounts",
+            "state_accounts"
+          ],
+          "description": "Finance Accounts and Appropriation Accounts published as a single combined volume."
+        }
+      ],
+      "portal_section": "accounts_reports"
+    },
+    {
+      "id": "finance_report",
+      "label": {
+        "en": "Finance Report",
+        "hi": "वित्त प्रतिवेदन"
+      },
+      "prefix": "SF",
+      "id_note": "Prefix SF retained for compatibility. product_type id is 'finance_report' — covers Union, State/UT, ULB, and PRI finance reports under one product type.",
+      "atn_applicable": false,
+      "pac_applicable": false,
+      "jurisdiction_applicable": true,
+      "valid_jurisdictions": [
+        "UNION",
+        "STATE",
+        "UT",
+        "LG"
+      ],
+      "jurisdiction_required": true,
+      "state_code_required_for": [
+        "STATE",
+        "UT",
+        "LG"
+      ],
+      "lg_code_optional_for": [
+        "LG"
+      ],
+      "accounts_sub_type_applicable": false,
+      "description": "Annual Finance Report on fiscal and financial position. Four categories: union_finance (UNION), state_finance (STATE/UT), ulb_finance (LG), pri_finance (LG). For LG: state_code always required; lg_code is optional.",
+      "categories": [
+        {
+          "id": "union_finance",
+          "label": {
+            "en": "Union Finance Report",
+            "hi": "संघ वित्त प्रतिवेदन"
+          },
+          "jurisdiction": "UNION",
+          "state_code": false,
+          "lg_code": false,
+          "portal_section": "finance_reports",
+          "portal_url": "/finance/union",
+          "product_id_example": "SF01-CAG-2023-UNION"
+        },
+        {
+          "id": "state_finance",
+          "label": {
+            "en": "State/UT Finance Report",
+            "hi": "राज्य/संघ राज्यक्षेत्र वित्त प्रतिवेदन"
+          },
+          "jurisdiction": "STATE or UT",
+          "state_code": true,
+          "lg_code": false,
+          "portal_section": "finance_reports",
+          "portal_url": "/finance/state",
+          "product_id_example": "SF01-CAG-2023-STATE-MP"
+        },
+        {
+          "id": "ulb_finance",
+          "label": {
+            "en": "ULB Finance Report",
+            "hi": "नगरीय स्थानीय निकाय वित्त प्रतिवेदन"
+          },
+          "jurisdiction": "LG",
+          "local_body_type": "ulb",
+          "state_code": true,
+          "lg_code": "optional",
+          "portal_section": "finance_reports",
+          "portal_url": "/finance/ulb",
+          "product_id_example": "SF01-CAG-2023-LG-MP or SF01-CAG-2023-LG-MP-BBMP"
+        },
+        {
+          "id": "pri_finance",
+          "label": {
+            "en": "PRI Finance Report",
+            "hi": "पंचायती राज संस्था वित्त प्रतिवेदन"
+          },
+          "jurisdiction": "LG",
+          "local_body_type": "pri",
+          "state_code": true,
+          "lg_code": "optional",
+          "portal_section": "finance_reports",
+          "portal_url": "/finance/pri",
+          "product_id_example": "SF02-CAG-2023-LG-MP or SF02-CAG-2023-LG-MP-ZPJABALPUR"
+        }
+      ],
+      "portal_section": "finance_reports"
+    },
+    {
+      "id": "study_report",
+      "label": {
+        "en": "Study Report",
+        "hi": "अध्ययन प्रतिवेदन"
+      },
+      "atn_applicable": false,
+      "pac_applicable": false,
+      "jurisdiction_applicable": false,
+      "valid_jurisdictions": [],
+      "jurisdiction_required": false,
+      "accounts_sub_type_applicable": false,
+      "description": "Thematic studies, research papers, and guidance documents. Not jurisdiction-bound — may cover multiple states or the whole country.",
+      "portal_section": "study_reports"
+    },
+    {
+      "id": "audit_impact_report",
+      "label": {
+        "en": "Audit Impact Report",
+        "hi": "लेखापरीक्षा प्रभाव प्रतिवेदन"
+      },
+      "atn_applicable": false,
+      "pac_applicable": false,
+      "jurisdiction_applicable": false,
+      "valid_jurisdictions": [],
+      "jurisdiction_required": false,
+      "accounts_sub_type_applicable": false,
+      "description": "Post-audit impact assessment of implemented recommendations and outcomes. Not jurisdiction-bound.",
+      "portal_section": "audit_impact"
+    },
+    {
+      "id": "compendium",
+      "label": {
+        "en": "Compendium",
+        "hi": "संकलन"
+      },
+      "atn_applicable": false,
+      "pac_applicable": false,
+      "jurisdiction_applicable": false,
+      "valid_jurisdictions": [],
+      "jurisdiction_required": false,
+      "accounts_sub_type_applicable": false,
+      "description": "Compiled collection of multiple audit reports, findings, or thematic studies published as a single volume. Not jurisdiction-bound.",
+      "portal_section": "compendium"
+    },
+    {
+      "id": "other",
+      "label": {
+        "en": "Other",
+        "hi": "अन्य"
+      },
+      "atn_applicable": false,
+      "pac_applicable": false,
+      "jurisdiction_applicable": false,
+      "valid_jurisdictions": [],
+      "jurisdiction_required": false,
+      "accounts_sub_type_applicable": false,
+      "description": "Miscellaneous publications not fitting other categories.",
+      "portal_section": "compendium"
+    }
+  ]
+}

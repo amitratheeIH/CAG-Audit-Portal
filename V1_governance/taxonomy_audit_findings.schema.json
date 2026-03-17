@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$version": "1.0",
+  "title": "Taxonomy Audit Findings Governance Schema",
+  "description": "Validates taxonomy_audit_findings_audit_report.json. IDs are snake_case. Every entry must have id, label.en, level, parent_id, sort_order, deprecated. sub_categories[] on category entries must reference valid entry IDs — pipeline validates referential integrity.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$version", "updated_at", "entries"],
+  "properties": {
+    "$version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "$schema": { "type": "string" },
+    "updated_at": { "type": "string", "format": "date" },
+    "product_types": { "type": "array", "items": { "type": "string" } },
+    "description": { "type": "string" },
+    "usage_notes": { "type": "string" },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "level", "parent_id", "sort_order", "deprecated"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]+$" },
+          "label": {
+            "type": "object",
+            "required": ["en"],
+            "properties": { "en": { "type": "string", "minLength": 1 } },
+            "additionalProperties": { "type": "string" }
+          },
+          "short_label": {
+            "type": "object",
+            "required": ["en"],
+            "properties": { "en": { "type": "string", "minLength": 1 } },
+            "additionalProperties": { "type": "string" }
+          },
+          "level": { "type": "string", "enum": ["category", "sub_category", "detail"] },
+          "parent_id": { "type": ["string", "null"] },
+          "description": {
+            "type": "object",
+            "properties": { "en": { "type": "string" } },
+            "additionalProperties": { "type": "string" }
+          },
+          "sort_order": { "type": "integer", "minimum": 1 },
+          "deprecated": { "type": "boolean" },
+          "superseded_by": { "type": ["string", "null"] },
+          "sub_categories": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]+$" },
+            "description": "Child IDs. Pipeline must verify every ID exists in entries[]."
+          }
+        }
+      }
+    }
+  }
+}

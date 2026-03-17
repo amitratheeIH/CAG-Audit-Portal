@@ -1,0 +1,326 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$version": "1.0",
+  "title": "Audit Report Metadata",
+  "description": "Metadata specific to audit reports. v1.0: canonical baseline. amendment.amendment_type now required. state_ut.status_at_report_date now required (pipeline-set). pdf_assets checksum entries now require checksum_algorithm via if/then. tabling.lower_house.name and upper_house.name require 'en' key.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "inheritable": {
+      "$ref": "./inheritable_audit_metadata.schema",
+      "description": "Report-level inheritable metadata. Cascades to all chapters/sections."
+    },
+    "report_level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["report_number", "jurisdiction", "audit_report_status"],
+      "properties": {
+        "report_number": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["number", "year"],
+          "properties": {
+            "number": { "type": "integer", "minimum": 1 },
+            "year": { "type": "integer", "minimum": 1860, "maximum": 2100 }
+          }
+        },
+        "jurisdiction": {
+          "type": "string",
+          "enum": ["UNION", "STATE", "UT", "LG"]
+        },
+        "audit_report_status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "submitted_to_government",
+            "not_to_be_tabled",
+            "tabled",
+            "published",
+            "archived"
+          ]
+        },
+        "date_of_submission_to_government": {
+          "type": "string",
+          "format": "date"
+        },
+        "tabling": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["applicable"],
+          "properties": {
+            "applicable": { "type": "boolean" },
+            "legislature": {
+              "type": "string",
+              "enum": ["Parliament", "State Legislature"]
+            },
+            "submitted_to": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+              }
+            },
+            "reason_not_tabled": {
+              "type": "object",
+              "additionalProperties": { "type": "string" }
+            },
+            "lower_house": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "date_of_placing"],
+              "properties": {
+                "name": {
+                  "type": "object",
+                  "required": ["en"],
+                  "properties": { "en": { "type": "string" } },
+                  "additionalProperties": { "type": "string" }
+                },
+                "date_of_placing": { "type": "string", "format": "date" },
+                "session": {
+                  "type": "object",
+                  "additionalProperties": { "type": "string" }
+                },
+                "session_number": { "type": "string" }
+              }
+            },
+            "upper_house": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "date_of_placing"],
+              "properties": {
+                "name": {
+                  "type": "object",
+                  "required": ["en"],
+                  "properties": { "en": { "type": "string" } },
+                  "additionalProperties": { "type": "string" }
+                },
+                "date_of_placing": { "type": "string", "format": "date" },
+                "session": {
+                  "type": "object",
+                  "additionalProperties": { "type": "string" }
+                },
+                "session_number": { "type": "string" }
+              }
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": { "applicable": { "const": false } },
+                "required": ["applicable"]
+              },
+              "then": { "required": ["submitted_to", "reason_not_tabled"] }
+            },
+            {
+              "if": {
+                "properties": { "applicable": { "const": true } },
+                "required": ["applicable"]
+              },
+              "then": { "required": ["legislature", "lower_house"] }
+            }
+          ]
+        },
+        "signed_by": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": { "type": "object", "additionalProperties": { "type": "string" } },
+            "designation": { "type": "object", "additionalProperties": { "type": "string" } },
+            "date": { "type": "string", "format": "date" },
+            "place": { "type": "object", "additionalProperties": { "type": "string" } }
+          }
+        },
+        "countersigned_by": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": { "type": "object", "additionalProperties": { "type": "string" } },
+            "designation": { "type": "object", "additionalProperties": { "type": "string" } },
+            "date": { "type": "string", "format": "date" },
+            "place": { "type": "object", "additionalProperties": { "type": "string" } }
+          }
+        },
+        "pac_report_level": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "selected_for_discussion": { "type": "boolean" },
+            "discussed": { "type": "boolean" },
+            "pac_report_reference": { "type": "string" },
+            "discussion_date": { "type": "string", "format": "date" }
+          }
+        },
+        "atn": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "atn_received": { "type": "boolean" },
+            "atn_date": { "type": "string", "format": "date" },
+            "atn_folder": { "type": "string", "default": "atn/" },
+            "pending_paragraphs": { "type": "integer", "minimum": 0 },
+            "settled_paragraphs": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "amendment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["amendment_type"],
+          "description": "Present only when this report amends an earlier one. amendment_type is required — it is the discriminator for the whole object.",
+          "properties": {
+            "amendment_type": {
+              "type": "string",
+              "enum": ["corrigendum", "erratum", "addendum", "clarification"]
+            },
+            "amends_report": {
+              "type": "string",
+              "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$",
+              "description": "product_id of the report being amended."
+            },
+            "amends_blocks": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z0-9][A-Z0-9\\-]+[A-Z0-9]$"
+              }
+            },
+            "amendment_description": {
+              "type": "object",
+              "additionalProperties": { "type": "string" }
+            }
+          }
+        },
+        "pdf_assets": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Language-wise PDF asset registry for this report.",
+          "properties": {
+            "complete": {
+              "type": "object",
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[a-z]{2,3}$": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "local_path": { "type": "string" },
+                    "url": { "type": "string", "format": "uri" },
+                    "size_mb": { "type": "number" },
+                    "checksum": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "checksum_algorithm": {
+                      "type": "string",
+                      "enum": ["sha256", "sha512", "md5"],
+                      "default": "sha256"
+                    },
+                    "page_count": { "type": "integer" }
+                  },
+                  "allOf": [
+                    {
+                      "if": { "required": ["checksum"] },
+                      "then": { "required": ["checksum_algorithm"] }
+                    }
+                  ]
+                }
+              }
+            },
+            "chapters": {
+              "type": "object",
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[A-Z0-9\\-]+$": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^[a-z]{2,3}$": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "local_path": { "type": "string" },
+                        "url": { "type": "string", "format": "uri" },
+                        "size_mb": { "type": "number" },
+                        "checksum": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "checksum_algorithm": {
+                          "type": "string",
+                          "enum": ["sha256", "sha512", "md5"],
+                          "default": "sha256"
+                        }
+                      },
+                      "allOf": [
+                        {
+                          "if": { "required": ["checksum"] },
+                          "then": { "required": ["checksum_algorithm"] }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "references": {
+          "type": "array",
+          "items": { "$ref": "./reference.schema" }
+        },
+        "government_context": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "nodal_ministry": { "type": ["string", "null"] },
+            "nodal_departments": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": { "type": "string" },
+              "default": []
+            }
+          }
+        },
+        "state_ut": {
+          "type": "object",
+          "required": ["id", "name", "status_at_report_date"],
+          "additionalProperties": false,
+          "description": "Identity of the State or UT. Required when jurisdiction is STATE or UT. status_at_report_date is PIPELINE-COMPUTED — never set manually.",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^IN-[A-Z]{2,3}$"
+            },
+            "name": {
+              "type": "object",
+              "required": ["en"],
+              "properties": {
+                "en": { "type": "string" },
+                "hi": { "type": "string" }
+              },
+              "additionalProperties": false
+            },
+            "status_at_report_date": {
+              "type": "string",
+              "enum": ["state", "ut_with_legislature", "ut_without_legislature"],
+              "description": "PIPELINE-COMPUTED from registry_states_uts.json status_history + report year. Required — a missing value means pipeline failed."
+            }
+          }
+        },
+        "report_structure": {
+          "type": "string",
+          "enum": ["standalone", "collection"]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "jurisdiction": { "enum": ["STATE", "UT"] } },
+            "required": ["jurisdiction"]
+          },
+          "then": { "required": ["state_ut"] }
+        }
+      ]
+    }
+  }
+}

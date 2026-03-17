@@ -1,0 +1,510 @@
+{
+  "$version": "1.0",
+  "$schema": "./taxonomy_report_sector.schema.json",
+  "updated_at": "2025-01-01",
+  "id_convention": "SCREAMING-KEBAB with SECT- prefix. Sub-sectors prefixed with parent sector ID. e.g. SECT-CIVIL-HEALTH. IDs permanently stable.",
+  "description": "Controlled vocabulary for report_sector field in inheritable_audit_metadata.schema. Maps to CAG audit wing structure. Two levels: sector (top-level wing) and sub_sector (functional domain).",
+  "usage_notes": [
+    "Set sector at report level. Set sub_sector at report or chapter level.",
+    "A report may carry multiple sub_sector values but typically one sector.",
+    "Civil is the residual sector — if a domain does not fit Commercial, Revenue, Defence, Telecom, or Railways, it belongs under Civil.",
+    "Commercial covers audit of entities (PSUs, bodies) — not commercial activities of line departments.",
+    "Revenue covers audit of government receipts — not to be confused with the Department of Revenue."
+  ],
+  "cag_wing_values": [
+    "Civil Audit",
+    "Commercial Audit",
+    "Revenue Audit",
+    "Defence Audit",
+    "Telecom Audit",
+    "Railways Audit"
+  ],
+  "entries": [
+    {
+      "id": "SECT-CIVIL",
+      "label": { "en": "Civil", "hi": "सिविल" },
+      "short_label": { "en": "Civil" },
+      "level": "sector",
+      "parent_id": null,
+      "cag_wing": "Civil Audit",
+      "description": { "en": "Audit of civil government expenditure — non-commercial, non-defence, non-revenue, non-telecom, non-railways government spending. Covers social sector, infrastructure, and general administration." },
+      "sort_order": 1,
+      "deprecated": false,
+      "sub_sectors": [
+        "SECT-CIVIL-HEALTH",
+        "SECT-CIVIL-EDUCATION",
+        "SECT-CIVIL-RURAL-DEV",
+        "SECT-CIVIL-URBAN-DEV",
+        "SECT-CIVIL-AGRICULTURE",
+        "SECT-CIVIL-WATER",
+        "SECT-CIVIL-FOREST-ENV",
+        "SECT-CIVIL-PWD",
+        "SECT-CIVIL-SOCIAL-WELFARE",
+        "SECT-CIVIL-HOME-POLICE",
+        "SECT-CIVIL-FINANCE-TREASURY",
+        "SECT-CIVIL-GENERAL-ADMIN"
+      ]
+    },
+    {
+      "id": "SECT-CIVIL-HEALTH",
+      "label": { "en": "Health and Family Welfare", "hi": "स्वास्थ्य एवं परिवार कल्याण" },
+      "short_label": { "en": "Health" },
+      "level": "sub_sector",
+      "parent_id": "SECT-CIVIL",
+      "cag_wing": "Civil Audit",
+      "description": { "en": "Audit of health department expenditure, hospital infrastructure, public health programmes, and family welfare schemes. Covers NHM, PMJAY, AYUSH and state health missions." },
+      "sort_order": 1,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-CIVIL-EDUCATION",
+      "label": { "en": "Education", "hi": "शिक्षा" },
+      "short_label": { "en": "Education" },
+      "level": "sub_sector",
+      "parent_id": "SECT-CIVIL",
+      "cag_wing": "Civil Audit",
+      "description": { "en": "Audit of school education, higher education, and technical education department expenditure. Covers SSA, RMSA, Samagra Shiksha, and state education boards." },
+      "sort_order": 2,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-CIVIL-RURAL-DEV",
+      "label": { "en": "Rural Development and Panchayati Raj", "hi": "ग्रामीण विकास एवं पंचायती राज" },
+      "short_label": { "en": "Rural Development" },
+      "level": "sub_sector",
+      "parent_id": "SECT-CIVIL",
+      "cag_wing": "Civil Audit",
+      "description": { "en": "Audit of rural development and panchayati raj department expenditure. Covers MGNREGS, PMGSY, PMAY-G, NRLM, and related centrally sponsored schemes." },
+      "sort_order": 3,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-CIVIL-URBAN-DEV",
+      "label": { "en": "Urban Development and Housing", "hi": "नगरीय विकास एवं आवास" },
+      "short_label": { "en": "Urban Development" },
+      "level": "sub_sector",
+      "parent_id": "SECT-CIVIL",
+      "cag_wing": "Civil Audit",
+      "description": { "en": "Audit of urban development, housing, and municipal affairs. Covers AMRUT, Smart Cities Mission, PMAY-U, and state housing boards." },
+      "sort_order": 4,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-CIVIL-AGRICULTURE",
+      "label": { "en": "Agriculture and Allied Services", "hi": "कृषि एवं संबद्ध सेवाएं" },
+      "short_label": { "en": "Agriculture" },
+      "level": "sub_sector",
+      "parent_id": "SECT-CIVIL",
+      "cag_wing": "Civil Audit",
+      "description": { "en": "Audit of agriculture, horticulture, animal husbandry, fisheries, and food processing. Covers PM-KISAN, PMFBY, crop insurance, and state agriculture departments." },
+      "sort_order": 5,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-CIVIL-WATER",
+      "label": { "en": "Water Resources and Irrigation", "hi": "जल संसाधन एवं सिंचाई" },
+      "short_label": { "en": "Water Resources" },
+      "level": "sub_sector",
+      "parent_id": "SECT-CIVIL",
+      "cag_wing": "Civil Audit",
+      "description": { "en": "Audit of irrigation, water resources, flood control, and drinking water supply. Covers dam construction, canal systems, Jal Jeevan Mission, and state water resource departments." },
+      "sort_order": 6,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-CIVIL-FOREST-ENV",
+      "label": { "en": "Forests and Environment", "hi": "वन एवं पर्यावरण" },
+      "short_label": { "en": "Forest & Environment" },
+      "level": "sub_sector",
+      "parent_id": "SECT-CIVIL",
+      "cag_wing": "Civil Audit",
+      "description": { "en": "Audit of forest departments, wildlife management, environmental protection, and climate change programmes. Covers Forest Conservation Act compliance, CAMPA funds, and pollution control boards." },
+      "sort_order": 7,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-CIVIL-PWD",
+      "label": { "en": "Public Works and Infrastructure", "hi": "लोक निर्माण एवं अवसंरचना" },
+      "short_label": { "en": "Public Works" },
+      "level": "sub_sector",
+      "parent_id": "SECT-CIVIL",
+      "cag_wing": "Civil Audit",
+      "description": { "en": "Audit of public works departments, road construction, building works, and infrastructure projects. Covers state PWD, NHAI-related state works, and government buildings." },
+      "sort_order": 8,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-CIVIL-SOCIAL-WELFARE",
+      "label": { "en": "Social Welfare, Labour and Tribal Affairs", "hi": "समाज कल्याण, श्रम एवं आदिवासी मामले" },
+      "short_label": { "en": "Social Welfare" },
+      "level": "sub_sector",
+      "parent_id": "SECT-CIVIL",
+      "cag_wing": "Civil Audit",
+      "description": { "en": "Audit of social welfare, labour welfare, tribal affairs, women and child development, and disability programmes. Covers ICDS, POSHAN, SC/ST welfare schemes, and labour law enforcement." },
+      "sort_order": 9,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-CIVIL-HOME-POLICE",
+      "label": { "en": "Home, Police and Jails", "hi": "गृह, पुलिस एवं कारागार" },
+      "short_label": { "en": "Home & Police" },
+      "level": "sub_sector",
+      "parent_id": "SECT-CIVIL",
+      "cag_wing": "Civil Audit",
+      "description": { "en": "Audit of home department, police modernisation, jail administration, and internal security expenditure." },
+      "sort_order": 10,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-CIVIL-FINANCE-TREASURY",
+      "label": { "en": "Finance, Revenue and Treasury", "hi": "वित्त, राजस्व एवं कोषागार" },
+      "short_label": { "en": "Finance & Treasury" },
+      "level": "sub_sector",
+      "parent_id": "SECT-CIVIL",
+      "cag_wing": "Civil Audit",
+      "description": { "en": "Audit of state finance, treasury operations, debt management, pension disbursement, and state revenue from stamps, registration, and excise (non-GST). Distinct from SECT-REVENUE which covers central tax audit." },
+      "sort_order": 11,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-CIVIL-GENERAL-ADMIN",
+      "label": { "en": "General Administration and Services", "hi": "सामान्य प्रशासन एवं सेवाएं" },
+      "short_label": { "en": "General Admin" },
+      "level": "sub_sector",
+      "parent_id": "SECT-CIVIL",
+      "cag_wing": "Civil Audit",
+      "description": { "en": "Audit of general administration, personnel management, civil services, government printing, and other non-sector-specific administrative functions." },
+      "sort_order": 12,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-COMMERCIAL",
+      "label": { "en": "Commercial", "hi": "वाणिज्यिक" },
+      "short_label": { "en": "Commercial" },
+      "level": "sector",
+      "parent_id": null,
+      "cag_wing": "Commercial Audit",
+      "description": { "en": "Audit of commercial entities — government companies, PSUs, statutory corporations, autonomous bodies, and externally aided projects." },
+      "sort_order": 2,
+      "deprecated": false,
+      "sub_sectors": [
+        "SECT-COMM-PSU-CENTRAL",
+        "SECT-COMM-PSU-STATE",
+        "SECT-COMM-AUTONOMOUS",
+        "SECT-COMM-EAP"
+      ]
+    },
+    {
+      "id": "SECT-COMM-PSU-CENTRAL",
+      "label": { "en": "Central Public Sector Undertakings", "hi": "केंद्रीय सार्वजनिक उपक्रम" },
+      "short_label": { "en": "Central PSUs" },
+      "level": "sub_sector",
+      "parent_id": "SECT-COMMERCIAL",
+      "cag_wing": "Commercial Audit",
+      "description": { "en": "Audit of central government companies and corporations under Sections 19 and 19A of the DPC Act. Covers Navratna, Miniratna, and other central PSUs across all sectors." },
+      "sort_order": 1,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-COMM-PSU-STATE",
+      "label": { "en": "State Public Sector Undertakings", "hi": "राज्य सार्वजनिक उपक्रम" },
+      "short_label": { "en": "State PSUs" },
+      "level": "sub_sector",
+      "parent_id": "SECT-COMMERCIAL",
+      "cag_wing": "Commercial Audit",
+      "description": { "en": "Audit of state government companies, state electricity boards, state transport corporations, and other state commercial entities under Section 19 of the DPC Act." },
+      "sort_order": 2,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-COMM-AUTONOMOUS",
+      "label": { "en": "Autonomous Bodies and Statutory Corporations", "hi": "स्वायत्त निकाय और सांविधिक निगम" },
+      "short_label": { "en": "Autonomous Bodies" },
+      "level": "sub_sector",
+      "parent_id": "SECT-COMMERCIAL",
+      "cag_wing": "Commercial Audit",
+      "description": { "en": "Audit of grant-in-aid bodies, autonomous institutions, and statutory corporations under Sections 14, 15, and 20 of the DPC Act." },
+      "sort_order": 3,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-COMM-EAP",
+      "label": { "en": "Externally Aided Projects", "hi": "बाह्य सहायता प्राप्त परियोजनाएं" },
+      "short_label": { "en": "Externally Aided Projects" },
+      "level": "sub_sector",
+      "parent_id": "SECT-COMMERCIAL",
+      "cag_wing": "Commercial Audit",
+      "description": { "en": "Certification and audit of projects funded by World Bank, ADB, JICA, and other bilateral/multilateral agencies under Section 20 DPC Act." },
+      "sort_order": 4,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-REVENUE",
+      "label": { "en": "Revenue", "hi": "राजस्व" },
+      "short_label": { "en": "Revenue" },
+      "level": "sector",
+      "parent_id": null,
+      "cag_wing": "Revenue Audit",
+      "description": { "en": "Audit of government receipts — direct taxes, indirect taxes, state taxes, non-tax revenue, and receipts administration. Conducted primarily under Section 16 of the DPC Act." },
+      "sort_order": 3,
+      "deprecated": false,
+      "sub_sectors": [
+        "SECT-REV-DIRECT-TAX",
+        "SECT-REV-INDIRECT-TAX",
+        "SECT-REV-STATE-TAX",
+        "SECT-REV-NON-TAX",
+        "SECT-REV-RECEIPTS-ADMIN"
+      ]
+    },
+    {
+      "id": "SECT-REV-DIRECT-TAX",
+      "label": { "en": "Direct Taxes", "hi": "प्रत्यक्ष कर" },
+      "short_label": { "en": "Direct Taxes" },
+      "level": "sub_sector",
+      "parent_id": "SECT-REVENUE",
+      "cag_wing": "Revenue Audit",
+      "description": { "en": "Income tax, corporate tax, and other direct taxes administered by CBDT. Covers assessment irregularities, tax demand non-recovery, TDS compliance, and exemption claims." },
+      "sort_order": 1,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-REV-INDIRECT-TAX",
+      "label": { "en": "Indirect Taxes — GST, Customs and Central Excise", "hi": "अप्रत्यक्ष कर — जीएसटी, सीमा शुल्क एवं केंद्रीय उत्पाद शुल्क" },
+      "short_label": { "en": "Indirect Taxes" },
+      "level": "sub_sector",
+      "parent_id": "SECT-REVENUE",
+      "cag_wing": "Revenue Audit",
+      "description": { "en": "GST, customs duty, and central excise administered by CBIC. Covers classification disputes, exemption misuse, refund irregularities, and evasion cases." },
+      "sort_order": 2,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-REV-STATE-TAX",
+      "label": { "en": "State Taxes — VAT, Stamp Duty and Excise", "hi": "राज्य कर — वैट, स्टाम्प शुल्क एवं आबकारी" },
+      "short_label": { "en": "State Taxes" },
+      "level": "sub_sector",
+      "parent_id": "SECT-REVENUE",
+      "cag_wing": "Revenue Audit",
+      "description": { "en": "State-level taxes including stamp duty, registration fees, state excise, pre-GST VAT, and professional tax. Common in Accountant General civil reports." },
+      "sort_order": 3,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-REV-NON-TAX",
+      "label": { "en": "Non-Tax Revenue", "hi": "गैर-कर राजस्व" },
+      "short_label": { "en": "Non-Tax Revenue" },
+      "level": "sub_sector",
+      "parent_id": "SECT-REVENUE",
+      "cag_wing": "Revenue Audit",
+      "description": { "en": "User charges, fees, royalties, dividends, disinvestment proceeds, and other non-tax receipts." },
+      "sort_order": 4,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-REV-RECEIPTS-ADMIN",
+      "label": { "en": "Receipts Administration", "hi": "प्राप्तियां प्रशासन" },
+      "short_label": { "en": "Receipts Administration" },
+      "level": "sub_sector",
+      "parent_id": "SECT-REVENUE",
+      "cag_wing": "Revenue Audit",
+      "description": { "en": "Systems and processes for collection, accounting, and reconciliation of government receipts. Covers treasury management, challan reconciliation, and remittance failures." },
+      "sort_order": 5,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-DEFENCE",
+      "label": { "en": "Defence", "hi": "रक्षा" },
+      "short_label": { "en": "Defence" },
+      "level": "sector",
+      "parent_id": null,
+      "cag_wing": "Defence Audit",
+      "description": { "en": "Audit of defence expenditure — Army, Navy, Air Force, Defence Research and Development, Ordnance Factories, and defence PSUs." },
+      "sort_order": 4,
+      "deprecated": false,
+      "sub_sectors": [
+        "SECT-DEF-ARMY",
+        "SECT-DEF-NAVY",
+        "SECT-DEF-AIRFORCE",
+        "SECT-DEF-DRDO",
+        "SECT-DEF-ORDNANCE",
+        "SECT-DEF-PSU"
+      ]
+    },
+    {
+      "id": "SECT-DEF-ARMY",
+      "label": { "en": "Army", "hi": "थल सेना" },
+      "short_label": { "en": "Army" },
+      "level": "sub_sector",
+      "parent_id": "SECT-DEFENCE",
+      "cag_wing": "Defence Audit",
+      "description": { "en": "Audit of Indian Army expenditure — stores, equipment, works, and operational costs." },
+      "sort_order": 1,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-DEF-NAVY",
+      "label": { "en": "Navy", "hi": "नौ सेना" },
+      "short_label": { "en": "Navy" },
+      "level": "sub_sector",
+      "parent_id": "SECT-DEFENCE",
+      "cag_wing": "Defence Audit",
+      "description": { "en": "Audit of Indian Navy expenditure — vessels, dockyards, equipment, and operational costs." },
+      "sort_order": 2,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-DEF-AIRFORCE",
+      "label": { "en": "Air Force", "hi": "वायु सेना" },
+      "short_label": { "en": "Air Force" },
+      "level": "sub_sector",
+      "parent_id": "SECT-DEFENCE",
+      "cag_wing": "Defence Audit",
+      "description": { "en": "Audit of Indian Air Force expenditure — aircraft, spares, airbases, and operational costs." },
+      "sort_order": 3,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-DEF-DRDO",
+      "label": { "en": "Defence Research and Development", "hi": "रक्षा अनुसंधान एवं विकास" },
+      "short_label": { "en": "DRDO" },
+      "level": "sub_sector",
+      "parent_id": "SECT-DEFENCE",
+      "cag_wing": "Defence Audit",
+      "description": { "en": "Audit of DRDO — R&D projects, technology development, and indigenous defence programme outcomes." },
+      "sort_order": 4,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-DEF-ORDNANCE",
+      "label": { "en": "Ordnance Factories and Depots", "hi": "आयुध कारखाने एवं डिपो" },
+      "short_label": { "en": "Ordnance" },
+      "level": "sub_sector",
+      "parent_id": "SECT-DEFENCE",
+      "cag_wing": "Defence Audit",
+      "description": { "en": "Audit of Ordnance Factory Board and ammunition depots." },
+      "sort_order": 5,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-DEF-PSU",
+      "label": { "en": "Defence Public Sector Undertakings", "hi": "रक्षा सार्वजनिक उपक्रम" },
+      "short_label": { "en": "Defence PSUs" },
+      "level": "sub_sector",
+      "parent_id": "SECT-DEFENCE",
+      "cag_wing": "Defence Audit",
+      "description": { "en": "Audit of HAL, BEL, BEML, BDL, GRSE, MDL, Goa Shipyard, and other defence PSUs." },
+      "sort_order": 6,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-TELECOM",
+      "label": { "en": "Telecom and IT", "hi": "दूरसंचार एवं सूचना प्रौद्योगिकी" },
+      "short_label": { "en": "Telecom" },
+      "level": "sector",
+      "parent_id": null,
+      "cag_wing": "Telecom Audit",
+      "description": { "en": "Audit of telecom and IT entities — BSNL, MTNL, DoT, spectrum management, telecom licensing, and IT ministry expenditure." },
+      "sort_order": 5,
+      "deprecated": false,
+      "sub_sectors": [
+        "SECT-TELECOM-BSNL-MTNL",
+        "SECT-TELECOM-DOT",
+        "SECT-TELECOM-IT-MINISTRY"
+      ]
+    },
+    {
+      "id": "SECT-TELECOM-BSNL-MTNL",
+      "label": { "en": "BSNL and MTNL", "hi": "बीएसएनएल एवं एमटीएनएल" },
+      "short_label": { "en": "BSNL/MTNL" },
+      "level": "sub_sector",
+      "parent_id": "SECT-TELECOM",
+      "cag_wing": "Telecom Audit",
+      "description": { "en": "Audit of Bharat Sanchar Nigam Limited and Mahanagar Telephone Nigam Limited." },
+      "sort_order": 1,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-TELECOM-DOT",
+      "label": { "en": "Department of Telecommunications", "hi": "दूरसंचार विभाग" },
+      "short_label": { "en": "DoT" },
+      "level": "sub_sector",
+      "parent_id": "SECT-TELECOM",
+      "cag_wing": "Telecom Audit",
+      "description": { "en": "Audit of DoT — spectrum allocation, licensing, USO fund, and telecom regulatory compliance." },
+      "sort_order": 2,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-TELECOM-IT-MINISTRY",
+      "label": { "en": "Ministry of Electronics and IT", "hi": "इलेक्ट्रॉनिकी एवं सूचना प्रौद्योगिकी मंत्रालय" },
+      "short_label": { "en": "MeitY" },
+      "level": "sub_sector",
+      "parent_id": "SECT-TELECOM",
+      "cag_wing": "Telecom Audit",
+      "description": { "en": "Audit of MeitY — Digital India, Aadhaar, Common Service Centres, e-governance projects, and IT infrastructure." },
+      "sort_order": 3,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-RAILWAYS",
+      "label": { "en": "Railways", "hi": "रेलवे" },
+      "short_label": { "en": "Railways" },
+      "level": "sector",
+      "parent_id": null,
+      "cag_wing": "Railways Audit",
+      "description": { "en": "Audit of Indian Railways — rolling stock, track, civil works, revenue receipts, commercial operations, and railway PSUs." },
+      "sort_order": 6,
+      "deprecated": false,
+      "sub_sectors": [
+        "SECT-RAIL-CIVIL-WORKS",
+        "SECT-RAIL-ROLLING-STOCK",
+        "SECT-RAIL-REVENUE",
+        "SECT-RAIL-PSU"
+      ]
+    },
+    {
+      "id": "SECT-RAIL-CIVIL-WORKS",
+      "label": { "en": "Railway Civil Works and Infrastructure", "hi": "रेलवे सिविल कार्य एवं अवसंरचना" },
+      "short_label": { "en": "Rail Civil Works" },
+      "level": "sub_sector",
+      "parent_id": "SECT-RAILWAYS",
+      "cag_wing": "Railways Audit",
+      "description": { "en": "Track laying, bridges, stations, electrification, and signalling works." },
+      "sort_order": 1,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-RAIL-ROLLING-STOCK",
+      "label": { "en": "Rolling Stock and Workshops", "hi": "रोलिंग स्टॉक एवं कार्यशालाएं" },
+      "short_label": { "en": "Rolling Stock" },
+      "level": "sub_sector",
+      "parent_id": "SECT-RAILWAYS",
+      "cag_wing": "Railways Audit",
+      "description": { "en": "Locomotives, coaches, wagons, and maintenance workshops." },
+      "sort_order": 2,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-RAIL-REVENUE",
+      "label": { "en": "Railway Revenue and Commercial", "hi": "रेलवे राजस्व एवं वाणिज्यिक" },
+      "short_label": { "en": "Rail Revenue" },
+      "level": "sub_sector",
+      "parent_id": "SECT-RAILWAYS",
+      "cag_wing": "Railways Audit",
+      "description": { "en": "Freight revenue, passenger revenue, concession management, and commercial operations." },
+      "sort_order": 3,
+      "deprecated": false
+    },
+    {
+      "id": "SECT-RAIL-PSU",
+      "label": { "en": "Railway PSUs and Bodies", "hi": "रेलवे सार्वजनिक उपक्रम एवं निकाय" },
+      "short_label": { "en": "Rail PSUs" },
+      "level": "sub_sector",
+      "parent_id": "SECT-RAILWAYS",
+      "cag_wing": "Railways Audit",
+      "description": { "en": "RITES, IRCON, IRCTC, RAILTEL, DFCCIL, and other railway public sector entities." },
+      "sort_order": 4,
+      "deprecated": false
+    }
+  ]
+}

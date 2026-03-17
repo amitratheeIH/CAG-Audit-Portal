@@ -1,0 +1,1242 @@
+{
+  "$version": "1.0",
+  "description": "Registry of Indian States and Union Territories for the CAG audit report repository. IDs use ISO 3166-2 IN-XX format and are permanently stable — they never change even if the entity's status changes. current_status reflects present classification. status_history and name_history record all changes since formation. predecessor_ids and successor_ids model bifurcations, mergers, and carve-outs. status_at_report_date is pipeline-computed from report year and status_history — editors only supply the id in report JSON. v1.0: hq field standardised to multilingual object {en:[...]} across all entries (was inconsistent — some used array of strings, matching registry_entities.json convention). legislature field removed — it is fully derivable from current_status (ut_without_legislature→false, all others→true) and was prone to drift.",
+  "status_values": [
+    "state",
+    "ut_with_legislature",
+    "ut_without_legislature"
+  ],
+  "pipeline_note": "To resolve status_at_report_date: find the status_history entry where valid_from <= report_date <= valid_to (null valid_to = still current). If report_date precedes all status_history entries, use the earliest entry. Pipeline writes this computed value into the report's state_ut object at ingest time. legislature field removed in v1.0 — derive from current_status: ut_without_legislature→false, state/ut_with_legislature→true.",
+  "entries": [
+    {
+      "id": "IN-AN",
+      "iso_3166_2": "IN-AN",
+      "name": {
+        "en": "Andaman and Nicobar Islands",
+        "hi": "अंडमान और निकोबार द्वीप समूह"
+      },
+      "current_status": "ut_without_legislature",
+      "current_since": "1956-11-01",
+      "hq": {
+        "en": [
+          "Port Blair"
+        ]
+      },
+      "ag_office": "AG-AN",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "ut_without_legislature",
+          "valid_from": "1956-11-01",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {}
+    },
+    {
+      "id": "IN-AP",
+      "iso_3166_2": "IN-AP",
+      "name": {
+        "en": "Andhra Pradesh",
+        "hi": "आंध्र प्रदेश"
+      },
+      "current_status": "state",
+      "current_since": "1956-11-01",
+      "hq": {
+        "en": [
+          "Amaravati"
+        ]
+      },
+      "ag_office": "AG-AP",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1956-11-01",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Bifurcated on 02 Jun 2014 — Telangana (IN-TG) carved out. Residual AP retains this ID. Reports before 2014 referencing Andhra Pradesh cover the combined state."
+      }
+    },
+    {
+      "id": "IN-AR",
+      "iso_3166_2": "IN-AR",
+      "name": {
+        "en": "Arunachal Pradesh",
+        "hi": "अरुणाचल प्रदेश"
+      },
+      "current_status": "state",
+      "current_since": "1987-02-20",
+      "hq": {
+        "en": [
+          "Itanagar"
+        ]
+      },
+      "ag_office": "AG-AR",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "ut_without_legislature",
+          "valid_from": "1972-01-20",
+          "valid_to": "1987-02-19"
+        },
+        {
+          "status": "state",
+          "valid_from": "1987-02-20",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Attained statehood 20 Feb 1987. UT before that."
+      }
+    },
+    {
+      "id": "IN-AS",
+      "iso_3166_2": "IN-AS",
+      "name": {
+        "en": "Assam",
+        "hi": "असम"
+      },
+      "current_status": "state",
+      "current_since": "1950-01-26",
+      "hq": {
+        "en": [
+          "Dispur"
+        ]
+      },
+      "ag_office": "AG-AS",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1950-01-26",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Meghalaya (IN-ML) and Mizoram (IN-MZ) carved out in 1972."
+      }
+    },
+    {
+      "id": "IN-BR",
+      "iso_3166_2": "IN-BR",
+      "name": {
+        "en": "Bihar",
+        "hi": "बिहार"
+      },
+      "current_status": "state",
+      "current_since": "1950-01-26",
+      "hq": {
+        "en": [
+          "Patna"
+        ]
+      },
+      "ag_office": "AG-BR",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1950-01-26",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Jharkhand (IN-JH) carved out 15 Nov 2000."
+      }
+    },
+    {
+      "id": "IN-CH",
+      "iso_3166_2": "IN-CH",
+      "name": {
+        "en": "Chandigarh",
+        "hi": "चंडीगढ़"
+      },
+      "current_status": "ut_without_legislature",
+      "current_since": "1966-11-01",
+      "hq": {
+        "en": [
+          "Chandigarh"
+        ]
+      },
+      "ag_office": "AG-PB",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "ut_without_legislature",
+          "valid_from": "1966-11-01",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "UT without legislature. Serves as capital of Punjab and Haryana. Audited by AG Punjab."
+      }
+    },
+    {
+      "id": "IN-CT",
+      "iso_3166_2": "IN-CT",
+      "name": {
+        "en": "Chhattisgarh",
+        "hi": "छत्तीसगढ़"
+      },
+      "current_status": "state",
+      "current_since": "2000-11-01",
+      "hq": {
+        "en": [
+          "Raipur"
+        ]
+      },
+      "ag_office": "AG-CT",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "2000-11-01",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [
+        "IN-MP"
+      ],
+      "successor_ids": [],
+      "notes": {
+        "en": "Carved out of Madhya Pradesh (IN-MP) on 01 Nov 2000."
+      }
+    },
+    {
+      "id": "IN-DD",
+      "iso_3166_2": "IN-DD",
+      "name": {
+        "en": "Dadra and Nagar Haveli and Daman and Diu",
+        "hi": "दादरा और नगर हवेली और दमन और दीव"
+      },
+      "current_status": "ut_without_legislature",
+      "current_since": "2020-01-26",
+      "hq": {
+        "en": [
+          "Daman"
+        ]
+      },
+      "ag_office": "AG-DD",
+      "active": true,
+      "name_history": [
+        {
+          "name": {
+            "en": "Daman and Diu"
+          },
+          "valid_from": "1987-05-30",
+          "valid_to": "2020-01-25"
+        }
+      ],
+      "status_history": [
+        {
+          "status": "ut_without_legislature",
+          "valid_from": "2020-01-26",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [
+        "IN-DN"
+      ],
+      "successor_ids": [],
+      "notes": {
+        "en": "Formed 26 Jan 2020 by merger of former UTs of Dadra and Nagar Haveli (IN-DN) and Daman and Diu. Reports before 2020 should reference IN-DN or the old Daman and Diu entity separately."
+      }
+    },
+    {
+      "id": "IN-DL",
+      "iso_3166_2": "IN-DL",
+      "name": {
+        "en": "Delhi",
+        "hi": "दिल्ली"
+      },
+      "current_status": "ut_with_legislature",
+      "current_since": "1992-02-01",
+      "hq": {
+        "en": [
+          "New Delhi"
+        ]
+      },
+      "ag_office": "AG-DL",
+      "active": true,
+      "name_history": [
+        {
+          "name": {
+            "en": "National Capital Territory of Delhi"
+          },
+          "valid_from": "1992-02-01",
+          "valid_to": null
+        }
+      ],
+      "status_history": [
+        {
+          "status": "ut_without_legislature",
+          "valid_from": "1956-11-01",
+          "valid_to": "1992-01-31"
+        },
+        {
+          "status": "ut_with_legislature",
+          "valid_from": "1992-02-01",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "National Capital Territory. Elected legislature from 1992 under 69th Constitutional Amendment."
+      }
+    },
+    {
+      "id": "IN-DN",
+      "iso_3166_2": "IN-DN",
+      "name": {
+        "en": "Dadra and Nagar Haveli",
+        "hi": "दादरा और नगर हवेली"
+      },
+      "current_status": "ut_without_legislature",
+      "current_since": "1961-08-11",
+      "hq": {
+        "en": [
+          "Silvassa"
+        ]
+      },
+      "ag_office": "AG-DD",
+      "active": false,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "ut_without_legislature",
+          "valid_from": "1961-08-11",
+          "valid_to": "2020-01-25"
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [
+        "IN-DD"
+      ],
+      "notes": {
+        "en": "Merged into IN-DD (Dadra and Nagar Haveli and Daman and Diu) on 26 Jan 2020. active=false. Use IN-DD for reports from 2020 onwards."
+      },
+      "dissolved_on": "2020-01-26",
+      "dissolution_reason": "Merged with Daman and Diu (IN-DL) to form Dadra and Nagar Haveli and Daman and Diu (IN-DD) by the Dadra and Nagar Haveli and Daman and Diu (Merger of Union territories) Act, 2019, effective 26 January 2020."
+    },
+    {
+      "id": "IN-GA",
+      "iso_3166_2": "IN-GA",
+      "name": {
+        "en": "Goa",
+        "hi": "गोवा"
+      },
+      "current_status": "state",
+      "current_since": "1987-05-30",
+      "hq": {
+        "en": [
+          "Panaji"
+        ]
+      },
+      "ag_office": "AG-GA",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "ut_with_legislature",
+          "valid_from": "1961-12-19",
+          "valid_to": "1987-05-29"
+        },
+        {
+          "status": "state",
+          "valid_from": "1987-05-30",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Attained statehood 30 May 1987. UT with legislature before that."
+      }
+    },
+    {
+      "id": "IN-GJ",
+      "iso_3166_2": "IN-GJ",
+      "name": {
+        "en": "Gujarat",
+        "hi": "गुजरात"
+      },
+      "current_status": "state",
+      "current_since": "1960-05-01",
+      "hq": {
+        "en": [
+          "Gandhinagar"
+        ]
+      },
+      "ag_office": "AG-GJ",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1960-05-01",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {}
+    },
+    {
+      "id": "IN-HR",
+      "iso_3166_2": "IN-HR",
+      "name": {
+        "en": "Haryana",
+        "hi": "हरियाणा"
+      },
+      "current_status": "state",
+      "current_since": "1966-11-01",
+      "hq": {
+        "en": [
+          "Chandigarh"
+        ]
+      },
+      "ag_office": "AG-HR",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1966-11-01",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {}
+    },
+    {
+      "id": "IN-HP",
+      "iso_3166_2": "IN-HP",
+      "name": {
+        "en": "Himachal Pradesh",
+        "hi": "हिमाचल प्रदेश"
+      },
+      "current_status": "state",
+      "current_since": "1971-01-25",
+      "hq": {
+        "en": [
+          "Shimla"
+        ]
+      },
+      "ag_office": "AG-HP",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "ut_with_legislature",
+          "valid_from": "1956-11-01",
+          "valid_to": "1971-01-24"
+        },
+        {
+          "status": "state",
+          "valid_from": "1971-01-25",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Attained statehood 25 Jan 1971."
+      }
+    },
+    {
+      "id": "IN-JH",
+      "iso_3166_2": "IN-JH",
+      "name": {
+        "en": "Jharkhand",
+        "hi": "झारखंड"
+      },
+      "current_status": "state",
+      "current_since": "2000-11-15",
+      "hq": {
+        "en": [
+          "Ranchi"
+        ]
+      },
+      "ag_office": "AG-JH",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "2000-11-15",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [
+        "IN-BR"
+      ],
+      "successor_ids": [],
+      "notes": {
+        "en": "Carved out of Bihar (IN-BR) on 15 Nov 2000."
+      }
+    },
+    {
+      "id": "IN-JK",
+      "iso_3166_2": "IN-JK",
+      "name": {
+        "en": "Jammu and Kashmir",
+        "hi": "जम्मू और कश्मीर"
+      },
+      "current_status": "ut_with_legislature",
+      "current_since": "2019-10-31",
+      "hq": {
+        "en": [
+          "Srinagar (Summer)",
+          "Jammu (Winter)"
+        ]
+      },
+      "ag_office": "AG-JK",
+      "active": true,
+      "name_history": [
+        {
+          "name": {
+            "en": "Jammu & Kashmir"
+          },
+          "valid_from": "1949-01-26",
+          "valid_to": "2019-10-30"
+        }
+      ],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1949-01-26",
+          "valid_to": "2019-10-30"
+        },
+        {
+          "status": "ut_with_legislature",
+          "valid_from": "2019-10-31",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [
+        "IN-JK",
+        "IN-LA"
+      ],
+      "notes": {
+        "en": "Changed from State to UT on 31 Oct 2019. Bifurcated on same date — Ladakh (IN-LA) carved out as separate UT without legislature. IN-JK retained for residual J&K UT."
+      }
+    },
+    {
+      "id": "IN-KA",
+      "iso_3166_2": "IN-KA",
+      "name": {
+        "en": "Karnataka",
+        "hi": "कर्नाटक"
+      },
+      "current_status": "state",
+      "current_since": "1956-11-01",
+      "hq": {
+        "en": [
+          "Bengaluru"
+        ]
+      },
+      "ag_office": "AG-KA",
+      "active": true,
+      "name_history": [
+        {
+          "name": {
+            "en": "Mysore"
+          },
+          "valid_from": "1950-01-26",
+          "valid_to": "1973-10-31"
+        }
+      ],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1950-01-26",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Renamed from Mysore to Karnataka on 01 Nov 1973."
+      }
+    },
+    {
+      "id": "IN-KL",
+      "iso_3166_2": "IN-KL",
+      "name": {
+        "en": "Kerala",
+        "hi": "केरल"
+      },
+      "current_status": "state",
+      "current_since": "1956-11-01",
+      "hq": {
+        "en": [
+          "Thiruvananthapuram"
+        ]
+      },
+      "ag_office": "AG-KL",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1956-11-01",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {}
+    },
+    {
+      "id": "IN-LA",
+      "iso_3166_2": "IN-LA",
+      "name": {
+        "en": "Ladakh",
+        "hi": "लद्दाख"
+      },
+      "current_status": "ut_without_legislature",
+      "current_since": "2019-10-31",
+      "hq": {
+        "en": [
+          "Leh"
+        ]
+      },
+      "ag_office": null,
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "ut_without_legislature",
+          "valid_from": "2019-10-31",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [
+        "IN-JK"
+      ],
+      "successor_ids": [],
+      "notes": {
+        "en": "Carved out of J&K (IN-JK) on 31 Oct 2019. No legislature. Audited by AG J&K."
+      }
+    },
+    {
+      "id": "IN-LD",
+      "iso_3166_2": "IN-LD",
+      "name": {
+        "en": "Lakshadweep",
+        "hi": "लक्षद्वीप"
+      },
+      "current_status": "ut_without_legislature",
+      "current_since": "1956-11-01",
+      "hq": {
+        "en": [
+          "Kavaratti"
+        ]
+      },
+      "ag_office": "AG-KL",
+      "active": true,
+      "name_history": [
+        {
+          "name": {
+            "en": "Laccadive, Minicoy and Amindivi Islands"
+          },
+          "valid_from": "1956-11-01",
+          "valid_to": "1973-11-01"
+        }
+      ],
+      "status_history": [
+        {
+          "status": "ut_without_legislature",
+          "valid_from": "1956-11-01",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Renamed to Lakshadweep on 01 Nov 1973. Audited by AG Kerala."
+      }
+    },
+    {
+      "id": "IN-MP",
+      "iso_3166_2": "IN-MP",
+      "name": {
+        "en": "Madhya Pradesh",
+        "hi": "मध्य प्रदेश"
+      },
+      "current_status": "state",
+      "current_since": "1950-01-26",
+      "hq": {
+        "en": [
+          "Bhopal"
+        ]
+      },
+      "ag_office": "AG-MP",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1950-01-26",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Chhattisgarh (IN-CT) carved out 01 Nov 2000."
+      }
+    },
+    {
+      "id": "IN-MH",
+      "iso_3166_2": "IN-MH",
+      "name": {
+        "en": "Maharashtra",
+        "hi": "महाराष्ट्र"
+      },
+      "current_status": "state",
+      "current_since": "1960-05-01",
+      "hq": {
+        "en": [
+          "Mumbai"
+        ]
+      },
+      "ag_office": "AG-MH",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1960-05-01",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {}
+    },
+    {
+      "id": "IN-MN",
+      "iso_3166_2": "IN-MN",
+      "name": {
+        "en": "Manipur",
+        "hi": "मणिपुर"
+      },
+      "current_status": "state",
+      "current_since": "1972-01-21",
+      "hq": {
+        "en": [
+          "Imphal"
+        ]
+      },
+      "ag_office": "AG-MN",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "ut_with_legislature",
+          "valid_from": "1956-11-01",
+          "valid_to": "1972-01-20"
+        },
+        {
+          "status": "state",
+          "valid_from": "1972-01-21",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Attained statehood 21 Jan 1972."
+      }
+    },
+    {
+      "id": "IN-ML",
+      "iso_3166_2": "IN-ML",
+      "name": {
+        "en": "Meghalaya",
+        "hi": "मेघालय"
+      },
+      "current_status": "state",
+      "current_since": "1972-01-21",
+      "hq": {
+        "en": [
+          "Shillong"
+        ]
+      },
+      "ag_office": "AG-ML",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1972-01-21",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [
+        "IN-AS"
+      ],
+      "successor_ids": [],
+      "notes": {
+        "en": "Carved out of Assam (IN-AS) on 21 Jan 1972."
+      }
+    },
+    {
+      "id": "IN-MZ",
+      "iso_3166_2": "IN-MZ",
+      "name": {
+        "en": "Mizoram",
+        "hi": "मिज़ोरम"
+      },
+      "current_status": "state",
+      "current_since": "1987-02-20",
+      "hq": {
+        "en": [
+          "Aizawl"
+        ]
+      },
+      "ag_office": "AG-MZ",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "ut_without_legislature",
+          "valid_from": "1972-01-21",
+          "valid_to": "1987-02-19"
+        },
+        {
+          "status": "state",
+          "valid_from": "1987-02-20",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [
+        "IN-AS"
+      ],
+      "successor_ids": [],
+      "notes": {
+        "en": "Carved out of Assam as UT in 1972. Attained statehood 20 Feb 1987."
+      }
+    },
+    {
+      "id": "IN-NL",
+      "iso_3166_2": "IN-NL",
+      "name": {
+        "en": "Nagaland",
+        "hi": "नागालैंड"
+      },
+      "current_status": "state",
+      "current_since": "1963-12-01",
+      "hq": {
+        "en": [
+          "Kohima"
+        ]
+      },
+      "ag_office": "AG-NL",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1963-12-01",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {}
+    },
+    {
+      "id": "IN-OD",
+      "iso_3166_2": "IN-OD",
+      "name": {
+        "en": "Odisha",
+        "hi": "ओडिशा"
+      },
+      "current_status": "state",
+      "current_since": "1950-01-26",
+      "hq": {
+        "en": [
+          "Bhubaneswar"
+        ]
+      },
+      "ag_office": "AG-OD",
+      "active": true,
+      "name_history": [
+        {
+          "name": {
+            "en": "Orissa"
+          },
+          "valid_from": "1950-01-26",
+          "valid_to": "2011-03-04"
+        }
+      ],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1950-01-26",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Renamed from Orissa to Odisha on 04 Mar 2011."
+      }
+    },
+    {
+      "id": "IN-PB",
+      "iso_3166_2": "IN-PB",
+      "name": {
+        "en": "Punjab",
+        "hi": "पंजाब"
+      },
+      "current_status": "state",
+      "current_since": "1966-11-01",
+      "hq": {
+        "en": [
+          "Chandigarh"
+        ]
+      },
+      "ag_office": "AG-PB",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1966-11-01",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {}
+    },
+    {
+      "id": "IN-PY",
+      "iso_3166_2": "IN-PY",
+      "name": {
+        "en": "Puducherry",
+        "hi": "पुदुच्चेरी"
+      },
+      "current_status": "ut_with_legislature",
+      "current_since": "1962-07-01",
+      "hq": {
+        "en": [
+          "Puducherry"
+        ]
+      },
+      "ag_office": "AG-PY",
+      "active": true,
+      "name_history": [
+        {
+          "name": {
+            "en": "Pondicherry"
+          },
+          "valid_from": "1962-07-01",
+          "valid_to": "2006-09-20"
+        }
+      ],
+      "status_history": [
+        {
+          "status": "ut_with_legislature",
+          "valid_from": "1962-07-01",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Renamed from Pondicherry to Puducherry on 20 Sep 2006."
+      }
+    },
+    {
+      "id": "IN-RJ",
+      "iso_3166_2": "IN-RJ",
+      "name": {
+        "en": "Rajasthan",
+        "hi": "राजस्थान"
+      },
+      "current_status": "state",
+      "current_since": "1950-01-26",
+      "hq": {
+        "en": [
+          "Jaipur"
+        ]
+      },
+      "ag_office": "AG-RJ",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1950-01-26",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {}
+    },
+    {
+      "id": "IN-SK",
+      "iso_3166_2": "IN-SK",
+      "name": {
+        "en": "Sikkim",
+        "hi": "सिक्किम"
+      },
+      "current_status": "state",
+      "current_since": "1975-05-16",
+      "hq": {
+        "en": [
+          "Gangtok"
+        ]
+      },
+      "ag_office": "AG-SK",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1975-05-16",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "22nd state of India from 16 May 1975 after referendum."
+      }
+    },
+    {
+      "id": "IN-TN",
+      "iso_3166_2": "IN-TN",
+      "name": {
+        "en": "Tamil Nadu",
+        "hi": "तमिल नाडु"
+      },
+      "current_status": "state",
+      "current_since": "1950-01-26",
+      "hq": {
+        "en": [
+          "Chennai"
+        ]
+      },
+      "ag_office": "AG-TN",
+      "active": true,
+      "name_history": [
+        {
+          "name": {
+            "en": "Madras"
+          },
+          "valid_from": "1950-01-26",
+          "valid_to": "1969-01-14"
+        }
+      ],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1950-01-26",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Renamed from Madras to Tamil Nadu on 14 Jan 1969."
+      }
+    },
+    {
+      "id": "IN-TG",
+      "iso_3166_2": "IN-TG",
+      "name": {
+        "en": "Telangana",
+        "hi": "तेलंगाना"
+      },
+      "current_status": "state",
+      "current_since": "2014-06-02",
+      "hq": {
+        "en": [
+          "Hyderabad"
+        ]
+      },
+      "ag_office": "AG-TG",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "2014-06-02",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [
+        "IN-AP"
+      ],
+      "successor_ids": [],
+      "notes": {
+        "en": "Carved out of Andhra Pradesh (IN-AP) on 02 Jun 2014 as the 29th state."
+      }
+    },
+    {
+      "id": "IN-TR",
+      "iso_3166_2": "IN-TR",
+      "name": {
+        "en": "Tripura",
+        "hi": "त्रिपुरा"
+      },
+      "current_status": "state",
+      "current_since": "1972-01-21",
+      "hq": {
+        "en": [
+          "Agartala"
+        ]
+      },
+      "ag_office": "AG-TR",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "ut_without_legislature",
+          "valid_from": "1956-11-01",
+          "valid_to": "1972-01-20"
+        },
+        {
+          "status": "state",
+          "valid_from": "1972-01-21",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Attained statehood 21 Jan 1972."
+      }
+    },
+    {
+      "id": "IN-UP",
+      "iso_3166_2": "IN-UP",
+      "name": {
+        "en": "Uttar Pradesh",
+        "hi": "उत्तर प्रदेश"
+      },
+      "current_status": "state",
+      "current_since": "1950-01-26",
+      "hq": {
+        "en": [
+          "Lucknow"
+        ]
+      },
+      "ag_office": "AG-UP",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1950-01-26",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {
+        "en": "Uttarakhand (IN-UK) carved out 09 Nov 2000."
+      }
+    },
+    {
+      "id": "IN-UK",
+      "iso_3166_2": "IN-UK",
+      "name": {
+        "en": "Uttarakhand",
+        "hi": "उत्तराखंड"
+      },
+      "current_status": "state",
+      "current_since": "2000-11-09",
+      "hq": {
+        "en": [
+          "Dehradun"
+        ]
+      },
+      "ag_office": "AG-UK",
+      "active": true,
+      "name_history": [
+        {
+          "name": {
+            "en": "Uttaranchal"
+          },
+          "valid_from": "2000-11-09",
+          "valid_to": "2007-01-01"
+        }
+      ],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "2000-11-09",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [
+        "IN-UP"
+      ],
+      "successor_ids": [],
+      "notes": {
+        "en": "Carved out of Uttar Pradesh (IN-UP) on 09 Nov 2000 as Uttaranchal. Renamed to Uttarakhand on 01 Jan 2007."
+      }
+    },
+    {
+      "id": "IN-WB",
+      "iso_3166_2": "IN-WB",
+      "name": {
+        "en": "West Bengal",
+        "hi": "पश्चिम बंगाल"
+      },
+      "current_status": "state",
+      "current_since": "1950-01-26",
+      "hq": {
+        "en": [
+          "Kolkata"
+        ]
+      },
+      "ag_office": "AG-WB",
+      "active": true,
+      "name_history": [],
+      "status_history": [
+        {
+          "status": "state",
+          "valid_from": "1950-01-26",
+          "valid_to": null
+        }
+      ],
+      "predecessor_ids": [],
+      "successor_ids": [],
+      "notes": {}
+    }
+  ],
+  "$schema": "./registry_states_uts.schema.json",
+  "updated_at": "2025-01-01"
+}

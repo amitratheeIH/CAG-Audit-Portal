@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$version": "1.0",
+  "title": "Taxonomy Topics Governance Schema",
+  "description": "Validates taxonomy_topics.json. IDs are snake_case. Every entry must have id, label.en, short_label.en (non-truncated — minLength:3 on short_label catches truncations like 'Armed Forces Welfare &'), level, parent_id, sort_order, deprecated.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$version", "updated_at", "entries"],
+  "properties": {
+    "$version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "$schema": { "type": "string" },
+    "updated_at": { "type": "string", "format": "date" },
+    "description": { "type": "string" },
+    "usage_notes": { "type": "string" },
+    "description_policy": { "type": "string" },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "short_label", "level", "parent_id", "sort_order", "deprecated"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]+$",
+            "description": "snake_case ID. Must not end with underscore."
+          },
+          "label": {
+            "type": "object",
+            "required": ["en"],
+            "properties": { "en": { "type": "string", "minLength": 1 } },
+            "additionalProperties": { "type": "string" }
+          },
+          "short_label": {
+            "type": "object",
+            "required": ["en"],
+            "properties": {
+              "en": {
+                "type": "string",
+                "minLength": 3,
+                "description": "minLength:3 catches truncated values like 'Armed Forces Welfare &'. Must not end with '&', ',', ' -', or other dangling punctuation — pipeline should validate this with a regex check."
+              }
+            },
+            "additionalProperties": { "type": "string" }
+          },
+          "level": { "type": "string", "enum": ["topic", "sub_topic"] },
+          "parent_id": { "type": ["string", "null"] },
+          "description": {
+            "type": "object",
+            "properties": { "en": { "type": "string" } },
+            "additionalProperties": { "type": "string" },
+            "description": "Optional. If present and non-empty, must be a meaningful description. Empty strings are permitted (pending) but flagged by the corpus health check."
+          },
+          "sort_order": { "type": "integer", "minimum": 1 },
+          "deprecated": { "type": "boolean" },
+          "superseded_by": { "type": ["string", "null"] },
+          "sub_topics": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]+$"
+            },
+            "description": "Child topic IDs. Pipeline must verify every ID in this array exists in entries[] as a cross-file referential integrity check."
+          }
+        }
+      }
+    }
+  }
+}
