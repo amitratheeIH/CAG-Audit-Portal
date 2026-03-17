@@ -1,6 +1,6 @@
 {
   "common": {
-    "product_id": "AR02-CAG-2025-UT-DL",
+    "product_id": "AR02-CAG-2025-STATE-DL",
     "product_type": "audit_report",
     "year": 2025,
     "version": "1.0",
@@ -14,9 +14,11 @@
     },
     "summary": {
       "en": "This Report contains the results of the Performance Audit of ‘Welfare of Building and Other Construction Workers’ in Delhi covering the period 2019-20 to 2022-23.  Major audit findings include shortcomings in identification and registration of establishments engaged in construction activities and registration and renewal of construction workers; deficiencies in database of registered construction workers; inadequacies in providing welfare measures to construction workers etc."
-    }
+    },
+    "slug": "cag-delhi-welfare-building-other-construction-workers-2025"
   },
   "specific": {
+    "product_type_key": "audit_report",
     "inheritable": {
       "audit_type": [
         "ATYPE-PERFORMANCE"
