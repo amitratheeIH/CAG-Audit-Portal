@@ -1,0 +1,54 @@
+name: Test Connections
+
+on:
+  workflow_dispatch:   # run manually only — never on push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install pymongo redis openai
+
+      - name: Test MongoDB Atlas
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: |
+          python - <<'EOF'
+          import os
+          from pymongo import MongoClient
+          client = MongoClient(os.environ["MONGODB_URI"], serverSelectionTimeoutMS=5000)
+          client.server_info()
+          print("✅ MongoDB Atlas — connected")
+          EOF
+
+      - name: Test Redis (Upstash)
+        env:
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+        run: |
+          python - <<'EOF'
+          import os, redis
+          r = redis.from_url(os.environ["REDIS_URL"])
+          r.ping()
+          print("✅ Redis Upstash — connected")
+          EOF
+
+      - name: Test OpenAI
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python - <<'EOF'
+          import os
+          from openai import OpenAI
+          client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+          client.models.list()
+          print("✅ OpenAI — connected")
+          EOF
