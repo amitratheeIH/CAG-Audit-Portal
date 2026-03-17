@@ -25,6 +25,7 @@
         "finance_report",
         "study_report",
         "audit_impact_report",
+        "compendium",
         "other"
       ]
     },

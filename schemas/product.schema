@@ -40,6 +40,7 @@
                     "finance_report",
                     "study_report",
                     "audit_impact_report",
+                    "compendium",
                     "other"
                   ],
                   "description": "Discriminator field. Must match metadata.common.product_type. Pipeline uses this to route validation to the correct type-specific schema (e.g. audit_report_metadata.schema). Set by ingestion pipeline."
