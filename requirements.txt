@@ -1,0 +1,19 @@
+# CAG Audit Repository — Pipeline Dependencies
+
+# Validation
+jsonschema==4.23.0
+referencing==0.35.1
+fastjsonschema==2.20.0
+check-jsonschema==0.29.4
+
+# MongoDB
+pymongo[srv]==4.7.3
+
+# OpenAI embeddings
+openai==1.35.7
+
+# Redis
+redis==5.0.7
+
+# CLI / utilities
+tqdm==4.66.4
