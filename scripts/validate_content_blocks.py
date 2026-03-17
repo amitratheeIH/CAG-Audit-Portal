@@ -259,6 +259,7 @@ def print_result(
 # ---------------------------------------------------------------------------
 
 def resolve_ndjson_files(args) -> list[Path]:
+    """Resolve NDJSON files for --ndjson and --report-dir modes."""
     if args.ndjson:
         p = Path(args.ndjson)
         if not p.exists():
@@ -278,6 +279,24 @@ def resolve_ndjson_files(args) -> list[Path]:
     return files
 
 
+def resolve_schema_path(args) -> Path:
+    """
+    Resolve the content_block.schema path.
+    --schema takes explicit precedence.
+    In --all mode without --schema, auto-detect from repo_layout.SCHEMAS_DIR.
+    """
+    if args.schema:
+        return Path(args.schema)
+    # --all without --schema: auto-detect via repo_layout
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import repo_layout as rl
+        return rl.SCHEMAS_DIR / "content_block.schema"
+    except ImportError:
+        print("ERROR: --schema is required when repo_layout.py is not available", file=sys.stderr)
+        sys.exit(2)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Validate content block NDJSON files against content_block.schema",
@@ -285,8 +304,10 @@ def main():
         epilog=__doc__,
     )
     parser.add_argument(
-        "--schema", required=True,
-        help="Path to content_block.schema",
+        "--schema",
+        required=False,
+        default=None,
+        help="Path to content_block.schema. Auto-detected from repo_layout when using --all.",
     )
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument(
@@ -297,19 +318,60 @@ def main():
         "--report-dir",
         help="Path to report root directory; validates all blocks/ files",
     )
+    source.add_argument(
+        "--all",
+        action="store_true",
+        help=(
+            "Scan all report directories under reports/. "
+            "Skips reports with no block files. "
+            "Exits 0 with a message when no reports exist yet. "
+            "--schema is auto-detected from repo_layout when omitted."
+        ),
+    )
     parser.add_argument(
         "--summary", action="store_true",
         help="Print block type counts per file",
     )
     args = parser.parse_args()
 
-    schema_path = Path(args.schema)
+    # --schema required for --ndjson and --report-dir; auto-detected for --all
+    if not args.all and not args.schema:
+        parser.error("--schema is required when not using --all")
+
+    schema_path = resolve_schema_path(args)
     schema      = load_schema(schema_path)
     rules       = build_rules(schema)
     top_allowed, bt_enum, top_required = get_top_level_info(schema)
     schema_ver  = get_schema_version(schema)
 
-    ndjson_files = resolve_ndjson_files(args)
+    # ── --all mode: scan entire reports/ tree ─────────────────────────────────
+    if args.all:
+        try:
+            sys.path.insert(0, str(Path(__file__).resolve().parent))
+            import repo_layout as rl
+        except ImportError:
+            print("ERROR: repo_layout.py not found — cannot use --all mode", file=sys.stderr)
+            sys.exit(2)
+
+        all_report_dirs = rl.all_report_dirs()
+
+        if not all_report_dirs:
+            print("No report directories found under reports/ — nothing to validate.")
+            print("(This is expected before any reports are added.)")
+            sys.exit(0)
+
+        # Collect only reports that actually have block files
+        ndjson_files: list[Path] = []
+        for report_dir in all_report_dirs:
+            ndjson_files.extend(rl.block_ndjson_files(report_dir))
+
+        if not ndjson_files:
+            print(f"Found {len(all_report_dirs)} report dir(s) but no content_block_*.ndjson files yet.")
+            print("(Add block files when you start building report content.)")
+            sys.exit(0)
+
+    else:
+        ndjson_files = resolve_ndjson_files(args)
 
     print(f"content_block.schema  $version={schema_ver}")
     print(f"block_types in enum   : {len(bt_enum)}")
