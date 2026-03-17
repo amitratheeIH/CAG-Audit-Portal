@@ -45,10 +45,9 @@ product_type folder names match the taxonomy_product_types.json IDs exactly:
   study_report, audit_impact_report, compendium, other
 """
 
-__version__ = "1.0"
-
-
 from __future__ import annotations
+
+__version__ = "1.0"
 
 import json
 from pathlib import Path
