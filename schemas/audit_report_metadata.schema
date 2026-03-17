@@ -283,7 +283,7 @@
         },
         "state_ut": {
           "type": "object",
-          "required": ["id", "name", "status_at_report_date"],
+          "required": ["id", "name"],
           "additionalProperties": false,
           "description": "Identity of the State or UT. Required when jurisdiction is STATE or UT. status_at_report_date is PIPELINE-COMPUTED — never set manually.",
           "properties": {

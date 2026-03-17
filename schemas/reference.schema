@@ -72,11 +72,6 @@
   },
   "allOf": [
     {
-      "description": "inverse_relationship_type required when relationship_type is present.",
-      "if": { "required": ["relationship_type"] },
-      "then": { "required": ["inverse_relationship_type"] }
-    },
-    {
       "description": "report, chapter, section, subsection → product_id or product_id/unit_id",
       "if": { "properties": { "type": { "enum": ["report"] } }, "required": ["type"] },
       "then": { "properties": { "target_format": { "const": "product_id" } } }
