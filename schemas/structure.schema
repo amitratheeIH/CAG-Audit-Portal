@@ -65,14 +65,14 @@
           "additionalProperties": {
             "type": "string"
           },
-          "description": "Multilingual unit title."
+          "description": "Multilingual unit title. Plain text only — no HTML or Markdown. Used in TOC, search snippets, and vector embeddings."
         },
         "executive_summary": {
           "type": "object",
           "additionalProperties": {
             "type": "string"
           },
-          "description": "Multilingual executive summary for this unit (chapter or section). A short plain-language summary of the unit's key findings, scope, and outcome. Used in the portal TOC preview, report reader unit headers, and as the primary embedding text for unit-level vector search. Distinct from block-level executive_summary paragraphs — this is metadata on the unit, not a content block in the flow. e.g. { 'en': 'This chapter examines stamp duty collection in 12 districts...', 'hi': 'यह अध्याय 12 जिलों में स्टाम्प शुल्क संग्रह की जांच करता है...' }"
+          "description": "Multilingual executive summary for this unit (chapter or section). A short plain-language summary of the unit's key findings, scope, and outcome. Used in the portal TOC preview, report reader unit headers, and as the primary embedding text for unit-level vector search. Distinct from block-level executive_summary paragraphs — this is metadata on the unit, not a content block in the flow. e.g. { 'en': 'This chapter examines stamp duty collection in 12 districts...', 'hi': 'यह अध्याय 12 जिलों में स्टाम्प शुल्क संग्रह की जांच करता है...' } Plain text only — no HTML or Markdown. Used in TOC, search snippets, and vector embeddings."
         },
         "vector_embedding_id": {
           "type": "string",
