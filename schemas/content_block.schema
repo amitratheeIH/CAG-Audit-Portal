@@ -388,7 +388,8 @@
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
-                }
+                },
+                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
               },
               "style": {
                 "type": "string",
@@ -452,7 +453,8 @@
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
-                }
+                },
+                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
               },
               "level": {
                 "type": "integer",
@@ -517,7 +519,7 @@
                       "additionalProperties": {
                         "type": "string"
                       },
-                      "description": "Multilingual item text."
+                      "description": "Multilingual item text. Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
                     },
                     "sub_items": {
                       "type": "array",
@@ -532,7 +534,8 @@
                             "type": "object",
                             "additionalProperties": {
                               "type": "string"
-                            }
+                            },
+                            "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
                           }
                         }
                       }
@@ -1262,13 +1265,15 @@
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
-                }
+                },
+                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
               },
               "text": {
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
-                }
+                },
+                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
               },
               "icon": {
                 "type": "string",
@@ -1353,19 +1358,22 @@
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
-                }
+                },
+                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
               },
               "effect": {
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
-                }
+                },
+                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
               },
               "cause": {
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
-                }
+                },
+                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
               },
               "impact": {
                 "type": "array",
@@ -1377,7 +1385,8 @@
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
-                }
+                },
+                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
               },
               "government_reply": {
                 "type": "object",
@@ -1464,7 +1473,8 @@
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
-                }
+                },
+                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
               },
               "addressed_to": {
                 "type": "array",
@@ -1601,7 +1611,8 @@
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
-                }
+                },
+                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
               },
               "attribution": {
                 "type": "object",
@@ -1651,7 +1662,8 @@
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
-                }
+                },
+                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
               },
               "source_block_id": {
                 "type": "string"
@@ -1868,7 +1880,7 @@
                           "additionalProperties": {
                             "type": "string"
                           },
-                          "description": "Multilingual heading text."
+                          "description": "Multilingual heading text. Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
                         },
                         "level": {
                           "type": "integer",
@@ -1904,7 +1916,7 @@
                           "additionalProperties": {
                             "type": "string"
                           },
-                          "description": "Multilingual paragraph text."
+                          "description": "Multilingual paragraph text. Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
                         },
                         "para_type": {
                           "type": "string",
@@ -1962,7 +1974,8 @@
                                 "type": "object",
                                 "additionalProperties": {
                                   "type": "string"
-                                }
+                                },
+                                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
                               },
                               "sub_items": {
                                 "type": "array",
@@ -2036,7 +2049,8 @@
                                 "type": "object",
                                 "additionalProperties": {
                                   "type": "string"
-                                }
+                                },
+                                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
                               },
                               "sub_items": {
                                 "type": "array",
@@ -2246,7 +2260,7 @@
                           "additionalProperties": {
                             "type": "string"
                           },
-                          "description": "Multilingual heading text."
+                          "description": "Multilingual heading text. Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
                         },
                         "level": {
                           "type": "integer",
@@ -2282,7 +2296,7 @@
                           "additionalProperties": {
                             "type": "string"
                           },
-                          "description": "Multilingual paragraph text."
+                          "description": "Multilingual paragraph text. Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
                         },
                         "para_type": {
                           "type": "string",
@@ -2340,7 +2354,8 @@
                                 "type": "object",
                                 "additionalProperties": {
                                   "type": "string"
-                                }
+                                },
+                                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
                               },
                               "sub_items": {
                                 "type": "array",
@@ -2414,7 +2429,8 @@
                                 "type": "object",
                                 "additionalProperties": {
                                   "type": "string"
-                                }
+                                },
+                                "description": " Supports inline HTML subset for formatting: <strong>, <em>, <u>, <sup>, <sub>, <del>, <code>, <mark>. No block-level tags. Links use annotations[].cross_reference. Pipeline and search index strip HTML before embedding or indexing."
                               },
                               "sub_items": {
                                 "type": "array",
