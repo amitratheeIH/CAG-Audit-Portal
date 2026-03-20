@@ -2,7 +2,7 @@
 """
 generate_embeddings.py
 ----------------------
-v1.0: Generates text-embedding-3-large embeddings for content blocks and writes
+v1.1: Generates Cohere embed-multilingual-v3.0 embeddings for content blocks and writes
 embedding sidecar files.
 
 Sidecar format (one line per block):
@@ -30,7 +30,7 @@ Usage:
     python scripts/generate_embeddings.py --all --force
 """
 
-__version__ = "1.0"
+__version__ = "1.1"
 
 import argparse
 import hashlib
@@ -43,23 +43,23 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import repo_layout as rl
 
-EMBEDDING_MODEL = "text-embedding-3-large"
-EMBEDDING_DIMS  = 3072
-BATCH_SIZE      = 100
+EMBEDDING_MODEL = "embed-multilingual-v3.0"
+EMBEDDING_DIMS  = 1024
+BATCH_SIZE      = 96        # Cohere max batch size is 96
 RATE_LIMIT_SLEEP = 0.5
 
 
-def get_openai_client():
+def get_cohere_client():
     try:
-        from openai import OpenAI
+        import cohere
     except ImportError:
-        print("ERROR: openai package not installed. Run: pip install openai")
+        print("ERROR: cohere package not installed. Run: pip install cohere")
         sys.exit(1)
-    api_key = os.environ.get("OPENAI_API_KEY")
+    api_key = os.environ.get("COHERE_API_KEY")
     if not api_key:
-        print("ERROR: OPENAI_API_KEY environment variable not set")
+        print("ERROR: COHERE_API_KEY environment variable not set")
         sys.exit(1)
-    return OpenAI(api_key=api_key)
+    return cohere.Client(api_key=api_key)
 
 
 def _multilingual_str(obj) -> str:
@@ -224,12 +224,13 @@ def build_embedding_text(block: dict) -> str:
 
 
 def embed_batch(client, texts: list[str]) -> list[list[float]]:
-    response = client.embeddings.create(
+    # Cohere embed API — input_type="search_document" for indexing content
+    response = client.embed(
+        texts=texts,
         model=EMBEDDING_MODEL,
-        input=texts,
-        dimensions=EMBEDDING_DIMS,
+        input_type="search_document",
     )
-    return [item.embedding for item in response.data]
+    return response.embeddings
 
 
 def text_checksum(text: str) -> str:
@@ -360,7 +361,7 @@ def main():
     parser.add_argument("--force", action="store_true", help="Re-embed even if checksum matches")
     args = parser.parse_args()
 
-    client = get_openai_client()
+    client = get_cohere_client()
     dirs = resolve_dirs(args)
 
     if not dirs:
