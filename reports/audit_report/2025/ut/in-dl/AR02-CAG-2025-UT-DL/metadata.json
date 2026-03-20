@@ -1,6 +1,6 @@
 {
   "common": {
-    "product_id": "AR02-CAG-2025-STATE-DL",
+    "product_id": "AR02-CAG-2025-UT-DL",
     "product_type": "audit_report",
     "year": 2025,
     "version": "1.0",
@@ -18,7 +18,6 @@
     "slug": "cag-delhi-welfare-building-other-construction-workers-2025"
   },
   "specific": {
-    "product_type_key": "audit_report",
     "inheritable": {
       "audit_type": [
         "ATYPE-PERFORMANCE"

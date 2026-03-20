@@ -1,5 +1,5 @@
 {
-  "product_id": "UNKNOWN",
+  "product_id": "AR02-CAG-2025-UT-DL",
   "product_type": "audit_report",
   "generated_at": "2026-03-20T18:28:37.165Z",
   "schema_versions": {
@@ -178,5 +178,6 @@
     "datasets/AR02-CAG-2025-UT-DL-CH04-DS01.json",
     "datasets/AR02-CAG-2025-UT-DL-CH04-DS04.json",
     "datasets/AR02-CAG-2025-UT-DL-CH04-DS03.json"
-  ]
+  ],
+  "year": 2025
 }
