@@ -1,0 +1,26 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-CH02",
+  "unit_type": "chapter",
+  "seq": 20,
+  "title": {
+    "en": "Chapter 2: Registration of Establishments and Construction Workers"
+  },
+  "executive_summary": {
+    "en": "Chapter 2 examines lapses in identification and registration of establishments and construction workers, revealing data gaps, record deficiencies, biometric fraud, and inconsistencies between registration figures."
+  },
+  "slug": "chapter-2-registration-of-establishments-and-construction-workers",
+  "metadata": {
+    "audit_findings_categories": [
+      "data_incomplete",
+      "records_not_maintained",
+      "target_coverage_shortfall"
+    ]
+  },
+  "children": [
+    "AR02-CAG-2025-UT-DL-SEC06",
+    "AR02-CAG-2025-UT-DL-SEC07",
+    "AR02-CAG-2025-UT-DL-SEC08",
+    "AR02-CAG-2025-UT-DL-SEC09",
+    "AR02-CAG-2025-UT-DL-SEC10"
+  ]
+}

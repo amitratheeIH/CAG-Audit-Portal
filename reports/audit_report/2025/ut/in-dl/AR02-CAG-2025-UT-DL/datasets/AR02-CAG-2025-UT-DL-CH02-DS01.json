@@ -1,0 +1,58 @@
+{
+  "dataset_id": "AR02-CAG-2025-UT-DL-CH02-DS01",
+  "dataset_type": "time_series",
+  "title": {
+    "en": "Table 2.1: Number of establishments and BOC workers registered (2019-20 to 2022-23)"
+  },
+  "summary": {
+    "en": "Year-wise count of establishments and BOC workers registered or renewed with the Delhi BOCW Welfare Board from 2019-20 to 2022-23. Establishment registrations remained low (165-238 per year) while worker registrations surged to 11.03 lakh in 2021-22 before falling sharply to 1.97 lakh in 2022-23, indicating unreliable and inconsistent data."
+  },
+  "unit": "Number",
+  "source": {
+    "en": "Delhi BOCW Welfare Board records"
+  },
+  "source_block": "AR02-CAG-2025-UT-DL-CH02-T001",
+  "columns": [
+    {
+      "id": "year",
+      "label": { "en": "Year" },
+      "data_type": "string",
+      "is_stub": true,
+      "align": "left"
+    },
+    {
+      "id": "establishments_registered",
+      "label": { "en": "Number of Establishments Registered" },
+      "data_type": "integer",
+      "align": "right"
+    },
+    {
+      "id": "bocw_registered_renewed",
+      "label": { "en": "Number of BOCW Registered / Renewed Registration" },
+      "data_type": "integer",
+      "align": "right"
+    }
+  ],
+  "data": [
+    {
+      "row_id": "R01",
+      "row_type": "data",
+      "cells": { "year": "2019-20", "establishments_registered": 194, "bocw_registered_renewed": 51398 }
+    },
+    {
+      "row_id": "R02",
+      "row_type": "data",
+      "cells": { "year": "2020-21", "establishments_registered": 165, "bocw_registered_renewed": 229022 }
+    },
+    {
+      "row_id": "R03",
+      "row_type": "data",
+      "cells": { "year": "2021-22", "establishments_registered": 172, "bocw_registered_renewed": 1103552 }
+    },
+    {
+      "row_id": "R04",
+      "row_type": "data",
+      "cells": { "year": "2022-23", "establishments_registered": 238, "bocw_registered_renewed": 196590 }
+    }
+  ]
+}

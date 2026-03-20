@@ -1,0 +1,172 @@
+{
+  "dataset_id": "AR02-CAG-2025-UT-DL-CH04-DS03",
+  "dataset_type": "flat",
+  "title": {
+    "en": "Table 4.3: Details of ex-gratia payments made to BOC workers during Covid-19 (tranche-wise)"
+  },
+  "summary": {
+    "en": "Tranche-wise details of ex-gratia payments made to BOC workers in Delhi during Covid-19 across four instalments from March 2020 to July 2022. Against 10.52 lakh approved beneficiaries, only 9.48 lakh were actually paid, with total disbursement of ₹ 528.42 crore. Payments were spread over long periods in each tranche, reducing effectiveness as immediate relief."
+  },
+  "source": {
+    "en": "Delhi BOCW Welfare Board records"
+  },
+  "source_block": "AR02-CAG-2025-UT-DL-SEC15-T002",
+  "columns": [
+    {
+      "id": "instalment",
+      "label": {
+        "en": "Instalment"
+      },
+      "data_type": "string",
+      "is_stub": true,
+      "align": "left"
+    },
+    {
+      "id": "date_of_payment",
+      "label": {
+        "en": "Date of payment"
+      },
+      "data_type": "string",
+      "align": "left"
+    },
+    {
+      "id": "beneficiaries_approved",
+      "label": {
+        "en": "Approved for payment"
+      },
+      "data_type": "decimal",
+      "unit": "lakh",
+      "group": "Number of Beneficiaries (in lakh)",
+      "group_order": 1,
+      "align": "right"
+    },
+    {
+      "id": "beneficiaries_paid",
+      "label": {
+        "en": "Actually paid"
+      },
+      "data_type": "decimal",
+      "unit": "lakh",
+      "group": "Number of Beneficiaries (in lakh)",
+      "group_order": 2,
+      "align": "right"
+    },
+    {
+      "id": "amount",
+      "label": {
+        "en": "Amount"
+      },
+      "data_type": "decimal",
+      "unit": "₹ in crore",
+      "currency": "INR",
+      "align": "right"
+    }
+  ],
+  "header_rows": [
+    [
+      {
+        "label": {
+          "en": "Instalment"
+        },
+        "col_ids": [
+          "instalment"
+        ],
+        "rowspan": 2
+      },
+      {
+        "label": {
+          "en": "Date of payment"
+        },
+        "col_ids": [
+          "date_of_payment"
+        ],
+        "rowspan": 2
+      },
+      {
+        "label": {
+          "en": "Number of Beneficiaries (in lakh)"
+        },
+        "col_ids": [
+          "beneficiaries_approved",
+          "beneficiaries_paid"
+        ],
+        "colspan": 2,
+        "style": "group"
+      },
+      {
+        "label": {
+          "en": "Amount\n(₹ in crore)"
+        },
+        "col_ids": [
+          "amount"
+        ],
+        "rowspan": 2
+      }
+    ],
+    [
+      {
+        "label": {
+          "en": "Approved for payment"
+        },
+        "col_ids": [
+          "beneficiaries_approved"
+        ]
+      },
+      {
+        "label": {
+          "en": "Actually paid"
+        },
+        "col_ids": [
+          "beneficiaries_paid"
+        ]
+      }
+    ]
+  ],
+  "data": [
+    {
+      "row_id": "R01",
+      "row_type": "data",
+      "cells": {
+        "instalment": "First and second",
+        "date_of_payment": "31.03.2020 to 07.01.2022",
+        "beneficiaries_approved": 1.18,
+        "beneficiaries_paid": 1.1,
+        "amount": 109.57
+      }
+    },
+    {
+      "row_id": "R02",
+      "row_type": "data",
+      "cells": {
+        "instalment": "Third",
+        "date_of_payment": "22.04.2021 to 04.05.2022",
+        "beneficiaries_approved": 3.17,
+        "beneficiaries_paid": 2.98,
+        "amount": 148.87
+      }
+    },
+    {
+      "row_id": "R03",
+      "row_type": "data",
+      "cells": {
+        "instalment": "Fourth",
+        "date_of_payment": "27.11.2021 to 19.07.2022",
+        "beneficiaries_approved": 6.17,
+        "beneficiaries_paid": 5.4,
+        "amount": 269.98
+      }
+    },
+    {
+      "row_id": "R04",
+      "row_type": "total",
+      "style": "bold",
+      "cells": {
+        "instalment": "Total",
+        "date_of_payment": null,
+        "beneficiaries_approved": 10.52,
+        "beneficiaries_paid": 9.48,
+        "amount": 528.42
+      }
+    }
+  ]
+}

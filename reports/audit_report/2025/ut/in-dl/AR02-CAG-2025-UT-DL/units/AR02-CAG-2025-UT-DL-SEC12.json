@@ -1,0 +1,20 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC12",
+  "unit_type": "section",
+  "seq": 20,
+  "title": {
+    "en": "Assessment of cess"
+  },
+  "executive_summary": {
+    "en": "Assessing Officers lacked complete information for cess assessment, used inconsistent cost bases, and the same shortcomings earlier reported in CAG 2019 report remained uncorrected."
+  },
+  "slug": "assessment-of-cess",
+  "para_number": "3.2",
+  "metadata": {
+    "audit_findings_categories": [
+      "short_levy",
+      "data_incomplete",
+      "para_recurrence"
+    ]
+  }
+}

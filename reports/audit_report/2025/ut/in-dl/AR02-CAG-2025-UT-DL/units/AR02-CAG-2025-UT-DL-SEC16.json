@@ -1,0 +1,20 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC16",
+  "unit_type": "section",
+  "seq": 20,
+  "title": {
+    "en": "Implementation of welfare schemes for BOCW"
+  },
+  "executive_summary": {
+    "en": "Deficiencies in 10 welfare schemes include unpaid education assistance, non-implementation of health insurance linkage with AB PM-JAY, and failure to provide prescribed benefits within timelines."
+  },
+  "slug": "implementation-of-welfare-schemes-for-bocw",
+  "para_number": "4.2",
+  "metadata": {
+    "audit_findings_categories": [
+      "beneficiary_excluded",
+      "uc_partial_utilisation",
+      "target_physical_missed"
+    ]
+  }
+}

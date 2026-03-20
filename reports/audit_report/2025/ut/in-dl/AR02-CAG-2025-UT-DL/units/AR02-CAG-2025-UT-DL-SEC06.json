@@ -1,0 +1,20 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC06",
+  "unit_type": "section",
+  "seq": 10,
+  "title": {
+    "en": "Lapses in Identification of establishments"
+  },
+  "executive_summary": {
+    "en": "The Labour Department lacked reliable data on total establishments engaged in construction activity, and cess collectors were not maintaining District Master Registers as required."
+  },
+  "slug": "lapses-in-identification-of-establishments",
+  "para_number": "2.1",
+  "metadata": {
+    "audit_findings_categories": [
+      "data_incomplete",
+      "records_not_maintained",
+      "monitoring_no_inspection"
+    ]
+  }
+}

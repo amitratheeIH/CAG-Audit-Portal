@@ -1,0 +1,20 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC17",
+  "unit_type": "section",
+  "seq": 30,
+  "title": {
+    "en": "Administrative expenditure in excess of limit"
+  },
+  "executive_summary": {
+    "en": "Administrative expenditure of the Board exceeded the statutory five per cent limit; the same issue was reported in CAG 2019 and remained unaddressed, indicating persistent non-compliance."
+  },
+  "slug": "administrative-expenditure-in-excess-of-limit",
+  "para_number": "4.3",
+  "metadata": {
+    "audit_findings_categories": [
+      "autonomous_excess_admin_expenditure",
+      "gfr_violation",
+      "para_recurrence"
+    ]
+  }
+}

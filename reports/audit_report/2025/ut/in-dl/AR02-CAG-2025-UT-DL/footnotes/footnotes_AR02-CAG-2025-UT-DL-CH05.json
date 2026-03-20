@@ -1,0 +1,29 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-CH05",
+  "footnotes": [
+    {
+      "footnote_id": "AR02-CAG-2025-UT-DL-CH05-FN001",
+      "marker": "2",
+      "text": {
+        "en": "14.06.2019, 07.07.2020, 21.01.2021 and 01.08.2022"
+      },
+      "anchor_block_id": "AR02-CAG-2025-UT-DL-CH05-L001",
+      "anchor_char_start": 1410,
+      "anchor_char_end": 1429,
+      "footnote_type": "data_note",
+      "display_scope": "chapter"
+    },
+    {
+      "footnote_id": "AR02-CAG-2025-UT-DL-CH05-FN002",
+      "marker": "1",
+      "text": {
+        "en": "Social Audit is an audit that is conducted by the people, especially by those who are affected by or are the intended beneficiaries of the scheme and thus can be described as verification of the implementation of a programme/scheme and its results by the community."
+      },
+      "anchor_block_id": "AR02-CAG-2025-UT-DL-CH05-L001",
+      "anchor_char_start": 77,
+      "anchor_char_end": 89,
+      "footnote_type": "explanatory",
+      "display_scope": "chapter"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC10",
+  "unit_type": "section",
+  "seq": 50,
+  "title": {
+    "en": "Inconsistency in data on registration and renewal of construction workers"
+  },
+  "executive_summary": {
+    "en": "Sharp and unexplained variations in year-wise registration and renewal data, alongside inconsistencies between Board records and district records, indicate unreliable data management."
+  },
+  "slug": "inconsistency-in-data-on-registration-and-renewal-of-construction-workers",
+  "para_number": "2.5",
+  "metadata": {
+    "audit_findings_categories": [
+      "data_inconsistent",
+      "records_not_reconciled"
+    ]
+  }
+}

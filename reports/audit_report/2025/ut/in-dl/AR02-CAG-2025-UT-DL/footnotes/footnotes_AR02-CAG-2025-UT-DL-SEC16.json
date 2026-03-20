@@ -1,0 +1,29 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC16",
+  "footnotes": [
+    {
+      "footnote_id": "AR02-CAG-2025-UT-DL-SEC16-FN001",
+      "marker": "4",
+      "text": {
+        "en": "(i) Pension Benefit, (ii) Maternity Benefit, (iii) Death Benefit, (iv) Financial Assistance for Education, (v) Financial Assistance for Marriage, (vi) Disability pension, (vii) Funeral assistance, (viii) Medical assistance, (ix) Imparting vocational training, and (x) Loan for purchase of work related tool."
+      },
+      "anchor_block_id": "AR02-CAG-2025-UT-DL-SEC16-P001",
+      "anchor_char_start": 59,
+      "anchor_char_end": 66,
+      "footnote_type": "explanatory",
+      "display_scope": "chapter"
+    },
+    {
+      "footnote_id": "AR02-CAG-2025-UT-DL-SEC16-FN002",
+      "marker": "5",
+      "text": {
+        "en": "Three years in Act and One year in the Rules"
+      },
+      "anchor_block_id": "AR02-CAG-2025-UT-DL-SEC16-L001",
+      "anchor_char_start": 5365,
+      "anchor_char_end": 5370,
+      "footnote_type": "explanatory",
+      "display_scope": "chapter"
+    }
+  ]
+}

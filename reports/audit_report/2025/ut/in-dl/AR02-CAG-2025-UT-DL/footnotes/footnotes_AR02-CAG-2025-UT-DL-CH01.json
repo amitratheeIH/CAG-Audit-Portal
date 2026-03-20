@@ -1,0 +1,41 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-CH01",
+  "footnotes": [
+    {
+      "footnote_id": "AR02-CAG-2025-UT-DL-CH01-FN001",
+      "marker": "1",
+      "text": {
+        "en": "Establishment means any establishment belonging to, or under the control of, the Government, anybody, corporate or firm, an individual or association or other body of individuals which or who employs building workers in any building or other construction work; and includes an establishment belonging to a contractor but does not include an individual who employs such workers in any building or construction work in relation to his own residence, the total cost of such construction not being more than ₹ 10 lakh."
+      },
+      "anchor_block_id": "AR02-CAG-2025-UT-DL-CH01-P003",
+      "anchor_char_start": 53,
+      "anchor_char_end": 67,
+      "footnote_type": "explanatory",
+      "display_scope": "chapter"
+    },
+    {
+      "footnote_id": "AR02-CAG-2025-UT-DL-CH01-FN002",
+      "marker": "2",
+      "text": {
+        "en": "Registration fees of ₹ 5 and a subscription of ₹ 20 for a year"
+      },
+      "anchor_block_id": "AR02-CAG-2025-UT-DL-CH01-P003",
+      "anchor_char_start": 641,
+      "anchor_char_end": 654,
+      "footnote_type": "explanatory",
+      "display_scope": "chapter"
+    },
+    {
+      "footnote_id": "AR02-CAG-2025-UT-DL-CH01-FN003",
+      "marker": "3",
+      "text": {
+        "en": "(1) Maternity benefit (2) Pension benefit (3) Advance for purchase or construction of house (4) Disability pension (5) Loan for purchase of work related tools (6) Grant for the purchase of work related tools (7) Payment for funeral assistance (8) Death benefit (9) Medical assistance (10) Financial assistance for education (11) Financial assistance for marriage (12) Family pension (13) Imparting vocational training & Construction of academy for skill development (14) Financial assistance for travel pass (DTC) (15) Insurance Policy (16) Financial assistance for miscarriage and (17) Ex-gratia in case of permanent disability."
+      },
+      "anchor_block_id": "AR02-CAG-2025-UT-DL-CH01-P003",
+      "anchor_char_start": 878,
+      "anchor_char_end": 888,
+      "footnote_type": "explanatory",
+      "display_scope": "chapter"
+    }
+  ]
+}

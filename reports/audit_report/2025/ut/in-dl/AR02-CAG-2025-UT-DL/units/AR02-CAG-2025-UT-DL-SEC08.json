@@ -1,0 +1,20 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC08",
+  "unit_type": "section",
+  "seq": 30,
+  "title": {
+    "en": "Identification and registration of construction workers"
+  },
+  "executive_summary": {
+    "en": "The Government had no reliable data on total BOCW in Delhi; authorised registering officers were not operational; and inspection of construction sites was not carried out to identify eligible workers."
+  },
+  "slug": "identification-and-registration-of-construction-workers",
+  "para_number": "2.3",
+  "metadata": {
+    "audit_findings_categories": [
+      "data_incomplete",
+      "target_coverage_shortfall",
+      "monitoring_no_inspection"
+    ]
+  }
+}

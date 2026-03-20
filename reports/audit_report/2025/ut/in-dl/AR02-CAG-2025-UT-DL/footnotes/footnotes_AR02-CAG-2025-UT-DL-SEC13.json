@@ -1,0 +1,17 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC13",
+  "footnotes": [
+    {
+      "footnote_id": "AR02-CAG-2025-UT-DL-SEC13-FN001",
+      "marker": "1",
+      "text": {
+        "en": "M/s BMB Developers and M/s Nehru Place Hotels Ltd."
+      },
+      "anchor_block_id": "AR02-CAG-2025-UT-DL-SEC13-L001",
+      "anchor_char_start": 51,
+      "anchor_char_end": 54,
+      "footnote_type": "explanatory",
+      "display_scope": "chapter"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-CH03",
+  "unit_type": "chapter",
+  "seq": 30,
+  "title": {
+    "en": "Chapter 3: Assessment, collection and remittance of Cess"
+  },
+  "executive_summary": {
+    "en": "Chapter 3 examines assessment, collection and remittance of cess, finding that cess funds were kept outside the Consolidated Fund, assessment was deficient, short realisation occurred, and amounts collected remained unreconciled."
+  },
+  "slug": "chapter-3-assessment-collection-and-remittance-of-cess",
+  "metadata": {
+    "audit_findings_categories": [
+      "non_collection",
+      "records_not_reconciled",
+      "statutory_act_violation"
+    ]
+  },
+  "children": [
+    "AR02-CAG-2025-UT-DL-SEC11",
+    "AR02-CAG-2025-UT-DL-SEC12",
+    "AR02-CAG-2025-UT-DL-SEC13",
+    "AR02-CAG-2025-UT-DL-SEC14"
+  ]
+}

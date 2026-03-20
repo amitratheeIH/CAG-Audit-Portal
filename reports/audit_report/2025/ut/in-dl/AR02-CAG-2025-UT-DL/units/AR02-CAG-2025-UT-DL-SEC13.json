@@ -1,0 +1,19 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC13",
+  "unit_type": "section",
+  "seq": 30,
+  "title": {
+    "en": "Short deposit/realisation of cess"
+  },
+  "executive_summary": {
+    "en": "Cess assessed remained uncollected, and ₹ 142.18 crore collected by MCsD was not deposited with the Board, indicating systemic failure in cess realisation and deposit."
+  },
+  "slug": "short-depositrealisation-of-cess",
+  "para_number": "3.3",
+  "metadata": {
+    "audit_findings_categories": [
+      "non_collection",
+      "noncollection_arrears"
+    ]
+  }
+}

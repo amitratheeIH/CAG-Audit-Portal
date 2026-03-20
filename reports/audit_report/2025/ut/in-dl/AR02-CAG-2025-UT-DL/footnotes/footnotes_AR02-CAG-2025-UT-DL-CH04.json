@@ -1,0 +1,29 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-CH04",
+  "footnotes": [
+    {
+      "footnote_id": "AR02-CAG-2025-UT-DL-CH04-FN001",
+      "marker": "1",
+      "text": {
+        "en": "(a) Financial assistance for miscarriage (b) Advance for purchase or construction of house (c) Loan for purchase of work related tools (d) Grant for the purchase of work related tools (e) Insurance Policy."
+      },
+      "anchor_block_id": "AR02-CAG-2025-UT-DL-CH04-RBX001",
+      "anchor_char_start": 311,
+      "anchor_char_end": 324,
+      "footnote_type": "explanatory",
+      "display_scope": "inline"
+    },
+    {
+      "footnote_id": "AR02-CAG-2025-UT-DL-CH04-FN002",
+      "marker": "3",
+      "text": {
+        "en": "(a) Financial assistance for miscarriage (b) Advance for purchase or construction of house (c) Loan for purchase of work related tools (d) Grant for the purchase of work related tools (e) Insurance Policy."
+      },
+      "anchor_block_id": "AR02-CAG-2025-UT-DL-CH04-P004",
+      "anchor_char_start": 616,
+      "anchor_char_end": 628,
+      "footnote_type": "explanatory",
+      "display_scope": "chapter"
+    }
+  ]
+}

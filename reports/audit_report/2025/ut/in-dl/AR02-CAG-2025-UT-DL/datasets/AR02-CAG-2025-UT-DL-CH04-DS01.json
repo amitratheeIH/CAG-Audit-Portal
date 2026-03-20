@@ -1,0 +1,116 @@
+{
+  "dataset_id": "AR02-CAG-2025-UT-DL-CH04-DS01",
+  "dataset_type": "time_series",
+  "title": {
+    "en": "Table 4.1: Expenditure on welfare schemes and activities against total receipts (2019-20 to 2022-23)"
+  },
+  "summary": {
+    "en": "Year-wise total receipts and expenditure on welfare schemes by the Delhi BOCW Welfare Board from 2019-20 to 2022-23. Expenditure as a percentage of total receipts ranged between 9.53 and 11.33 per cent except in 2021-22 when ex-gratia payments under Covid-19 relief inflated the ratio to 128.11 per cent. Total receipts over four years were ₹ 1774.42 crore against which welfare expenditure was ₹ 605.02 crore."
+  },
+  "unit": "₹ in crore",
+  "source": {
+    "en": "Delhi BOCW Welfare Board records"
+  },
+  "source_block": "AR02-CAG-2025-UT-DL-CH04-T001",
+  "columns": [
+    {
+      "id": "year",
+      "label": { "en": "Year" },
+      "data_type": "string",
+      "is_stub": true,
+      "align": "left"
+    },
+    {
+      "id": "total_receipts",
+      "label": { "en": "Total Receipts" },
+      "data_type": "decimal",
+      "unit": "₹ in crore",
+      "currency": "INR",
+      "align": "right"
+    },
+    {
+      "id": "expenditure_welfare",
+      "label": { "en": "Expenditure on welfare schemes and activities" },
+      "data_type": "decimal",
+      "unit": "₹ in crore",
+      "currency": "INR",
+      "align": "right"
+    },
+    {
+      "id": "expenditure_pct",
+      "label": { "en": "Expenditure in comparison to total receipts (in per cent)" },
+      "data_type": "percentage",
+      "unit": "%",
+      "align": "right",
+      "is_computed": true,
+      "formula": "(expenditure_welfare / total_receipts) * 100"
+    }
+  ],
+  "data": [
+    {
+      "row_id": "R01",
+      "row_type": "data",
+      "cells": {
+        "year": "2019-20",
+        "total_receipts": 431.66,
+        "expenditure_welfare": 48.89,
+        "expenditure_pct": 11.33
+      }
+    },
+    {
+      "row_id": "R02",
+      "row_type": "data",
+      "cells": {
+        "year": "2020-21",
+        "total_receipts": 387.56,
+        "expenditure_welfare": 36.95,
+        "expenditure_pct": 9.53
+      }
+    },
+    {
+      "row_id": "R03",
+      "row_type": "data",
+      "cells": {
+        "year": "2021-22",
+        "total_receipts": 357.57,
+        "expenditure_welfare": { "value": 458.08, "footnote_markers": ["2"] },
+        "expenditure_pct": 128.11
+      }
+    },
+    {
+      "row_id": "R04",
+      "row_type": "data",
+      "cells": {
+        "year": "2022-23",
+        "total_receipts": 597.63,
+        "expenditure_welfare": 61.10,
+        "expenditure_pct": 10.22
+      }
+    },
+    {
+      "row_id": "R05",
+      "row_type": "total",
+      "style": "bold",
+      "cells": {
+        "year": "Total",
+        "total_receipts": 1774.42,
+        "expenditure_welfare": 605.02,
+        "expenditure_pct": null
+      }
+    }
+  ],
+  "footnotes": [
+    {
+      "marker": "2",
+      "anchor_row_id": "R03",
+      "anchor_col_id": "expenditure_welfare",
+      "footnote_type": "explanatory",
+      "text": {
+        "en": "Includes ex-gratia payments made to BOC workers to tide over the Covid-19 pandemic period."
+      }
+    }
+  ],
+  "notes": {
+    "en": "Figures are in ₹ in crore. Percentage column not computed for Total row."
+  }
+}

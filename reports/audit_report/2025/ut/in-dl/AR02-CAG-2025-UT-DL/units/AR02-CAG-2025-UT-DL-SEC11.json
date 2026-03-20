@@ -1,0 +1,19 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC11",
+  "unit_type": "section",
+  "seq": 10,
+  "title": {
+    "en": "Cess funds being kept outside Consolidated Fund or Public Account"
+  },
+  "executive_summary": {
+    "en": "Cess collected under the BOCW Act in Delhi is credited directly to the Board account instead of the Consolidated Fund of India, which is not in conformity with constitutional provisions."
+  },
+  "slug": "cess-funds-being-kept-outside-consolidated-fund-or-public-account",
+  "para_number": "3.1",
+  "metadata": {
+    "audit_findings_categories": [
+      "statutory_act_violation",
+      "irregular_expenditure"
+    ]
+  }
+}

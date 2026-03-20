@@ -1,0 +1,63 @@
+{
+  "dataset_id": "AR02-CAG-2025-UT-DL-CH03-DS01",
+  "title": {
+    "en": "Table 3.1: Year-wise cess collected by the Board (2019-20 to 2022-23)"
+  },
+  "summary": {
+    "en": "Year-wise cess collected by the Delhi Building and Other Construction Workers Welfare Board from 2019-20 to 2022-23, totalling ₹ 1055.97 crore. Collections rose from ₹ 215.47 crore in 2019-20 to ₹ 374.46 crore in 2022-23, indicating a consistent upward trend."
+  },
+  "unit": "₹ in crore",
+  "dataset_type": "time_series",
+  "source_block": "AR02-CAG-2025-UT-DL-CH03-T001",
+  "source": {
+    "en": "Delhi BOCW Welfare Board records"
+  },
+  "columns": [
+    {
+      "id": "year",
+      "label": { "en": "Year" },
+      "data_type": "string",
+      "is_stub": true,
+      "align": "left"
+    },
+    {
+      "id": "cess_collected",
+      "label": { "en": "Cess collected" },
+      "data_type": "decimal",
+      "unit": "₹ in crore",
+      "currency": "INR",
+      "align": "right"
+    }
+  ],
+  "data": [
+    {
+      "row_id": "R01",
+      "row_type": "data",
+      "cells": { "year": "2019-20", "cess_collected": 215.47 }
+    },
+    {
+      "row_id": "R02",
+      "row_type": "data",
+      "cells": { "year": "2020-21", "cess_collected": 221.35 }
+    },
+    {
+      "row_id": "R03",
+      "row_type": "data",
+      "cells": { "year": "2021-22", "cess_collected": 244.69 }
+    },
+    {
+      "row_id": "R04",
+      "row_type": "data",
+      "cells": { "year": "2022-23", "cess_collected": 374.46 }
+    },
+    {
+      "row_id": "R05",
+      "row_type": "total",
+      "style": "bold",
+      "cells": { "year": "Total", "cess_collected": 1055.97 }
+    }
+  ],
+  "notes": {
+    "en": "Figures are in ₹ in crore."
+  }
+}

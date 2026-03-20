@@ -1,0 +1,20 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC07",
+  "unit_type": "section",
+  "seq": 20,
+  "title": {
+    "en": "Lapses in Registration of establishments"
+  },
+  "executive_summary": {
+    "en": "Registering officers failed to maintain prescribed registers, e-district portal data was not shared for audit verification, and systemic deficiencies in registration process and record-keeping were observed."
+  },
+  "slug": "lapses-in-registration-of-establishments",
+  "para_number": "2.2",
+  "metadata": {
+    "audit_findings_categories": [
+      "records_not_maintained",
+      "it_not_integrated",
+      "monitoring_no_inspection"
+    ]
+  }
+}

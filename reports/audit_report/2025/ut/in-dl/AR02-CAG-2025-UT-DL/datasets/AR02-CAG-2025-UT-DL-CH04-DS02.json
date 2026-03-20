@@ -1,0 +1,98 @@
+{
+  "dataset_id": "AR02-CAG-2025-UT-DL-CH04-DS02",
+  "dataset_type": "cross_tab",
+  "title": {
+    "en": "Table 4.2: Status of registration and renewal of BOC workers against GoI Mission Mode Project targets (as on 14 July 2020)"
+  },
+  "summary": {
+    "en": "Comparison of All India and Delhi performance against GoI Mission Mode Project targets for registration and renewal of BOC workers as on 14 July 2020. All India registered 347.75 lakh out of 500 lakh targeted (69.6%), while Delhi registered only 5.49 lakh out of 7.89 lakh targeted (69.5%). Renewal performance in Delhi was severely low at 7.3% (0.40 lakh) compared to All India average of 74% (257.55 lakh)."
+  },
+  "unit": "Numbers in lakh",
+  "source": {
+    "en": "GoI Ministry of Labour and Employment data (July 2020)"
+  },
+  "source_block": "AR02-CAG-2025-UT-DL-SEC15-T001",
+  "columns": [
+    {
+      "id": "particulars",
+      "label": {
+        "en": "Particulars"
+      },
+      "data_type": "string",
+      "is_stub": true,
+      "align": "left"
+    },
+    {
+      "id": "targeted",
+      "label": {
+        "en": "Targeted number of BOC workers"
+      },
+      "data_type": "decimal",
+      "unit": "lakh",
+      "align": "right"
+    },
+    {
+      "id": "registered",
+      "label": {
+        "en": "Number of BOC workers registered"
+      },
+      "data_type": "decimal",
+      "unit": "lakh",
+      "align": "right"
+    },
+    {
+      "id": "renewed",
+      "label": {
+        "en": "Number of BOC workers who renewed their registration as on 14 July 2020"
+      },
+      "data_type": "decimal",
+      "unit": "lakh",
+      "align": "right"
+    }
+  ],
+  "data": [
+    {
+      "row_id": "R01",
+      "row_type": "data",
+      "cells": {
+        "particulars": "All India",
+        "targeted": 500,
+        "registered": {
+          "value": 347.75,
+          "display": {
+            "en": "347.75\n(69.6 %)"
+          }
+        },
+        "renewed": {
+          "value": 257.55,
+          "display": {
+            "en": "257.55\n(74%)"
+          }
+        }
+      }
+    },
+    {
+      "row_id": "R02",
+      "row_type": "data",
+      "cells": {
+        "particulars": "Delhi",
+        "targeted": 7.89,
+        "registered": {
+          "value": 5.49,
+          "display": {
+            "en": "5.49\n(69.5%)"
+          }
+        },
+        "renewed": {
+          "value": 0.4,
+          "display": {
+            "en": "0.40\n(7.3%)"
+          }
+        }
+      }
+    }
+  ],
+  "notes": {
+    "en": "Figures are in lakh. Percentages in brackets: for registered column = percentage of targeted; for renewed column = percentage of registered."
+  }
+}

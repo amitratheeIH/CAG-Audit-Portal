@@ -1,0 +1,184 @@
+{
+  "dataset_id": "AR02-CAG-2025-UT-DL-CH03-DS02",
+  "title": {
+    "en": "Table 3.2: Difference in cess figures as per district records and Board (2019-20 to 2022-23)"
+  },
+  "summary": {
+    "en": "Year-wise comparison of cess amounts as per district records versus Board records for 2019-20 to 2022-23, showing a cumulative unreconciled difference of ₹ 204.95 crore. Board figures consistently exceeded district figures across all four years, indicating systemic data reconciliation failure."
+  },
+  "unit": "₹ in crore",
+  "dataset_type": "time_series",
+  "source_block": "AR02-CAG-2025-UT-DL-SEC14-T001",
+  "source": {
+    "en": "District records and Delhi BOCW Welfare Board records"
+  },
+  "columns": [
+    {
+      "id": "year",
+      "label": {
+        "en": "Year"
+      },
+      "data_type": "string",
+      "is_stub": true,
+      "align": "left"
+    },
+    {
+      "id": "cess_district",
+      "label": {
+        "en": "Cess amount as per district records"
+      },
+      "data_type": "decimal",
+      "unit": "₹ in crore",
+      "currency": "INR",
+      "align": "right"
+    },
+    {
+      "id": "cess_board",
+      "label": {
+        "en": "Cess amount as per Board"
+      },
+      "data_type": "decimal",
+      "unit": "₹ in crore",
+      "currency": "INR",
+      "align": "right"
+    },
+    {
+      "id": "difference",
+      "label": {
+        "en": "Difference between Board and district figures"
+      },
+      "data_type": "decimal",
+      "unit": "₹ in crore",
+      "currency": "INR",
+      "align": "right",
+      "is_computed": true,
+      "formula": "cess_board - cess_district"
+    }
+  ],
+  "header_rows": [
+    [
+      {
+        "label": {
+          "en": "Year"
+        },
+        "col_ids": [
+          "year"
+        ]
+      },
+      {
+        "label": {
+          "en": "Cess amount as per district records"
+        },
+        "col_ids": [
+          "cess_district"
+        ]
+      },
+      {
+        "label": {
+          "en": "Cess amount as per Board"
+        },
+        "col_ids": [
+          "cess_board"
+        ]
+      },
+      {
+        "label": {
+          "en": "Difference between Board and district figures"
+        },
+        "col_ids": [
+          "difference"
+        ]
+      }
+    ],
+    [
+      {
+        "label": {
+          "en": "1"
+        },
+        "col_ids": [
+          "year"
+        ]
+      },
+      {
+        "label": {
+          "en": "2"
+        },
+        "col_ids": [
+          "cess_district"
+        ]
+      },
+      {
+        "label": {
+          "en": "3"
+        },
+        "col_ids": [
+          "cess_board"
+        ]
+      },
+      {
+        "label": {
+          "en": "4 (3-2)"
+        },
+        "col_ids": [
+          "difference"
+        ]
+      }
+    ]
+  ],
+  "data": [
+    {
+      "row_id": "R01",
+      "row_type": "data",
+      "cells": {
+        "year": "2019-2020",
+        "cess_district": 56.15,
+        "cess_board": 75.76,
+        "difference": 19.61
+      }
+    },
+    {
+      "row_id": "R02",
+      "row_type": "data",
+      "cells": {
+        "year": "2020-2021",
+        "cess_district": 26.79,
+        "cess_board": 76.02,
+        "difference": 49.23
+      }
+    },
+    {
+      "row_id": "R03",
+      "row_type": "data",
+      "cells": {
+        "year": "2021-2022",
+        "cess_district": 36.55,
+        "cess_board": 91.4,
+        "difference": 54.85
+      }
+    },
+    {
+      "row_id": "R04",
+      "row_type": "data",
+      "cells": {
+        "year": "2022-2023",
+        "cess_district": 39.28,
+        "cess_board": 120.54,
+        "difference": 81.26
+      }
+    },
+    {
+      "row_id": "R05",
+      "row_type": "total",
+      "style": "bold",
+      "cells": {
+        "year": "Total",
+        "cess_district": 158.77,
+        "cess_board": 363.72,
+        "difference": 204.95
+      }
+    }
+  ],
+  "notes": {
+    "en": "Figures are in ₹ in crore. Column 4 = Column 3 minus Column 2."
+  }
+}

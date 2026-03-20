@@ -1,0 +1,19 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-CH05",
+  "unit_type": "chapter",
+  "seq": 50,
+  "title": {
+    "en": "Chapter 5: Monitoring and internal control mechanism"
+  },
+  "executive_summary": {
+    "en": "Chapter 5 examines monitoring and internal control mechanisms, finding no site inspections, no social audit, and no internal audit, indicating complete breakdown of oversight mechanisms."
+  },
+  "slug": "chapter-5-monitoring-and-internal-control-mechanism",
+  "metadata": {
+    "audit_findings_categories": [
+      "monitoring_no_inspection",
+      "social_audit_not_conducted",
+      "monitoring_no_internal_audit"
+    ]
+  }
+}

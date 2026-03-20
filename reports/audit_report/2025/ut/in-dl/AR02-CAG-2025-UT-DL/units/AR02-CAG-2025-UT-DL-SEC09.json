@@ -1,0 +1,19 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC09",
+  "unit_type": "section",
+  "seq": 40,
+  "title": {
+    "en": "Beneficiary Survey of construction workers"
+  },
+  "executive_summary": {
+    "en": "Beneficiary survey of 300 workers revealed low awareness of the Board and welfare schemes, with 72 per cent citing lack of awareness as reason for non-registration."
+  },
+  "slug": "beneficiary-survey-of-construction-workers",
+  "para_number": "2.4",
+  "metadata": {
+    "audit_findings_categories": [
+      "effectiveness_beneficiary_satisfaction",
+      "target_coverage_shortfall"
+    ]
+  }
+}

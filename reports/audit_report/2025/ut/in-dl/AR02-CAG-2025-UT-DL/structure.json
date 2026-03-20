@@ -1,0 +1,454 @@
+{
+  "front_matter": [
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-PRE01",
+      "unit_type": "preface",
+      "seq": 10,
+      "title": {
+        "en": "Preface"
+      },
+      "executive_summary": {
+        "en": "This report presents the findings of the performance audit on welfare of Building and Other Construction Workers in Delhi covering 2019-20 to 2022-23, highlighting shortcomings in registration, cess administration, and scheme implementation."
+      },
+      "slug": "preface"
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-ES01",
+      "unit_type": "executive_summary",
+      "seq": 20,
+      "title": {
+        "en": "Executive Summary"
+      },
+      "executive_summary": {
+        "en": "The audit found significant lapses in registration of establishments and workers, ineffective cess collection and reconciliation, underutilisation of welfare funds, and weak monitoring mechanisms, adversely affecting welfare of construction workers in Delhi."
+      },
+      "slug": "executive-summary"
+    }
+  ],
+  "content_units": [
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-CH01",
+      "unit_type": "chapter",
+      "seq": 10,
+      "title": {
+        "en": "Chapter 1: Introduction"
+      },
+      "executive_summary": {
+        "en": "Chapter 1 provides the background on the BOCW legislative framework, organisational structure of the Delhi Board, audit objectives, criteria, scope and methodology."
+      },
+      "slug": "chapter-1-introduction",
+      "children": [
+        "AR02-CAG-2025-UT-DL-SEC01",
+        "AR02-CAG-2025-UT-DL-SEC02",
+        "AR02-CAG-2025-UT-DL-SEC03",
+        "AR02-CAG-2025-UT-DL-SEC04",
+        "AR02-CAG-2025-UT-DL-SEC05"
+      ]
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC01",
+      "unit_type": "section",
+      "seq": 10,
+      "title": {
+        "en": "Organisational set up"
+      },
+      "executive_summary": {
+        "en": "The Labour Department and DBOCWWB are responsible for registration and welfare of construction workers in Delhi, operating under the BOCW Act 1996 and Delhi BOCW Rules 2002."
+      },
+      "slug": "organisational-set-up",
+      "para_number": "1.1"
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC02",
+      "unit_type": "section",
+      "seq": 20,
+      "title": {
+        "en": "Audit Objective"
+      },
+      "executive_summary": {
+        "en": "The audit assessed effectiveness of registration, cess collection efficiency, fund administration, and utilisation of cess funds for welfare schemes."
+      },
+      "slug": "audit-objective",
+      "para_number": "1.2"
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC03",
+      "unit_type": "section",
+      "seq": 30,
+      "title": {
+        "en": "Audit Criteria"
+      },
+      "executive_summary": {
+        "en": "Audit criteria were derived from BOCW Act 1996, Delhi BOCW Rules 2002, Cess Act 1996, Board resolutions, and GoI guidelines."
+      },
+      "slug": "audit-criteria",
+      "para_number": "1.3"
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC04",
+      "unit_type": "section",
+      "seq": 40,
+      "title": {
+        "en": "Audit Scope and Methodology"
+      },
+      "executive_summary": {
+        "en": "The audit covered financial years 2019-20 to 2022-23, conducted through record scrutiny, audit queries, and beneficiary survey of 300 beneficiaries in South and North West Districts."
+      },
+      "slug": "audit-scope-and-methodology",
+      "para_number": "1.4"
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC05",
+      "unit_type": "section",
+      "seq": 50,
+      "title": {
+        "en": "Acknowledgement"
+      },
+      "executive_summary": {
+        "en": "Audit acknowledges cooperation of departments and field functionaries in facilitating smooth conduct of the audit."
+      },
+      "slug": "acknowledgement",
+      "para_number": "1.5"
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-CH02",
+      "unit_type": "chapter",
+      "seq": 20,
+      "title": {
+        "en": "Chapter 2: Registration of Establishments and Construction Workers"
+      },
+      "executive_summary": {
+        "en": "Chapter 2 examines lapses in identification and registration of establishments and construction workers, revealing data gaps, record deficiencies, biometric fraud, and inconsistencies between registration figures."
+      },
+      "slug": "chapter-2-registration-of-establishments-and-construction-workers",
+      "metadata": {
+        "audit_findings_categories": [
+          "data_incomplete",
+          "records_not_maintained",
+          "target_coverage_shortfall"
+        ]
+      },
+      "children": [
+        "AR02-CAG-2025-UT-DL-SEC06",
+        "AR02-CAG-2025-UT-DL-SEC07",
+        "AR02-CAG-2025-UT-DL-SEC08",
+        "AR02-CAG-2025-UT-DL-SEC09",
+        "AR02-CAG-2025-UT-DL-SEC10"
+      ]
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC06",
+      "unit_type": "section",
+      "seq": 10,
+      "title": {
+        "en": "Lapses in Identification of establishments"
+      },
+      "executive_summary": {
+        "en": "The Labour Department lacked reliable data on total establishments engaged in construction activity, and cess collectors were not maintaining District Master Registers as required."
+      },
+      "slug": "lapses-in-identification-of-establishments",
+      "para_number": "2.1",
+      "metadata": {
+        "audit_findings_categories": [
+          "data_incomplete",
+          "records_not_maintained",
+          "monitoring_no_inspection"
+        ]
+      }
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC07",
+      "unit_type": "section",
+      "seq": 20,
+      "title": {
+        "en": "Lapses in Registration of establishments"
+      },
+      "executive_summary": {
+        "en": "Registering officers failed to maintain prescribed registers, e-district portal data was not shared for audit verification, and systemic deficiencies in registration process and record-keeping were observed."
+      },
+      "slug": "lapses-in-registration-of-establishments",
+      "para_number": "2.2",
+      "metadata": {
+        "audit_findings_categories": [
+          "records_not_maintained",
+          "it_not_integrated",
+          "monitoring_no_inspection"
+        ]
+      }
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC08",
+      "unit_type": "section",
+      "seq": 30,
+      "title": {
+        "en": "Identification and registration of construction workers"
+      },
+      "executive_summary": {
+        "en": "The Government had no reliable data on total BOCW in Delhi; authorised registering officers were not operational; and inspection of construction sites was not carried out to identify eligible workers."
+      },
+      "slug": "identification-and-registration-of-construction-workers",
+      "para_number": "2.3",
+      "metadata": {
+        "audit_findings_categories": [
+          "data_incomplete",
+          "target_coverage_shortfall",
+          "monitoring_no_inspection"
+        ]
+      }
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC09",
+      "unit_type": "section",
+      "seq": 40,
+      "title": {
+        "en": "Beneficiary Survey of construction workers"
+      },
+      "executive_summary": {
+        "en": "Beneficiary survey of 300 workers revealed low awareness of the Board and welfare schemes, with 72 per cent citing lack of awareness as reason for non-registration."
+      },
+      "slug": "beneficiary-survey-of-construction-workers",
+      "para_number": "2.4",
+      "metadata": {
+        "audit_findings_categories": [
+          "effectiveness_beneficiary_satisfaction",
+          "target_coverage_shortfall"
+        ]
+      }
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC10",
+      "unit_type": "section",
+      "seq": 50,
+      "title": {
+        "en": "Inconsistency in data on registration and renewal of construction workers"
+      },
+      "executive_summary": {
+        "en": "Sharp and unexplained variations in year-wise registration and renewal data, alongside inconsistencies between Board records and district records, indicate unreliable data management."
+      },
+      "slug": "inconsistency-in-data-on-registration-and-renewal-of-construction-workers",
+      "para_number": "2.5",
+      "metadata": {
+        "audit_findings_categories": [
+          "data_inconsistent",
+          "records_not_reconciled"
+        ]
+      }
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-CH03",
+      "unit_type": "chapter",
+      "seq": 30,
+      "title": {
+        "en": "Chapter 3: Assessment, collection and remittance of Cess"
+      },
+      "executive_summary": {
+        "en": "Chapter 3 examines assessment, collection and remittance of cess, finding that cess funds were kept outside the Consolidated Fund, assessment was deficient, short realisation occurred, and amounts collected remained unreconciled."
+      },
+      "slug": "chapter-3-assessment-collection-and-remittance-of-cess",
+      "metadata": {
+        "audit_findings_categories": [
+          "non_collection",
+          "records_not_reconciled",
+          "statutory_act_violation"
+        ]
+      },
+      "children": [
+        "AR02-CAG-2025-UT-DL-SEC11",
+        "AR02-CAG-2025-UT-DL-SEC12",
+        "AR02-CAG-2025-UT-DL-SEC13",
+        "AR02-CAG-2025-UT-DL-SEC14"
+      ]
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC11",
+      "unit_type": "section",
+      "seq": 10,
+      "title": {
+        "en": "Cess funds being kept outside Consolidated Fund or Public Account"
+      },
+      "executive_summary": {
+        "en": "Cess collected under the BOCW Act in Delhi is credited directly to the Board account instead of the Consolidated Fund of India, which is not in conformity with constitutional provisions."
+      },
+      "slug": "cess-funds-being-kept-outside-consolidated-fund-or-public-account",
+      "para_number": "3.1",
+      "metadata": {
+        "audit_findings_categories": [
+          "statutory_act_violation",
+          "irregular_expenditure"
+        ]
+      }
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC12",
+      "unit_type": "section",
+      "seq": 20,
+      "title": {
+        "en": "Assessment of cess"
+      },
+      "executive_summary": {
+        "en": "Assessing Officers lacked complete information for cess assessment, used inconsistent cost bases, and the same shortcomings earlier reported in CAG 2019 report remained uncorrected."
+      },
+      "slug": "assessment-of-cess",
+      "para_number": "3.2",
+      "metadata": {
+        "audit_findings_categories": [
+          "short_levy",
+          "data_incomplete",
+          "para_recurrence"
+        ]
+      }
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC13",
+      "unit_type": "section",
+      "seq": 30,
+      "title": {
+        "en": "Short deposit/realisation of cess"
+      },
+      "executive_summary": {
+        "en": "Cess assessed remained uncollected, and ₹ 142.18 crore collected by MCsD was not deposited with the Board, indicating systemic failure in cess realisation and deposit."
+      },
+      "slug": "short-depositrealisation-of-cess",
+      "para_number": "3.3",
+      "metadata": {
+        "audit_findings_categories": [
+          "non_collection",
+          "noncollection_arrears"
+        ]
+      }
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC14",
+      "unit_type": "section",
+      "seq": 40,
+      "title": {
+        "en": "Amount of cess realized not reconciled"
+      },
+      "executive_summary": {
+        "en": "A difference of ₹ 204.95 crore between district records and Board records for cess collection remained unreconciled despite being flagged in previous audit reports."
+      },
+      "slug": "amount-of-cess-realized-not-reconciled",
+      "para_number": "3.4",
+      "metadata": {
+        "audit_findings_categories": [
+          "data_inconsistent",
+          "records_not_reconciled",
+          "para_recurrence"
+        ]
+      }
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-CH04",
+      "unit_type": "chapter",
+      "seq": 40,
+      "title": {
+        "en": "Chapter 4: Utilisation of cess funds and implementation of welfare schemes by the Board"
+      },
+      "executive_summary": {
+        "en": "Chapter 4 examines utilisation of cess funds, finding expenditure on welfare schemes ranged 9-11 per cent of receipts, five schemes had zero expenditure, delayed ex-gratia during Covid, deficiencies in scheme implementation, and administrative expenditure exceeding statutory limits."
+      },
+      "slug": "chapter-4-utilisation-of-cess-funds-and-implementation-of-welfare-schemes-by-the",
+      "metadata": {
+        "audit_findings_categories": [
+          "target_funds_unspent",
+          "beneficiary_excluded",
+          "effectiveness_objective_not_met"
+        ]
+      },
+      "children": [
+        "AR02-CAG-2025-UT-DL-SEC15",
+        "AR02-CAG-2025-UT-DL-SEC16",
+        "AR02-CAG-2025-UT-DL-SEC17"
+      ]
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-CH05",
+      "unit_type": "chapter",
+      "seq": 50,
+      "title": {
+        "en": "Chapter 5: Monitoring and internal control mechanism"
+      },
+      "executive_summary": {
+        "en": "Chapter 5 examines monitoring and internal control mechanisms, finding no site inspections, no social audit, and no internal audit, indicating complete breakdown of oversight mechanisms."
+      },
+      "slug": "chapter-5-monitoring-and-internal-control-mechanism",
+      "metadata": {
+        "audit_findings_categories": [
+          "monitoring_no_inspection",
+          "social_audit_not_conducted",
+          "monitoring_no_internal_audit"
+        ]
+      }
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC15",
+      "unit_type": "section",
+      "seq": 10,
+      "title": {
+        "en": "Functioning of the Board during Covid-19 and adherence to GoI directions"
+      },
+      "executive_summary": {
+        "en": "Ex-gratia payments to BOCW during Covid-19 were delayed across all four tranches, renewal registrations were far behind all-India performance, and the Board failed to implement GoI directions for worker welfare."
+      },
+      "slug": "functioning-of-the-board-during-covid-19-and-adherence-to-goi-directions",
+      "para_number": "4.1",
+      "metadata": {
+        "audit_findings_categories": [
+          "dbt_delay",
+          "target_physical_missed",
+          "para_recurrence"
+        ]
+      }
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC16",
+      "unit_type": "section",
+      "seq": 20,
+      "title": {
+        "en": "Implementation of welfare schemes for BOCW"
+      },
+      "executive_summary": {
+        "en": "Deficiencies in 10 welfare schemes include unpaid education assistance, non-implementation of health insurance linkage with AB PM-JAY, and failure to provide prescribed benefits within timelines."
+      },
+      "slug": "implementation-of-welfare-schemes-for-bocw",
+      "para_number": "4.2",
+      "metadata": {
+        "audit_findings_categories": [
+          "beneficiary_excluded",
+          "uc_partial_utilisation",
+          "target_physical_missed"
+        ]
+      }
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC17",
+      "unit_type": "section",
+      "seq": 30,
+      "title": {
+        "en": "Administrative expenditure in excess of limit"
+      },
+      "executive_summary": {
+        "en": "Administrative expenditure of the Board exceeded the statutory five per cent limit; the same issue was reported in CAG 2019 and remained unaddressed, indicating persistent non-compliance."
+      },
+      "slug": "administrative-expenditure-in-excess-of-limit",
+      "para_number": "4.3",
+      "metadata": {
+        "audit_findings_categories": [
+          "autonomous_excess_admin_expenditure",
+          "gfr_violation",
+          "para_recurrence"
+        ]
+      }
+    },
+    {
+      "unit_id": "AR02-CAG-2025-UT-DL-SEC18",
+      "unit_type": "section",
+      "seq": 60,
+      "title": {
+        "en": "Signature Block"
+      },
+      "slug": "signature-block"
+    }
+  ],
+  "back_matter": []
+}

@@ -1,0 +1,20 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC14",
+  "unit_type": "section",
+  "seq": 40,
+  "title": {
+    "en": "Amount of cess realized not reconciled"
+  },
+  "executive_summary": {
+    "en": "A difference of ₹ 204.95 crore between district records and Board records for cess collection remained unreconciled despite being flagged in previous audit reports."
+  },
+  "slug": "amount-of-cess-realized-not-reconciled",
+  "para_number": "3.4",
+  "metadata": {
+    "audit_findings_categories": [
+      "data_inconsistent",
+      "records_not_reconciled",
+      "para_recurrence"
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-SEC15",
+  "unit_type": "section",
+  "seq": 10,
+  "title": {
+    "en": "Functioning of the Board during Covid-19 and adherence to GoI directions"
+  },
+  "executive_summary": {
+    "en": "Ex-gratia payments to BOCW during Covid-19 were delayed across all four tranches, renewal registrations were far behind all-India performance, and the Board failed to implement GoI directions for worker welfare."
+  },
+  "slug": "functioning-of-the-board-during-covid-19-and-adherence-to-goi-directions",
+  "para_number": "4.1",
+  "metadata": {
+    "audit_findings_categories": [
+      "dbt_delay",
+      "target_physical_missed",
+      "para_recurrence"
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "unit_id": "AR02-CAG-2025-UT-DL-CH04",
+  "unit_type": "chapter",
+  "seq": 40,
+  "title": {
+    "en": "Chapter 4: Utilisation of cess funds and implementation of welfare schemes by the Board"
+  },
+  "executive_summary": {
+    "en": "Chapter 4 examines utilisation of cess funds, finding expenditure on welfare schemes ranged 9-11 per cent of receipts, five schemes had zero expenditure, delayed ex-gratia during Covid, deficiencies in scheme implementation, and administrative expenditure exceeding statutory limits."
+  },
+  "slug": "chapter-4-utilisation-of-cess-funds-and-implementation-of-welfare-schemes-by-the",
+  "metadata": {
+    "audit_findings_categories": [
+      "target_funds_unspent",
+      "beneficiary_excluded",
+      "effectiveness_objective_not_met"
+    ]
+  },
+  "children": [
+    "AR02-CAG-2025-UT-DL-SEC15",
+    "AR02-CAG-2025-UT-DL-SEC16",
+    "AR02-CAG-2025-UT-DL-SEC17"
+  ]
+}

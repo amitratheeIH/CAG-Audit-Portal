@@ -1,0 +1,136 @@
+{
+  "dataset_id": "AR02-CAG-2025-UT-DL-CH02-DS02",
+  "dataset_type": "time_series",
+  "title": {
+    "en": "Table 2.2: Fresh registration and renewals of BOC workers as per Board, e-district portal and Annual Report (2019-20 to 2022-23)"
+  },
+  "summary": {
+    "en": "Comparison of fresh registration and renewal figures for BOC workers in Delhi from 2019-20 to 2022-23 across three sources: Board records, e-district portal, and Annual Report. Significant discrepancies exist between all three sources for both fresh registrations and renewals, with Annual Report not prepared for 2022-23, indicating unreliable data management by the Board."
+  },
+  "unit": "Number",
+  "source": {
+    "en": "Board records, e-district portal, and Annual Reports of Delhi BOCW Welfare Board"
+  },
+  "source_block": "AR02-CAG-2025-UT-DL-SEC10-T001",
+  "columns": [
+    {
+      "id": "source",
+      "label": { "en": "Source" },
+      "data_type": "string",
+      "is_stub": true,
+      "align": "left"
+    },
+    {
+      "id": "y2019_20",
+      "label": { "en": "2019-20" },
+      "data_type": "integer",
+      "period": "2019-20",
+      "align": "right"
+    },
+    {
+      "id": "y2020_21",
+      "label": { "en": "2020-21" },
+      "data_type": "integer",
+      "period": "2020-21",
+      "align": "right"
+    },
+    {
+      "id": "y2021_22",
+      "label": { "en": "2021-22" },
+      "data_type": "integer",
+      "period": "2021-22",
+      "align": "right"
+    },
+    {
+      "id": "y2022_23",
+      "label": { "en": "2022-23" },
+      "data_type": "integer",
+      "period": "2022-23",
+      "align": "right"
+    }
+  ],
+  "data": [
+    {
+      "row_id": "HDR-FRESH",
+      "row_type": "header",
+      "style": "bold",
+      "cells": {
+        "source": { "value": "Fresh Registration", "colspan": 5 }
+      }
+    },
+    {
+      "row_id": "FRESH-BOARD",
+      "row_type": "data",
+      "cells": {
+        "source": "Figures as per Board",
+        "y2019_20": 16858,
+        "y2020_21": 147998,
+        "y2021_22": 937285,
+        "y2022_23": 86999
+      }
+    },
+    {
+      "row_id": "FRESH-EDISTRICT",
+      "row_type": "data",
+      "cells": {
+        "source": "Figures as per e-district portal",
+        "y2019_20": 42728,
+        "y2020_21": 189541,
+        "y2021_22": 995556,
+        "y2022_23": 93848
+      }
+    },
+    {
+      "row_id": "FRESH-ANNUAL",
+      "row_type": "data",
+      "cells": {
+        "source": "Figures as per Annual Report",
+        "y2019_20": 42672,
+        "y2020_21": 147803,
+        "y2021_22": 913537,
+        "y2022_23": { "value": null, "display": { "en": "Not prepared" }, "na_marker": true }
+      }
+    },
+    {
+      "row_id": "HDR-RENEWAL",
+      "row_type": "header",
+      "style": "bold",
+      "cells": {
+        "source": { "value": "Renewals", "colspan": 5 }
+      }
+    },
+    {
+      "row_id": "RENEW-BOARD",
+      "row_type": "data",
+      "cells": {
+        "source": "Figures as per Board",
+        "y2019_20": 34540,
+        "y2020_21": 81024,
+        "y2021_22": 166267,
+        "y2022_23": 109591
+      }
+    },
+    {
+      "row_id": "RENEW-EDISTRICT",
+      "row_type": "data",
+      "cells": {
+        "source": "Figures as per e-district portal",
+        "y2019_20": 25343,
+        "y2020_21": 41487,
+        "y2021_22": 58345,
+        "y2022_23": 104078
+      }
+    },
+    {
+      "row_id": "RENEW-ANNUAL",
+      "row_type": "data",
+      "cells": {
+        "source": "Figures as per Annual Report",
+        "y2019_20": 9171,
+        "y2020_21": 80939,
+        "y2021_22": 164814,
+        "y2022_23": { "value": null, "display": { "en": "Not prepared" }, "na_marker": true }
+      }
+    }
+  ]
+}

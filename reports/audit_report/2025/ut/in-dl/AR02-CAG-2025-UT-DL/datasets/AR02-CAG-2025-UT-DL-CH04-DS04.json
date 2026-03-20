@@ -1,0 +1,94 @@
+{
+  "dataset_id": "AR02-CAG-2025-UT-DL-CH04-DS04",
+  "dataset_type": "time_series",
+  "title": {
+    "en": "Table 4.4: Administrative expenditure as a percentage of total expenditure (2019-20 to 2022-23)"
+  },
+  "summary": {
+    "en": "Year-wise administrative expenses and total expenditure of the Delhi BOCW Welfare Board from 2019-20 to 2022-23, with administrative expenditure as a percentage of total expenditure. Administrative expenses as a percentage ranged from 1.52 to 11.01 per cent, exceeding the statutory five per cent ceiling in 2019-20 (7.19%) and 2020-21 (11.01%) and 2022-23 (7.67%), indicating persistent non-compliance with Section 24(3) of the BOCW Act."
+  },
+  "unit": "₹ in crore",
+  "source": {
+    "en": "Delhi BOCW Welfare Board records"
+  },
+  "source_block": "AR02-CAG-2025-UT-DL-SEC17-T001",
+  "columns": [
+    {
+      "id": "year",
+      "label": { "en": "Year" },
+      "data_type": "string",
+      "is_stub": true,
+      "align": "left"
+    },
+    {
+      "id": "admin_expenses",
+      "label": { "en": "Administrative expenses" },
+      "data_type": "decimal",
+      "unit": "₹ in crore",
+      "currency": "INR",
+      "align": "right"
+    },
+    {
+      "id": "total_expenditure",
+      "label": { "en": "Total expenditure" },
+      "data_type": "decimal",
+      "unit": "₹ in crore",
+      "currency": "INR",
+      "align": "right"
+    },
+    {
+      "id": "admin_pct",
+      "label": { "en": "Administrative expenditure as a percentage of total expenditure" },
+      "data_type": "percentage",
+      "unit": "%",
+      "align": "right",
+      "is_computed": true,
+      "formula": "(admin_expenses / total_expenditure) * 100"
+    }
+  ],
+  "data": [
+    {
+      "row_id": "R01",
+      "row_type": "data",
+      "cells": {
+        "year": "2019-20",
+        "admin_expenses": 3.79,
+        "total_expenditure": 52.68,
+        "admin_pct": 7.19
+      }
+    },
+    {
+      "row_id": "R02",
+      "row_type": "data",
+      "cells": {
+        "year": "2020-21",
+        "admin_expenses": 4.57,
+        "total_expenditure": 41.52,
+        "admin_pct": 11.01
+      }
+    },
+    {
+      "row_id": "R03",
+      "row_type": "data",
+      "cells": {
+        "year": "2021-22",
+        "admin_expenses": 7.05,
+        "total_expenditure": 465.13,
+        "admin_pct": 1.52
+      }
+    },
+    {
+      "row_id": "R04",
+      "row_type": "data",
+      "cells": {
+        "year": "2022-23",
+        "admin_expenses": 5.08,
+        "total_expenditure": 66.18,
+        "admin_pct": 7.67
+      }
+    }
+  ],
+  "notes": {
+    "en": "Statutory ceiling on administrative expenditure is five per cent of total expenditure as per Section 24(3) of the BOCW Act, 1996. Years 2019-20, 2020-21 and 2022-23 exceeded this limit."
+  }
+}
