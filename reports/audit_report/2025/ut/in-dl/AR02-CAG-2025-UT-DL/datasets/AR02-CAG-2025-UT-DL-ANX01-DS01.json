@@ -1,6 +1,6 @@
 {
   "dataset_id": "AR02-CAG-2025-UT-DL-ANX01-DS01",
-  "dataset_type": "tabular",
+  "dataset_type": "flat",
   "title": {
     "en": "Calculation Sheet for Cess in South District – Commercial Complex"
   },
@@ -162,7 +162,9 @@
         "area_sqm": 4715.76,
         "cost_declared": 38799040,
         "cost_schedule": {
-          "display": "4715.76 × 20,000 = 9,43,15,200"
+          "display": {
+            "en": "4715.76 × 20,000 = 9,43,15,200"
+          }
         },
         "cost_final": 94315200,
         "cost_ao": 38799040
@@ -177,7 +179,9 @@
         "area_sqm": 623.92,
         "cost_declared": 5545251,
         "cost_schedule": {
-          "display": "623.92 × 20,000 = 1,24,78,400"
+          "display": {
+            "en": "623.92 × 20,000 = 1,24,78,400"
+          }
         },
         "cost_final": 12478400,
         "cost_ao": 5545251
@@ -192,7 +196,9 @@
         "area_sqm": 1283.71,
         "cost_declared": 15842637,
         "cost_schedule": {
-          "display": "1283.71 × 20,000 = 2,56,74,200"
+          "display": {
+            "en": "1283.71 × 20,000 = 2,56,74,200"
+          }
         },
         "cost_final": 25674200,
         "cost_ao": 15842637
@@ -383,7 +389,9 @@
         },
         "cost_declared": 4225722,
         "cost_schedule": {
-          "display": "42,25,722"
+          "display": {
+            "en": "42,25,722"
+          }
         },
         "cost_final": 4225722,
         "cost_ao": 4225722
@@ -461,7 +469,9 @@
         },
         "cost_declared": 8189852,
         "cost_schedule": {
-          "display": "81,89,852"
+          "display": {
+            "en": "81,89,852"
+          }
         },
         "cost_final": 8189852,
         "cost_ao": 8189852
@@ -476,7 +486,9 @@
           "nil_marker": true
         },
         "particulars": {
-          "display": "Total Cost"
+          "display": {
+            "en": "Total Cost"
+          }
         },
         "area_sqm": {
           "nil_marker": true
