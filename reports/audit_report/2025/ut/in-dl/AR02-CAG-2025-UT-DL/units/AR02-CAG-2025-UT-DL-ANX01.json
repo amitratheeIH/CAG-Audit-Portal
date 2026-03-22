@@ -6,14 +6,5 @@
   "title": {
     "en": "Calculation Sheet for Cess in South District"
   },
-  "toc_include": true,
-  "metadata": {
-    "audit_type": [
-      "performance_audit"
-    ],
-    "topics": [
-      "cess_calculation",
-      "labour_cess"
-    ]
-  }
+  "toc_include": true
 }
