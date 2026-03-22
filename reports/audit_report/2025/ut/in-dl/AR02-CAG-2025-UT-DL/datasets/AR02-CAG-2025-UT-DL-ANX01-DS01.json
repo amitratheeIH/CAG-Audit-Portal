@@ -1,0 +1,493 @@
+{
+  "dataset_id": "AR02-CAG-2025-UT-DL-ANX01-DS01",
+  "dataset_type": "tabular",
+  "title": {
+    "en": "Calculation Sheet for Cess in South District – Commercial Complex"
+  },
+  "summary": {
+    "en": "Cess calculation showing declared vs schedule rates for a commercial complex in South District, Delhi."
+  },
+  "unit": "₹",
+  "notes": {
+    "en": "Amount in ₹. Final cost taken as higher of declared or schedule rate. Cess @ 1% of difference."
+  },
+  "source": {
+    "en": "Assessing Officer records, South District"
+  },
+  "source_block": "AR02-CAG-2025-UT-DL-ANX01-P001",
+  "columns": [
+    {
+      "id": "sl_no",
+      "label": {
+        "en": "Sl. No."
+      },
+      "data_type": "string",
+      "align": "center"
+    },
+    {
+      "id": "particulars",
+      "label": {
+        "en": "Particulars of Construction Items / Head"
+      },
+      "data_type": "string",
+      "is_stub": true,
+      "align": "left"
+    },
+    {
+      "id": "area_sqm",
+      "label": {
+        "en": "Area (Sq. mtrs.)"
+      },
+      "data_type": "decimal",
+      "align": "right"
+    },
+    {
+      "id": "cost_declared",
+      "label": {
+        "en": "Cost Declared by Assessee (₹)"
+      },
+      "data_type": "decimal",
+      "align": "right"
+    },
+    {
+      "id": "cost_schedule",
+      "label": {
+        "en": "Cost as per Schedule Rates (₹)"
+      },
+      "data_type": "string",
+      "align": "right"
+    },
+    {
+      "id": "cost_final",
+      "label": {
+        "en": "Final Cost (Higher) for Cess (₹)"
+      },
+      "data_type": "decimal",
+      "align": "right"
+    },
+    {
+      "id": "cost_ao",
+      "label": {
+        "en": "Cost (Higher) by AO (₹)"
+      },
+      "data_type": "decimal",
+      "align": "right"
+    }
+  ],
+  "header_rows": [
+    [
+      {
+        "label": {
+          "en": "Sl. No."
+        },
+        "rowspan": 2,
+        "col_ids": [
+          "sl_no"
+        ]
+      },
+      {
+        "label": {
+          "en": "Particulars of Construction Items / Head"
+        },
+        "rowspan": 2,
+        "col_ids": [
+          "particulars"
+        ]
+      },
+      {
+        "label": {
+          "en": "Area (Sq. mtrs.)"
+        },
+        "rowspan": 2,
+        "col_ids": [
+          "area_sqm"
+        ]
+      },
+      {
+        "label": {
+          "en": "Cost of Construction"
+        },
+        "colspan": 3,
+        "style": "group",
+        "col_ids": [
+          "cost_declared",
+          "cost_schedule",
+          "cost_final"
+        ]
+      },
+      {
+        "label": {
+          "en": "Cost of Construction (Higher) Calculated by AO (₹)"
+        },
+        "rowspan": 2,
+        "col_ids": [
+          "cost_ao"
+        ]
+      }
+    ],
+    [
+      {
+        "label": {
+          "en": "Declared by Assessee (₹)"
+        },
+        "col_ids": [
+          "cost_declared"
+        ]
+      },
+      {
+        "label": {
+          "en": "As per Schedule Rates vide Order 02-01-2006 (₹)"
+        },
+        "col_ids": [
+          "cost_schedule"
+        ]
+      },
+      {
+        "label": {
+          "en": "Final (Higher) for Cess (₹)"
+        },
+        "col_ids": [
+          "cost_final"
+        ]
+      }
+    ]
+  ],
+  "data": [
+    {
+      "row_id": "R01",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "1",
+        "particulars": "Total constructed covered area (Up to 4 storeys including Mezzanine Floor)",
+        "area_sqm": 4715.76,
+        "cost_declared": 38799040,
+        "cost_schedule": {
+          "display": "4715.76 × 20,000 = 9,43,15,200"
+        },
+        "cost_final": 94315200,
+        "cost_ao": 38799040
+      }
+    },
+    {
+      "row_id": "R02",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "2",
+        "particulars": "Additional constructed covered area (Beyond 4 Storeys)",
+        "area_sqm": 623.92,
+        "cost_declared": 5545251,
+        "cost_schedule": {
+          "display": "623.92 × 20,000 = 1,24,78,400"
+        },
+        "cost_final": 12478400,
+        "cost_ao": 5545251
+      }
+    },
+    {
+      "row_id": "R03",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "3",
+        "particulars": "Total constructed covered area of basement",
+        "area_sqm": 1283.71,
+        "cost_declared": 15842637,
+        "cost_schedule": {
+          "display": "1283.71 × 20,000 = 2,56,74,200"
+        },
+        "cost_final": 25674200,
+        "cost_ao": 15842637
+      }
+    },
+    {
+      "row_id": "R04",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "4",
+        "particulars": "Total cost of Civil work in case of repairs/alteration/maintenance",
+        "area_sqm": {
+          "nil_marker": true
+        },
+        "cost_declared": {
+          "nil_marker": true
+        },
+        "cost_schedule": {
+          "nil_marker": true
+        },
+        "cost_final": {
+          "nil_marker": true
+        },
+        "cost_ao": {
+          "nil_marker": true
+        }
+      }
+    },
+    {
+      "row_id": "R05",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "5",
+        "particulars": "Total Cost of Demolition",
+        "area_sqm": {
+          "nil_marker": true
+        },
+        "cost_declared": {
+          "nil_marker": true
+        },
+        "cost_schedule": {
+          "nil_marker": true
+        },
+        "cost_final": {
+          "nil_marker": true
+        },
+        "cost_ao": {
+          "nil_marker": true
+        }
+      }
+    },
+    {
+      "row_id": "R06",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "6",
+        "particulars": "Type of flooring and total area",
+        "area_sqm": 8400,
+        "cost_declared": 7223771,
+        "cost_schedule": {
+          "nil_marker": true
+        },
+        "cost_final": {
+          "nil_marker": true
+        },
+        "cost_ao": 7223771
+      }
+    },
+    {
+      "row_id": "R07",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "7",
+        "particulars": "Cost of Wood panelling work",
+        "area_sqm": {
+          "nil_marker": true
+        },
+        "cost_declared": {
+          "nil_marker": true
+        },
+        "cost_schedule": {
+          "nil_marker": true
+        },
+        "cost_final": {
+          "nil_marker": true
+        },
+        "cost_ao": {
+          "nil_marker": true
+        }
+      }
+    },
+    {
+      "row_id": "R08",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "8",
+        "particulars": "Cost of wood work other than wood panelling",
+        "area_sqm": {
+          "nil_marker": true
+        },
+        "cost_declared": {
+          "nil_marker": true
+        },
+        "cost_schedule": {
+          "nil_marker": true
+        },
+        "cost_final": {
+          "nil_marker": true
+        },
+        "cost_ao": {
+          "nil_marker": true
+        }
+      }
+    },
+    {
+      "row_id": "R09",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "9",
+        "particulars": "Cost of false ceiling work",
+        "area_sqm": {
+          "nil_marker": true
+        },
+        "cost_declared": {
+          "nil_marker": true
+        },
+        "cost_schedule": {
+          "nil_marker": true
+        },
+        "cost_final": {
+          "nil_marker": true
+        },
+        "cost_ao": {
+          "nil_marker": true
+        }
+      }
+    },
+    {
+      "row_id": "R10",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "10",
+        "particulars": "Cost of central Air Conditioning",
+        "area_sqm": {
+          "nil_marker": true
+        },
+        "cost_declared": {
+          "nil_marker": true
+        },
+        "cost_schedule": {
+          "nil_marker": true
+        },
+        "cost_final": {
+          "nil_marker": true
+        },
+        "cost_ao": {
+          "nil_marker": true
+        }
+      }
+    },
+    {
+      "row_id": "R11",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "11",
+        "particulars": "Cost of Lift Installation",
+        "area_sqm": {
+          "nil_marker": true
+        },
+        "cost_declared": 5192641,
+        "cost_schedule": {
+          "nil_marker": true
+        },
+        "cost_final": {
+          "nil_marker": true
+        },
+        "cost_ao": 5192641
+      }
+    },
+    {
+      "row_id": "R12",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "12",
+        "particulars": "Cost of Boundary Wall including railing/gates",
+        "area_sqm": {
+          "nil_marker": true
+        },
+        "cost_declared": 4225722,
+        "cost_schedule": {
+          "display": "42,25,722"
+        },
+        "cost_final": 4225722,
+        "cost_ao": 4225722
+      }
+    },
+    {
+      "row_id": "R13",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "13",
+        "particulars": "Total Cost of Swimming Pool",
+        "area_sqm": {
+          "nil_marker": true
+        },
+        "cost_declared": {
+          "nil_marker": true
+        },
+        "cost_schedule": {
+          "nil_marker": true
+        },
+        "cost_final": {
+          "nil_marker": true
+        },
+        "cost_ao": {
+          "nil_marker": true
+        }
+      }
+    },
+    {
+      "row_id": "R14",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "14",
+        "particulars": "Cost of Electric work along with fitting & Fixtures (Cost calculated at 15% of Sl. No. 1+2+3)",
+        "area_sqm": {
+          "nil_marker": true
+        },
+        "cost_declared": 9255217,
+        "cost_schedule": {
+          "nil_marker": true
+        },
+        "cost_final": {
+          "nil_marker": true
+        },
+        "cost_ao": 9255217
+      }
+    },
+    {
+      "row_id": "R15",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "15",
+        "particulars": "Cost of Plumbing Work alongwith fitting & fixtures (Cost Calculated at 10% of Sl. No. 1+2+3)",
+        "area_sqm": {
+          "nil_marker": true
+        },
+        "cost_declared": 6092521,
+        "cost_schedule": {
+          "nil_marker": true
+        },
+        "cost_final": {
+          "nil_marker": true
+        },
+        "cost_ao": 6092521
+      }
+    },
+    {
+      "row_id": "R16",
+      "row_type": "data",
+      "cells": {
+        "sl_no": "16",
+        "particulars": "Cost of other development work including sewerage, external roads, approach roads, firefighting, landscaping, etc.",
+        "area_sqm": {
+          "nil_marker": true
+        },
+        "cost_declared": 8189852,
+        "cost_schedule": {
+          "display": "81,89,852"
+        },
+        "cost_final": 8189852,
+        "cost_ao": 8189852
+      }
+    },
+    {
+      "row_id": "RTOTAL",
+      "row_type": "total",
+      "cells": {
+        "sl_no": {
+          "value": "",
+          "nil_marker": true
+        },
+        "particulars": {
+          "display": "Total Cost"
+        },
+        "area_sqm": {
+          "nil_marker": true
+        },
+        "cost_declared": 100366652,
+        "cost_schedule": {
+          "nil_marker": true
+        },
+        "cost_final": 144883374,
+        "cost_ao": 100366652
+      }
+    }
+  ]
+}
