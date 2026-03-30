@@ -108,26 +108,11 @@ def get_stored_checksum(db, product_id: str) -> str | None:
 
 def build_report_meta_doc(product_id: str, report_dir: Path,
                            manifest: dict, metadata: dict,
-                           structure: dict | None,
-                           inheritance: dict | None = None) -> dict:
+                           structure: dict | None) -> dict:
     try:
         folder_path = str(report_dir.relative_to(rl.REPO_ROOT))
     except ValueError:
         folder_path = str(report_dir)
-
-    # Aggregate findings bottom-up from inheritance tree if available,
-    # otherwise fall back to simple unit file scan
-    all_findings: list[str] = []
-    if inheritance:
-        seen: set[str] = set()
-        for resolved in inheritance.values():
-            for cat in (resolved.get("audit_findings_categories") or []):
-                if cat not in seen:
-                    seen.add(cat)
-                    all_findings.append(cat)
-        all_findings = sorted(set(all_findings))
-    else:
-        all_findings = _aggregate_findings_from_units(report_dir)
 
     return {
         "product_id":   product_id,
@@ -140,7 +125,6 @@ def build_report_meta_doc(product_id: str, report_dir: Path,
             "front_matter_count": len((structure or {}).get("front_matter", [])),
             "back_matter_count":  len((structure or {}).get("back_matter", [])),
         },
-        "audit_findings_categories": all_findings or None,
         "_ingestion": {
             "ingested_at":        datetime.now(timezone.utc).isoformat(),
             "manifest_checksum":  manifest_checksum(manifest),
@@ -200,8 +184,7 @@ def _text_snippet(block: dict, max_chars: int = 500) -> str:
 
 
 def build_block_vector_docs(product_id: str, report_dir: Path,
-                             embeddings: dict[str, list[float]],
-                             inheritance: dict | None = None) -> list[dict]:
+                             embeddings: dict[str, list[float]]) -> list[dict]:
     docs = []
     for ndjson_path in rl.block_ndjson_files(report_dir):
         for block in load_ndjson(ndjson_path):
@@ -212,7 +195,6 @@ def build_block_vector_docs(product_id: str, report_dir: Path,
                 "product_id":     product_id,
                 "block_id":       block_id,
                 "unit_id":        block.get("unit_id"),
-                "resolved_meta":  inheritance.get(block.get("unit_id", ""), {}) if inheritance else None,
                 "seq":            block.get("seq"),
                 "block_type":     block.get("block_type"),
                 "para_type":      block.get("content", {}).get("para_type"),
@@ -285,218 +267,11 @@ def _build_distributions_summary(distributions: list[dict]) -> dict[str, list[st
     return summary
 
 
-# ── Inheritance rules per field (from inheritable_audit_metadata.schema) ───
-# OVERRIDE  : child value completely replaces parent — last writer wins downward
-# ADDITIVE  : child values are unioned with parent values (deduplicated)
-# BOTTOM_UP : collected bottom-up only (section → chapter → report); never pushed down
-# RESTRICTED: set only at specific levels; not propagated further
-# NOT_INHERITED: scoped to the unit that set it only
-_INHERIT_RULES: dict[str, str] = {
-    "audit_type":                 "OVERRIDE",
-    "primary_schemes":            "ADDITIVE",
-    "other_schemes":              "ADDITIVE",
-    "audit_period":               "OVERRIDE",
-    "report_sector":              "OVERRIDE",
-    "audit_findings_categories":  "BOTTOM_UP",  # section→chapter→report (additive upward)
-    "regions":                    "ADDITIVE",   # sub-fields additive
-    "topics":                     "ADDITIVE",
-    "impact":                     "ADDITIVE",
-    "main_audited_entities":      "OVERRIDE",
-    "other_audited_entities":     "OVERRIDE",
-    "referenced_entities":        "ADDITIVE",
-    "examination_coverage":       "OVERRIDE",
-    "pac_status":                 "RESTRICTED", # chapter level only
-    "dpc_act_sections":           "OVERRIDE",
-    "references":                 "NOT_INHERITED",
-    "unit_structure":             "NOT_INHERITED",
-}
-
-def _merge_additive(parent: list | None, child: list | None) -> list | None:
-    """Union two lists, preserving order (parent first), deduplicating."""
-    if not parent and not child:
-        return None
-    seen: set = set()
-    result = []
-    for item in (parent or []) + (child or []):
-        key = json.dumps(item, sort_keys=True) if isinstance(item, dict) else item
-        if key not in seen:
-            seen.add(key)
-            result.append(item)
-    return result or None
-
-def _merge_regions(parent: dict | None, child: dict | None) -> dict | None:
-    """Merge regions additively per sub-field (states_uts, ulbs, pris)."""
-    if not parent and not child:
-        return None
-    merged = {}
-    for key in set(list((parent or {}).keys()) + list((child or {}).keys())):
-        pv = (parent or {}).get(key)
-        cv = (child or {}).get(key)
-        if isinstance(pv, list) or isinstance(cv, list):
-            merged[key] = _merge_additive(pv, cv)
-        elif cv is not None:
-            merged[key] = cv
-        elif pv is not None:
-            merged[key] = pv
-    return merged or None
-
-def _resolve_inherited_meta(unit_meta: dict, parent_resolved: dict) -> dict:
-    """
-    Compute the fully resolved metadata for a unit by applying inheritance rules.
-
-    unit_meta       — the unit\'s own metadata (from unit JSON file)
-    parent_resolved — the already-resolved metadata of the parent unit
-                      (or report-level inheritable for top-level units)
-
-    Returns a new dict with all inheritable fields resolved.
-    """
-    resolved = {}
-
-    for field, rule in _INHERIT_RULES.items():
-        own   = unit_meta.get(field)
-        par   = parent_resolved.get(field)
-
-        if rule == "NOT_INHERITED" or rule == "RESTRICTED":
-            # Scoped to own unit only — never inherit, never propagate
-            if own is not None:
-                resolved[field] = own
-
-        elif rule == "OVERRIDE":
-            # Child wins if set; otherwise inherit parent
-            if own is not None:
-                resolved[field] = own
-            elif par is not None:
-                resolved[field] = par
-
-        elif rule == "ADDITIVE":
-            if field == "regions":
-                merged = _merge_regions(par, own)
-            else:
-                merged = _merge_additive(par, own)
-            if merged is not None:
-                resolved[field] = merged
-
-        elif rule == "BOTTOM_UP":
-            # Only own value flows up — parent does NOT push down
-            # The upward aggregation is done in build_inheritance_tree()
-            if own is not None:
-                resolved[field] = own
-
-    return resolved
-
-
-def build_inheritance_tree(report_dir: Path, structure: dict,
-                            report_inh: dict) -> dict[str, dict]:
-    """
-    Walk the unit tree and compute fully resolved inherited metadata for every unit.
-
-    Traversal is top-down (pre-order depth-first by seq within each parent group).
-    Each unit\'s resolved metadata is the result of applying inheritance rules
-    between its parent\'s resolved metadata and its own unit metadata.
-
-    Returns a dict: unit_id → resolved_metadata_dict
-
-    Also computes bottom-up aggregation (audit_findings_categories) after the
-    top-down pass, rolling section-level values up through chapters to report.
-    """
-    # Load all unit files into a lookup
-    unit_files: dict[str, dict] = {}
-    units_path = report_dir / "units"
-    if units_path.exists():
-        for uf in units_path.glob("*.json"):
-            try:
-                u = json.loads(uf.read_text(encoding="utf-8"))
-                uid = u.get("unit_id") or uf.stem
-                unit_files[uid] = u
-            except Exception:
-                pass
-
-    # Build parent→children map from structure
-    all_units: list[dict] = (
-        structure.get("front_matter", []) +
-        structure.get("content_units", []) +
-        structure.get("back_matter", [])
-    )
-    children_of: dict[str | None, list[dict]] = {}
-    for u in all_units:
-        pid = u.get("parent_id") or None
-        children_of.setdefault(pid, []).append(u)
-
-    # Sort children by seq within each parent group
-    for pid in children_of:
-        children_of[pid].sort(key=lambda u: u.get("seq", 0))
-
-    resolved: dict[str, dict] = {}
-
-    # Top-down DFS — parent_resolved starts as report-level inheritable
-    def walk(unit_ids: list[dict], parent_resolved: dict):
-        for u in unit_ids:
-            uid = u.get("unit_id", "")
-            unit_data = unit_files.get(uid, {})
-            unit_meta  = unit_data.get("metadata", {})
-            own_resolved = _resolve_inherited_meta(unit_meta, parent_resolved)
-            resolved[uid] = own_resolved
-            # Recurse into children
-            walk(children_of.get(uid, []), own_resolved)
-
-    walk(children_of.get(None, []), report_inh)
-
-    # Bottom-up aggregation for BOTTOM_UP fields (audit_findings_categories)
-    # Walk leaves → root, accumulating into parent
-    bottom_up_fields = [f for f, r in _INHERIT_RULES.items() if r == "BOTTOM_UP"]
-    unit_id_set = {u.get("unit_id") for u in all_units}
-
-    def accumulate_bottom_up(uid: str):
-        child_units = children_of.get(uid, [])
-        for cu in child_units:
-            accumulate_bottom_up(cu.get("unit_id", ""))
-
-        for field in bottom_up_fields:
-            child_values: list = []
-            for cu in child_units:
-                cuid = cu.get("unit_id", "")
-                cv = resolved.get(cuid, {}).get(field) or []
-                child_values.extend(cv)
-            if child_values:
-                existing = resolved[uid].get(field) or []
-                merged = _merge_additive(existing, child_values)
-                if merged:
-                    resolved[uid][field] = merged
-
-    for root_unit in children_of.get(None, []):
-        accumulate_bottom_up(root_unit.get("unit_id", ""))
-
-    return resolved
-
-
-def _aggregate_findings_from_units(report_dir: Path) -> list[str]:
-    """
-    Simple aggregation of audit_findings_categories from all unit files.
-    Used as fallback when structure is unavailable.
-    Returns a deduplicated sorted list.
-    """
-    seen: set[str] = set()
-    units_dir = report_dir / "units"
-    if not units_dir.exists():
-        return []
-    for unit_file in sorted(units_dir.glob("*.json")):
-        try:
-            unit = json.loads(unit_file.read_text(encoding="utf-8"))
-            cats = (unit.get("metadata") or {}).get("audit_findings_categories") or []
-            for cat in cats:
-                if isinstance(cat, str) and cat.strip():
-                    seen.add(cat.strip())
-        except Exception:
-            continue
-    return sorted(seen)
-
-
 def build_catalog_doc(
     product_id: str,
     report_dir: Path,
     manifest: dict,
     metadata: dict,
-    inheritance: dict | None = None,
 ) -> dict:
     """
     Build a catalog_index document from manifest.json + metadata.json.
@@ -589,18 +364,8 @@ def build_catalog_doc(
         "report_sector":      inh.get("report_sector") or None,
         "topics":             inh.get("topics") or None,
         "audit_period":       inh.get("audit_period"),
-        # Findings: use inheritance tree (bottom-up aggregated) if available,
-        # then metadata.json inheritable, then simple unit file scan
-        "audit_findings_categories": (
-            (sorted(set(
-                cat
-                for resolved in (inheritance or {}).values()
-                for cat in (resolved.get("audit_findings_categories") or [])
-            )) or None)
-            or inh.get("audit_findings_categories")
-            or _aggregate_findings_from_units(report_dir)
-            or None
-        ),
+        # Findings (v1.0: pipeline-aggregated from section level; replaces key_findings)
+        "audit_findings_categories": inh.get("audit_findings_categories") or None,
         # Schemes and geography
         "primary_schemes":    inh.get("primary_schemes") or None,
         "other_schemes":      inh.get("other_schemes") or None,
@@ -631,6 +396,16 @@ def build_catalog_doc(
         "finance_report":      "finance_reports",
     }
     doc["portal_section"] = _PORTAL_MAP.get(product_type, "compendium")
+
+    # ── state_id (v1.9) ──────────────────────────────────────────────────────
+    # ISO 3166-2 code for the state/UT this report covers.
+    # Sourced from state_ut.id in report_level metadata.
+    # Used by the map page to filter reports by region.
+    state_ut_obj = rl_data.get("state_ut", {})
+    state_id = state_ut_obj.get("id") if isinstance(state_ut_obj, dict) else None
+    if state_id:
+        doc["state_id"] = state_id
+
     doc["jurisdiction_applicable"] = product_type in (
         "audit_report", "accounts_report", "finance_report"
     )
@@ -739,18 +514,13 @@ def ingest_report(report_dir: Path, db, force: bool, dry_run: bool) -> dict:
     structure  = rl.load_structure(report_dir)
     embeddings = load_embedding_sidecar(report_dir)
 
-    # Build inheritance tree — resolves all inheritable fields for every unit
-    report_inh = (metadata.get("specific") or {}).get("inheritable") or {}
-    inheritance = build_inheritance_tree(report_dir, structure or {}, report_inh)
-
-    meta_doc = build_report_meta_doc(product_id, report_dir, manifest, metadata,
-                                     structure, inheritance)
+    meta_doc = build_report_meta_doc(product_id, report_dir, manifest, metadata, structure)
     if not dry_run:
         db[COLLECTIONS["report_meta"]].update_one(
             {"product_id": product_id}, {"$set": meta_doc}, upsert=True
         )
 
-    block_docs = build_block_vector_docs(product_id, report_dir, embeddings, inheritance)
+    block_docs = build_block_vector_docs(product_id, report_dir, embeddings)
     stats["blocks"] = upsert_collection(
         db, COLLECTIONS["block_vectors"], block_docs, "block_id", dry_run
     )
@@ -760,7 +530,7 @@ def ingest_report(report_dir: Path, db, force: bool, dry_run: bool) -> dict:
         db, COLLECTIONS["atn_index"], atn_docs, "atn_id", dry_run
     )
 
-    catalog_doc = build_catalog_doc(product_id, report_dir, manifest, metadata, inheritance)
+    catalog_doc = build_catalog_doc(product_id, report_dir, manifest, metadata)
     stats["catalog"] = upsert_collection(
         db, COLLECTIONS["catalog_index"], [catalog_doc], "product_id", dry_run
     )
