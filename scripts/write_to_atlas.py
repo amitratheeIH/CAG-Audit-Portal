@@ -397,6 +397,66 @@ def build_catalog_doc(
     }
     doc["portal_section"] = _PORTAL_MAP.get(product_type, "compendium")
 
+    # ── search_text (flat keyword bag for full-text search) ──────────────────
+    # Concatenates all searchable fields into one plain-text field so Atlas
+    # Search + regex can find reports by any keyword (topics, entities, etc.)
+    _search_parts: list[str] = []
+
+    def _ml(obj) -> str:
+        if not obj: return ""
+        if isinstance(obj, str): return obj
+        if isinstance(obj, dict):
+            return obj.get("en") or next(iter(obj.values()), "") or ""
+        return ""
+
+    # Title + summary
+    _search_parts.append(_ml(common.get("title")))
+    _search_parts.append(_ml(common.get("summary")))
+
+    # Topics (IDs as words — taxonomy labels added at query time)
+    for t in (inh.get("topics") or []):
+        _search_parts.append(str(t).replace("_", " "))
+
+    # Audit type and sector IDs
+    for at in (inh.get("audit_type") or []):
+        _search_parts.append(str(at).replace("-", " "))
+    for rs in (inh.get("report_sector") or []):
+        _search_parts.append(str(rs).replace("-", " ").replace("SECT ", ""))
+
+    # Audited entities (departments, ministries, bodies)
+    for ent in (inh.get("main_audited_entities") or []):
+        if isinstance(ent, dict):
+            for fld in ("ministry", "department"):
+                v = ent.get(fld)
+                if v: _search_parts.append(str(v).replace("-", " ").replace("_", " "))
+            for body in (ent.get("autonomous_bodies") or []):
+                _search_parts.append(str(body).replace("-", " ").replace("_", " "))
+
+    # Schemes
+    for s in (inh.get("primary_schemes") or []) + (inh.get("other_schemes") or []):
+        if isinstance(s, dict):
+            _search_parts.append(_ml(s.get("name") or s.get("label") or ""))
+        elif isinstance(s, str):
+            _search_parts.append(s)
+
+    # Government context (nodal departments)
+    gc = rl_data.get("government_context") or {}
+    for dept in (gc.get("nodal_departments") or []):
+        _search_parts.append(str(dept).replace("-", " ").replace("_", " "))
+
+    # Audit findings categories
+    for afc in (inh.get("audit_findings_categories") or []):
+        _search_parts.append(str(afc).replace("_", " "))
+
+    # State/UT name
+    state_ut_obj = rl_data.get("state_ut") or {}
+    if isinstance(state_ut_obj, dict):
+        _search_parts.append(_ml(state_ut_obj.get("name")))
+
+    search_text = " | ".join(p.strip() for p in _search_parts if p.strip())
+    if search_text:
+        doc["search_text"] = search_text
+
     # ── state_id (v1.9) ──────────────────────────────────────────────────────
     # ISO 3166-2 code for the state/UT this report covers.
     # Sourced from state_ut.id in report_level metadata.
